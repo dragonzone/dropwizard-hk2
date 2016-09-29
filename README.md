@@ -14,7 +14,7 @@ To use this bundle, add it to your application in the initialize method:
 Then, update your health checks, metrics, and managed components to use the custom Jersey component marker interfaces:
 `InjectableHealthCheck`, `InjectableManaged`, `InjectableLifeCycle`, `InjectableLifeCycleListener`, `InjectableMetric`, or
 `InjectableMetricSet`. These are necessary for Jersey to identify the components as a valid Jersey component, and just extend the
-DropWizard interfaces of similar name:
+DropWizard interfaces of similar name. Here is an example health check:
 
     @Named("TestHealthCheck")
     public class TestInjectableHealthCheck extends InjectableHealthCheck {

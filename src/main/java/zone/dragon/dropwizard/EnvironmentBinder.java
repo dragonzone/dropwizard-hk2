@@ -17,22 +17,26 @@ import org.glassfish.hk2.utilities.binding.AbstractBinder;
  * LifecycleEnvironment}</li> <li>{@link MetricRegistry}</li> <li>{@link Configuration}</li> </ul>
  */
 public class EnvironmentBinder<T> extends AbstractBinder {
-    @NonNull
     private final T           configuration;
-    @NonNull
     private final Environment environment;
+    private       Server      server;
 
-    private Server server;
-
-    public EnvironmentBinder(T configuration, Environment environment) {
+    /**
+     * Creates a new binder that exposes the DropWizard environment to HK2
+     *
+     * @param configuration
+     *     DropWizard configuration
+     * @param environment
+     *     DropWizard environment
+     */
+    public EnvironmentBinder(@NonNull T configuration, @NonNull Environment environment) {
         this.configuration = configuration;
         this.environment = environment;
-
         environment.lifecycle().addLifeCycleListener(new AbstractLifeCycleListener() {
             @Override
             public void lifeCycleStarting(LifeCycle event) {
                 if (event instanceof Server) {
-                    server = (Server)event;
+                    server = (Server) event;
                 }
             }
         });

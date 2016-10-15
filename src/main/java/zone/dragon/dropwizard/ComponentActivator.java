@@ -3,8 +3,8 @@ package zone.dragon.dropwizard;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.glassfish.hk2.api.ServiceHandle;
 import org.glassfish.hk2.api.ServiceLocator;
+import org.glassfish.jersey.internal.inject.Providers;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent.Type;
 import org.glassfish.jersey.server.monitoring.ApplicationEventListener;
@@ -12,7 +12,6 @@ import org.glassfish.jersey.server.monitoring.RequestEvent;
 import org.glassfish.jersey.server.monitoring.RequestEventListener;
 
 import javax.inject.Named;
-import java.util.List;
 import java.util.function.BiConsumer;
 
 /**
@@ -57,8 +56,7 @@ public abstract class ComponentActivator implements ApplicationEventListener {
      *     Type of the component to find and activate
      */
     protected <T> void activate(@NonNull Class<T> contract, @NonNull ComponentConsumer<T> consumer) {
-        List<ServiceHandle<T>> handles = locator.getAllServiceHandles(contract);
-        handles.forEach(handle -> {
+        Providers.getAllServiceHandles(locator, contract).forEach(handle -> {
             String name    = handle.getActiveDescriptor().getName();
             T      service = handle.getService();
             if (name == null) {

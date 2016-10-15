@@ -1,9 +1,15 @@
 package zone.dragon.dropwizard;
 
 import io.dropwizard.Configuration;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * @author Bryan Harclerode
  * @date 9/23/2016
  */
-public class TestConfig extends Configuration {}
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class TestConfig extends Configuration {
+    private String testProperty;
+}

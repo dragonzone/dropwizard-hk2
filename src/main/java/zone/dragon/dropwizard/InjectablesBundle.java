@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import zone.dragon.dropwizard.health.HealthCheckActivator;
 import zone.dragon.dropwizard.lifecycle.LifeCycleActivator;
 import zone.dragon.dropwizard.metrics.MetricActivator;
+import zone.dragon.dropwizard.task.TaskActivator;
 
 /**
  * Provides integration between DropWizard and HK2, allowing
@@ -24,6 +25,7 @@ public class InjectablesBundle<T> implements ConfiguredBundle<T> {
         environment.jersey().register(HealthCheckActivator.class);
         environment.jersey().register(MetricActivator.class);
         environment.jersey().register(LifeCycleActivator.class);
+        environment.jersey().register(TaskActivator.class);
     }
 
     @Override

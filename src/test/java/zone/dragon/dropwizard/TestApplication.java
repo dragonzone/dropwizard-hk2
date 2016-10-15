@@ -22,6 +22,7 @@ public class TestApplication extends Application<TestConfig> {
     public void run(TestConfig testConfig, Environment environment) throws Exception {
         environment.jersey().register(TestInjectableHealthCheck.class);
         environment.jersey().register(TestInjectableLifeCycle.class);
+        environment.jersey().register(TestInjectableTask.class);
     }
 
 }

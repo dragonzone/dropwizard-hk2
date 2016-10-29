@@ -1,6 +1,7 @@
 package zone.dragon.dropwizard.health;
 
 import com.codahale.metrics.health.HealthCheckRegistry;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.glassfish.hk2.api.ServiceLocator;
 import zone.dragon.dropwizard.ComponentActivator;
@@ -20,7 +21,7 @@ public class HealthCheckActivator extends ComponentActivator {
     private final HealthCheckRegistry registry;
 
     @Inject
-    public HealthCheckActivator(ServiceLocator locator, HealthCheckRegistry registry) {
+    public HealthCheckActivator(@NonNull ServiceLocator locator, @NonNull HealthCheckRegistry registry) {
         super(locator);
         this.registry = registry;
     }

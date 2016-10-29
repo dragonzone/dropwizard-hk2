@@ -1,6 +1,7 @@
 package zone.dragon.dropwizard.lifecycle;
 
 import io.dropwizard.lifecycle.JettyManaged;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.util.component.ContainerLifeCycle;
@@ -21,7 +22,7 @@ public class LifeCycleActivator extends ComponentActivator {
     private ContainerLifeCycle container;
 
     @Inject
-    public LifeCycleActivator(ServiceLocator locator, Server server) {
+    public LifeCycleActivator(@NonNull ServiceLocator locator, @NonNull Server server) {
         super(locator);
         container = server;
     }

@@ -4,7 +4,7 @@ import com.codahale.metrics.Metric;
 import org.glassfish.jersey.spi.Contract;
 
 /**
- * Marker interface to tag a {@link Metric} as a Jersey component; Implement this instead of the standard {@link Metic} to allow
+ * Marker interface to tag a {@link Metric} as a Jersey component; Implement this instead of the standard {@link Metric} to allow
  * registration of the component with Jersey.
  *
  * @author Bryan Harclerode

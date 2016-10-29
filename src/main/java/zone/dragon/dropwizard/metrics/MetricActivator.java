@@ -1,6 +1,7 @@
 package zone.dragon.dropwizard.metrics;
 
 import com.codahale.metrics.MetricRegistry;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.glassfish.hk2.api.ServiceLocator;
 import zone.dragon.dropwizard.ComponentActivator;
@@ -20,7 +21,7 @@ public class MetricActivator extends ComponentActivator {
     private final MetricRegistry registry;
 
     @Inject
-    public MetricActivator(ServiceLocator locator, MetricRegistry registry) {
+    public MetricActivator(@NonNull ServiceLocator locator, @NonNull MetricRegistry registry) {
         super(locator);
         this.registry = registry;
     }

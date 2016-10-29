@@ -3,8 +3,7 @@ package zone.dragon.dropwizard;
 import io.dropwizard.ConfiguredBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.NonNull;
 import zone.dragon.dropwizard.health.HealthCheckActivator;
 import zone.dragon.dropwizard.lifecycle.LifeCycleActivator;
 import zone.dragon.dropwizard.metrics.MetricActivator;
@@ -17,10 +16,9 @@ import zone.dragon.dropwizard.task.TaskActivator;
  * @date 9/23/2016
  */
 public class InjectablesBundle<T> implements ConfiguredBundle<T> {
-    private static final Logger log = LoggerFactory.getLogger(InjectablesBundle.class);
 
     @Override
-    public void run(T configuration, Environment environment) {
+    public void run(@NonNull T configuration, @NonNull Environment environment) {
         environment.jersey().register(new EnvironmentBinder<>(configuration, environment));
         environment.jersey().register(HealthCheckActivator.class);
         environment.jersey().register(MetricActivator.class);

@@ -8,6 +8,33 @@
     <artifactId>dropwizard-hk2</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <name>HK2 Integration for DropWizard</name>
+    <description>
+        Adds support for Health Checks, LifeCycles, Metrics, and Tasks to be injected by HK2
+    </description>
+
+    <developers>
+        <developer>
+            <name>Bryan Harclerode</name>
+            <email>baharclerode@dragon.zone</email>
+            <organization>DragonZone</organization>
+            <organizationUrl>https://code.dragon.zone</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:http://code.dragon.zone/dragonzone/dropwizard-hk2.git</connection>
+        <developerConnection>scm:git:ssh://git@code.dragon.zone:dragonzone/dropwizard-hk2.git</developerConnection>
+        <url>https://code.dragon.zone/dragonzone/dropwizard-hk2/tree/master</url>
+    </scm>
+
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://code.dragon.zone/dragonzone/dropwizard-hk2/blob/master/LICENSE</url>
+        </license>
+    </licenses>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -20,7 +47,7 @@
             <dependency>
                 <groupId>io.dropwizard</groupId>
                 <artifactId>dropwizard-bom</artifactId>
-                <version>1.0.1</version>
+                <version>1.0.2</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

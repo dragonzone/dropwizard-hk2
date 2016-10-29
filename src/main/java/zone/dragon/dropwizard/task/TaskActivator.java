@@ -1,6 +1,7 @@
 package zone.dragon.dropwizard.task;
 
 import io.dropwizard.setup.Environment;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.glassfish.hk2.api.ServiceLocator;
 import zone.dragon.dropwizard.ComponentActivator;
@@ -15,7 +16,7 @@ public class TaskActivator extends ComponentActivator {
     private final Environment environment;
 
     @Inject
-    public TaskActivator(ServiceLocator locator, Environment environment) {
+    public TaskActivator(@NonNull ServiceLocator locator, @NonNull Environment environment) {
         super(locator);
         this.environment = environment;
     }

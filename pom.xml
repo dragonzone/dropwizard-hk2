@@ -4,11 +4,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>zone.dragon.dropwizard</groupId>
+    <groupId>zone.dragon</groupId>
     <artifactId>dropwizard-hk2</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <name>HK2 Integration for DropWizard</name>
+    <name>HK2 Integration for Dropwizard</name>
     <description>
         Adds support for Health Checks, LifeCycles, Metrics, and Tasks to be injected by HK2
     </description>
@@ -74,6 +74,7 @@
         <dependency>
             <groupId>io.dropwizard</groupId>
             <artifactId>dropwizard-testing</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <dependency>

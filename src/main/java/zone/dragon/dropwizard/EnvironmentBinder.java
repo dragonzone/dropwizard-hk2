@@ -8,6 +8,8 @@ import io.dropwizard.lifecycle.setup.LifecycleEnvironment;
 import io.dropwizard.setup.Environment;
 import lombok.NonNull;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.util.component.AbstractLifeCycle.AbstractLifeCycleListener;
+import org.eclipse.jetty.util.component.LifeCycle;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 
 import javax.validation.Validator;
@@ -16,7 +18,7 @@ import javax.validation.Validator;
  * This binder makes much of the DropWizard environment available to HK2 to be injected into components that request it at runtime.
  * Specifically, the following components are bound: <ul> <li>{@link Environment}</li> <li>{@link HealthCheckRegistry}</li> <li>{@link
  * LifecycleEnvironment}</li> <li>{@link MetricRegistry}</li> <li>{@link Configuration}</li>
- * <li>{@link ObjectMapper}</li> <li>{@link Server}</li></ul>
+ * <li>{@link ObjectMapper}</li> <li>{@link Server}</li><li>{@link Validator}</li></ul>
  */
 public class EnvironmentBinder<T> extends AbstractBinder {
     private final T           configuration;
@@ -34,7 +36,14 @@ public class EnvironmentBinder<T> extends AbstractBinder {
     public EnvironmentBinder(@NonNull T configuration, @NonNull Environment environment) {
         this.configuration = configuration;
         this.environment = environment;
-        environment.lifecycle().addServerLifecycleListener(server1 -> server = server1);
+        environment.lifecycle().addLifeCycleListener(new AbstractLifeCycleListener() {
+            @Override
+            public void lifeCycleStarting(LifeCycle event) {
+                if (event instanceof Server) {
+                    server = (Server) event;
+                }
+            }
+        });
     }
 
     @SuppressWarnings("unchecked")

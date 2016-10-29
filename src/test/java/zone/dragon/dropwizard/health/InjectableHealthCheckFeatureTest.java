@@ -16,7 +16,6 @@ import static org.junit.Assert.assertTrue;
  * @date 9/23/2016
  */
 public class InjectableHealthCheckFeatureTest {
-
     @ClassRule
     public static final DropwizardAppRule<TestConfig> RULE = new DropwizardAppRule<>(TestApplication.class,
                                                                                      ResourceHelpers.resourceFilePath("config.yaml")
@@ -29,9 +28,7 @@ public class InjectableHealthCheckFeatureTest {
 
     @Test
     public void testHealthCheckCreated() throws InterruptedException {
-        Thread.sleep(1000);
         assertEquals(2, RULE.getEnvironment().healthChecks().getNames().size());
-        assertEquals(Result.healthy(), RULE.getEnvironment().healthChecks().runHealthCheck("TestHealthCheck"));
+        assertEquals(Result.healthy("testValue"), RULE.getEnvironment().healthChecks().runHealthCheck("TestHealthCheck"));
     }
-
 }

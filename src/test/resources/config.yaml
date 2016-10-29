@@ -3,7 +3,7 @@ server:
 #  hardNofileLimit: 1000
   applicationConnectors:
     - type: http
-      port: 8080
+      port: 0
     #this requires the alpn-boot library on the JVM's boot classpath
     #- type: h2
     #  port: 8445
@@ -13,6 +13,6 @@ server:
     #  validatePeers: false
   adminConnectors:
     - type: http
-      port: 8081
+      port: 0
 
 testProperty: testValue

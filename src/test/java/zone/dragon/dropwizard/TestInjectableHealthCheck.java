@@ -24,6 +24,6 @@ public class TestInjectableHealthCheck extends InjectableHealthCheck {
 
     @Override
     protected Result check() throws Exception {
-        return Result.healthy();
+        return Result.healthy(config.getTestProperty());
     }
 }

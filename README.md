@@ -1,6 +1,6 @@
-# DropWizard HK2 Integration
+# Dropwizard HK2 Integration
 
-This bundle binds and integrates DropWizard's `HealthCheck`, `Metric`, `MetricSet`, `LifeCycle`, `LifeCycle.Listener`, and `Managed`
+This bundle binds and integrates Dropwizard's `HealthCheck`, `Metric`, `MetricSet`, `LifeCycle`, `LifeCycle.Listener`, and `Managed`
 objects with HK2, allowing these components to be registered directly with Jersey and fully injected with any other services also known to
 HK2.
 
@@ -8,13 +8,13 @@ To use this bundle, add it to your application in the initialize method:
 
     @Override
     public void initialize(Bootstrap<YourConfig> bootstrap) {
-        bootstrap.addBundle(new InjectablesBundle<>());
+        bootstrap.addBundle(new HK2Bundle<>());
     }
 
 Then, update your health checks, metrics, and managed components to use the custom Jersey component marker interfaces:
 `InjectableHealthCheck`, `InjectableManaged`, `InjectableLifeCycle`, `InjectableLifeCycleListener`, `InjectableMetric`, or
 `InjectableMetricSet`. These are necessary for Jersey to identify the components as a valid Jersey component, and just extend the
-DropWizard interfaces of similar name. Here is an example health check:
+Dropwizard interfaces of similar name. Here is an example health check:
 
     @Named("TestHealthCheck")
     public class TestInjectableHealthCheck extends InjectableHealthCheck {
@@ -36,8 +36,8 @@ DropWizard interfaces of similar name. Here is an example health check:
     }
 
 Health checks and Metrics can also make use of the `@Named()` annotation to identify the name under which the component should be
-registered. If a name is not provided, a warning will be printed and a name generated in the format of `ClassName.RandomUUID` to register
- the component under.
+registered. If a name is not provided, a warning will be printed and a name generated in the format of `ClassName.RandomUUID` under which
+the component will be registered.
 
 Lastly, register your components directly with Jersey:
 
@@ -47,4 +47,4 @@ Lastly, register your components directly with Jersey:
         environment.jersey().register(YourInjectableLifeCycle.class);
     }
 
-They will now be injected and registered properly with DropWizard after HK2 and Jersey are initialized.
+They will now be injected and registered properly with Dropwizard after HK2 and Jersey are initialized.

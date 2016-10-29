@@ -32,7 +32,7 @@ public class InjectableTaskFeatureTest {
                 .request()
                 .post(Entity.text(""), String.class);
 
-        assertThat(response).isEqualTo("Executing task test-task, testProperty: testValue\n");
+        assertThat(response).isEqualTo("Executing task test-task, testProperty: testValue" + System.lineSeparator());
 
 
     }

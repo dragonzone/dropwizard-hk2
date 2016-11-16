@@ -14,7 +14,7 @@ import java.util.UUID;
  * MetricRegistry}
  *
  * @author Bryan Harclerode
- * @date 9/27/2016
+ * Date 9/27/2016
  */
 @Slf4j
 public class MetricActivator extends ComponentActivator {

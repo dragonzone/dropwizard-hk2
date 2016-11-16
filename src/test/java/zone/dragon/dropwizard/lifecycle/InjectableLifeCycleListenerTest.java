@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Bryan Harclerode
- * @date 10/29/2016
+ * Date 10/29/2016
  */
 public class InjectableLifeCycleListenerTest {
     private static String testValue;

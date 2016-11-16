@@ -7,7 +7,7 @@ import javax.inject.Named;
 
 /**
  * @author Bryan Harclerode
- * @date 9/24/2016
+ * Date 9/24/2016
  */
 @Named("TestHealthCheck")
 public class TestInjectableHealthCheck extends InjectableHealthCheck {

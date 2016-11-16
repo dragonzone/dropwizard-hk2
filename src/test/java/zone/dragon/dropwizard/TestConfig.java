@@ -6,7 +6,7 @@ import lombok.EqualsAndHashCode;
 
 /**
  * @author Bryan Harclerode
- * @date 9/23/2016
+ * Date 9/23/2016
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

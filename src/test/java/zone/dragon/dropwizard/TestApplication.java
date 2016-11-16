@@ -6,7 +6,7 @@ import io.dropwizard.setup.Environment;
 
 /**
  * @author Bryan Harclerode
- * @date 9/23/2016
+ * Date 9/23/2016
  */
 public class TestApplication extends Application<TestConfig> {
 

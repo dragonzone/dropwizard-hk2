@@ -1,5 +1,6 @@
 package zone.dragon.dropwizard;
 
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.glassfish.hk2.api.ServiceHandle;
@@ -15,7 +16,10 @@ import java.util.List;
 import java.util.function.BiConsumer;
 
 /**
- * @author Darth Android
+ * Helper class for initializing custom Jersey components; Implement the {@link #activateComponents()} to call
+ * {@link #activate(Class, ComponentConsumer)} and then retrieve/initialize custom components.
+ *
+ * @author Bryan Harclerode
  * @date 9/27/2016
  */
 @Slf4j
@@ -23,15 +27,52 @@ import java.util.function.BiConsumer;
 public abstract class ComponentActivator implements ApplicationEventListener {
     protected interface ComponentConsumer<T> extends BiConsumer<String, T> {}
 
-    private final ServiceLocator locator;
-
-    private String getName(Class<?> implementation) {
+    /**
+     * Tries to reflect the name of a class, as defined by the {@link Named @Named} annotation
+     *
+     * @param implementation
+     *     Class to inspect for a name
+     *
+     * @return The annotated name for this class, or {@code null} if it does not have one
+     */
+    private static String getName(Class<?> implementation) {
         Named named = implementation.getAnnotation(Named.class);
-        if (named == null || named.value().equals("")) {
+        if (named == null || named.value().isEmpty()) {
             return null;
         }
         return named.value();
     }
+
+    @NonNull
+    private final ServiceLocator locator;
+
+    /**
+     * Finds all Jersey components that provide a specific contract, and invokes a callback with each discovered component to activate it.
+     *
+     * @param contract
+     *     The contract that components must implement
+     * @param consumer
+     *     Callback to invoke for each discovered component
+     * @param <T>
+     *     Type of the component to find and activate
+     */
+    protected <T> void activate(@NonNull Class<T> contract, @NonNull ComponentConsumer<T> consumer) {
+        List<ServiceHandle<T>> handles = locator.getAllServiceHandles(contract);
+        handles.forEach(handle -> {
+            String name    = handle.getActiveDescriptor().getName();
+            T      service = handle.getService();
+            if (name == null) {
+                name = getName(service.getClass());
+            }
+            consumer.accept(name, service);
+        });
+    }
+
+    /**
+     * Called once all Jersey components are ready and bound; The implementation should use {@link #activate(Class, ComponentConsumer)} to
+     * load activate supported components.
+     */
+    protected abstract void activateComponents();
 
     @Override
     public void onEvent(ApplicationEvent applicationEvent) {
@@ -45,18 +86,4 @@ public abstract class ComponentActivator implements ApplicationEventListener {
     public RequestEventListener onRequest(RequestEvent requestEvent) {
         return null; // no request processing
     }
-
-    protected <T> void activate(Class<T> contract, ComponentConsumer<T> consumer) {
-        List<ServiceHandle<T>> handles = locator.getAllServiceHandles(contract);
-        handles.forEach(handle -> {
-            String name    = handle.getActiveDescriptor().getName();
-            T      service = handle.getService();
-            if (name == null) {
-                name = getName(service.getClass());
-            }
-            consumer.accept(name, service);
-        });
-    }
-
-    protected abstract void activateComponents();
 }

@@ -6,7 +6,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 /**
- * @author Darth Android
+ * @author Bryan Harclerode
  * @date 9/24/2016
  */
 @Named("TestHealthCheck")

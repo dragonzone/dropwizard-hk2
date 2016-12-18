@@ -9,7 +9,10 @@ import javax.inject.Inject;
 import java.util.UUID;
 
 /**
- * @author Darth Android
+ * Activates and initializes all {@link InjectableHealthCheck health checks} registered with Jersey and adds them to DropWizard's
+ * {@link HealthCheckRegistry}.
+ *
+ * @author Bryan Harclerode
  * @date 9/27/2016
  */
 @Slf4j

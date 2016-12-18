@@ -9,7 +9,10 @@ import javax.inject.Inject;
 import java.util.UUID;
 
 /**
- * @author Darth Android
+ * Activates all {@link InjectableMetricSet} and {@link InjectableMetric} Jersey components and registers them with DropWizard's {@link
+ * MetricRegistry}
+ *
+ * @author Bryan Harclerode
  * @date 9/27/2016
  */
 @Slf4j

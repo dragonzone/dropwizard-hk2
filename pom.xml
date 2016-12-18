@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>zone.dragon.dropwizard</groupId>
-    <artifactId>dropwizard-injectables</artifactId>
+    <artifactId>dropwizard-hk2</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>

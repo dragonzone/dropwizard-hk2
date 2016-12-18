@@ -10,7 +10,10 @@ import zone.dragon.dropwizard.ComponentActivator;
 import javax.inject.Inject;
 
 /**
- * @author Darth Android
+ * Activates {@link InjectableLifeCycle}, {@link InjectableLifeCycleListener}, and {@link InjectableManaged} components registered with
+ * Jersey and adds them to Jetty
+ *
+ * @author Bryan Harclerode
  * @date 9/27/2016
  */
 @Slf4j

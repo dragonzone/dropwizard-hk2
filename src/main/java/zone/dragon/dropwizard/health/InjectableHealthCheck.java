@@ -10,7 +10,6 @@ import javax.inject.Singleton;
  * registration of the component with Jersey.
  *
  * @author Bryan Harclerode
- * @date 9/23/2016
  */
 @Contract
 @Singleton

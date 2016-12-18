@@ -10,7 +10,6 @@ import javax.inject.Singleton;
  * LifeCycle.Listener} to allow registration of the component with Jersey.
  *
  * @author Bryan Harclerode
- * @date 9/23/2016
  */
 @Singleton
 @Contract

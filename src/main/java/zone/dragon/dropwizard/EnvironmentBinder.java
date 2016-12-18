@@ -19,6 +19,8 @@ import javax.validation.Validator;
  * Specifically, the following components are bound: <ul> <li>{@link Environment}</li> <li>{@link HealthCheckRegistry}</li> <li>{@link
  * LifecycleEnvironment}</li> <li>{@link MetricRegistry}</li> <li>{@link Configuration}</li>
  * <li>{@link ObjectMapper}</li> <li>{@link Server}</li><li>{@link Validator}</li></ul>
+ *
+ * @author Bryan Harclerode
  */
 public class EnvironmentBinder<T> extends AbstractBinder {
     private final T           configuration;

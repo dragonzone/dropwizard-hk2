@@ -19,7 +19,6 @@ import java.util.function.BiConsumer;
  * {@link #activate(Class, ComponentConsumer)} and then retrieve/initialize custom components.
  *
  * @author Bryan Harclerode
- * @date 9/27/2016
  */
 @Slf4j
 @RequiredArgsConstructor

@@ -2,7 +2,6 @@ package zone.dragon.dropwizard.lifecycle;
 
 import io.dropwizard.lifecycle.JettyManaged;
 import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jetty.server.Server;
 import org.glassfish.hk2.api.ServiceLocator;
 import zone.dragon.dropwizard.ComponentActivator;
@@ -14,9 +13,7 @@ import javax.inject.Inject;
  * Jersey and adds them to Jetty
  *
  * @author Bryan Harclerode
- * @date 9/27/2016
  */
-@Slf4j
 public class LifeCycleActivator extends ComponentActivator {
     private Server container;
 

@@ -13,7 +13,6 @@ import zone.dragon.dropwizard.task.TaskActivator;
  * Provides integration between DropWizard and HK2, allowing
  *
  * @author Bryan Harclerode
- * @date 9/23/2016
  */
 public class HK2Bundle<T> implements ConfiguredBundle<T> {
 

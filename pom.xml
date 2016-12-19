@@ -26,6 +26,7 @@
         <connection>scm:git:http://code.dragon.zone/dragonzone/dropwizard-hk2.git</connection>
         <developerConnection>scm:git:ssh://git@code.dragon.zone:dragonzone/dropwizard-hk2.git</developerConnection>
         <url>https://code.dragon.zone/dragonzone/dropwizard-hk2/tree/master</url>
+        <tag>HEAD</tag>
     </scm>
 
     <licenses>

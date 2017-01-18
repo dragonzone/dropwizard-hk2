@@ -27,6 +27,11 @@ public class InjectableLifeCycleListenerTest {
     private static boolean stopping;
     private static boolean stopped;
 
+    @AfterClass
+    public static void verifyStopped() {
+        assertThat(stopped).isEqualTo(true);
+    }
+
     public static class LCLApp extends Application<TestConfig> {
         @Override
         public void initialize(Bootstrap<TestConfig> bootstrap) {
@@ -102,10 +107,5 @@ public class InjectableLifeCycleListenerTest {
     @Test
     public void testServerStartedCalled() {
         assertThat(testValue).isEqualTo("testValue");
-    }
-
-    @AfterClass
-    public static void verifyStopped() {
-        assertThat(stopped).isEqualTo(true);
     }
 }

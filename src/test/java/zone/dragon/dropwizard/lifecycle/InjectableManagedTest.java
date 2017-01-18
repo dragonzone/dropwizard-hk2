@@ -21,12 +21,13 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @date 10/29/2016
  */
 public class InjectableManagedTest {
-    @Rule
-    public final DropwizardAppRule<TestConfig> RULE = new DropwizardAppRule<>(ManagedApp.class,
-                                                                                     ResourceHelpers.resourceFilePath("config.yaml")
-    );
     private static String testValue;
     private static boolean stopped;
+
+    @AfterClass
+    public static void verifyStop() {
+        assertThat(stopped).isEqualTo(true);
+    }
 
     public static class ManagedApp extends Application<TestConfig> {
         @Override
@@ -65,13 +66,13 @@ public class InjectableManagedTest {
         }
     }
 
+    @Rule
+    public final DropwizardAppRule<TestConfig> RULE = new DropwizardAppRule<>(ManagedApp.class,
+                                                                              ResourceHelpers.resourceFilePath("config.yaml")
+    );
+
     @Test
     public void testServerStartedCalled() {
         assertThat(testValue).isEqualTo("testValue");
-    }
-
-    @AfterClass
-    public static void verifyStop() {
-        assertThat(stopped).isEqualTo(true);
     }
 }

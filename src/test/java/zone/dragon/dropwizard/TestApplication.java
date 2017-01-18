@@ -9,7 +9,6 @@ import io.dropwizard.setup.Environment;
  * @date 9/23/2016
  */
 public class TestApplication extends Application<TestConfig> {
-
     @Override
     public void initialize(Bootstrap<TestConfig> bootstrap) {
         bootstrap.addBundle(new HK2Bundle<>());
@@ -20,5 +19,4 @@ public class TestApplication extends Application<TestConfig> {
         environment.jersey().register(TestInjectableHealthCheck.class);
         environment.jersey().register(TestInjectableTask.class);
     }
-
 }

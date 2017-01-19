@@ -9,7 +9,7 @@ def deployableBranchRegex = "master"
 def mavenArgs = "-B -U -Dci=true"
 def mavenValidateProjectGoals = "clean initialize"
 def mavenNonDeployGoals = "verify gpg:sign"
-def mavenDeployGoals = "install gpg:sign deploy:deploy -DdeployAtEnd=true -DupdateReleaseInfo=true"
+def mavenDeployGoals = "install gpg:sign deploy:deploy nexus-staging:deploy -DskipRemoteStaging=true -DdeployAtEnd=true -DupdateReleaseInfo=true"
 def requireTests = false
 def globalMavenSettingsConfig = "maven-dragonZone"
 

@@ -3,9 +3,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>zone.dragon</groupId>
+    <parent>
+        <groupId>zone.dragon</groupId>
+        <artifactId>base-java-pom</artifactId>
+        <version>1.0.34-6fb997</version>
+    </parent>
+
+    <groupId>zone.dragon.dropwizard</groupId>
     <artifactId>dropwizard-hk2</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.1-SNAPSHOT</version>
 
     <name>HK2 Integration for Dropwizard</name>
     <description>
@@ -13,20 +19,11 @@
     </description>
     <url>https://code.dragon.zone/dragonzone/dropwizard-hk2</url>
 
-    <developers>
-        <developer>
-            <name>Bryan Harclerode</name>
-            <email>baharclerode@dragon.zone</email>
-            <organization>DragonZone</organization>
-            <organizationUrl>https://code.dragon.zone</organizationUrl>
-        </developer>
-    </developers>
-
     <scm>
         <connection>scm:git:http://code.dragon.zone/dragonzone/dropwizard-hk2.git</connection>
         <developerConnection>scm:git:ssh://git@code.dragon.zone:dragonzone/dropwizard-hk2.git</developerConnection>
         <url>https://code.dragon.zone/dragonzone/dropwizard-hk2/tree/master</url>
-        <tag>dropwizard-hk2-1.0</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <licenses>

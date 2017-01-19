@@ -3,7 +3,7 @@ package zone.dragon.dropwizard;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.health.HealthCheckRegistry;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Sets;
+import io.dropwizard.Application;
 import io.dropwizard.Configuration;
 import io.dropwizard.ConfiguredBundle;
 import io.dropwizard.lifecycle.setup.LifecycleEnvironment;
@@ -40,14 +40,13 @@ import javax.validation.Validator;
 import javax.ws.rs.core.Feature;
 import javax.ws.rs.core.FeatureContext;
 import java.lang.annotation.Annotation;
-import java.util.Set;
 
 /**
  * Provides integration between DropWizard and HK2, allowing developers to leverage the framework built into Jersey.
  *
  * @author Bryan Harclerode
  */
-public class HK2Bundle<T> implements ConfiguredBundle<T>, Binder {
+public class HK2Bundle<T extends Configuration> implements ConfiguredBundle<T> {
     public static final String SERVICE_LOCATOR = HK2Bundle.class.getName() + "__LOCATOR";
 
     /**
@@ -72,10 +71,10 @@ public class HK2Bundle<T> implements ConfiguredBundle<T>, Binder {
     }
 
     @Getter
-    private final ServiceLocator         locator             = ServiceLocatorFactory.getInstance().create(null);
-    private final Set<BindingBuilder<?>> bindings            = Sets.newHashSet();
-    private final ImmediateController    immediateController = ServiceLocatorUtilities.enableImmediateScopeSuspended(getLocator());
-    private       boolean                bound               = false;
+    private final ServiceLocator      locator             = ServiceLocatorFactory.getInstance().create(null);
+    private final ImmediateController immediateController = ServiceLocatorUtilities.enableImmediateScopeSuspended(getLocator());
+    private       BindingBuilder<?>   activeBuilder       = null;
+    private       Bootstrap<T>        bootstrap           = null;
 
     public HK2Bundle() {
         ExtrasUtilities.enableDefaultInterceptorServiceImplementation(getLocator());
@@ -93,25 +92,15 @@ public class HK2Bundle<T> implements ConfiguredBundle<T>, Binder {
     }
 
     public <U> ServiceBindingBuilder<U> bind(@NonNull Class<U> serviceClass) {
-        checkState();
-        ServiceBindingBuilder<U> builder = BindingBuilderFactory.newBinder(serviceClass);
-        bindings.add(builder);
-        return builder;
+        finishBinding();
+        return (ServiceBindingBuilder<U>) (activeBuilder = BindingBuilderFactory.newBinder(serviceClass));
     }
 
     public <U> ScopedBindingBuilder<U> bind(@NonNull U singleton) {
-        checkState();
-        ScopedBindingBuilder<U> builder = BindingBuilderFactory.newBinder(singleton);
-        bindings.add(builder);
-        return builder;
+        finishBinding();
+        return (ScopedBindingBuilder<U>) (activeBuilder = BindingBuilderFactory.newBinder(singleton));
     }
 
-    @Override
-    public void bind(DynamicConfiguration config) {
-        bindings.forEach(binding -> BindingBuilderFactory.addBinding(binding, config));
-    }
-
-    @SuppressWarnings("unchecked")
     public <U> ServiceBindingBuilder<U> bindAsContract(@NonNull Class<U> serviceClass) {
         return bind(serviceClass).to(serviceClass);
     }
@@ -122,74 +111,90 @@ public class HK2Bundle<T> implements ConfiguredBundle<T>, Binder {
     }
 
     public <U> ServiceBindingBuilder<U> bindFactory(@NonNull Class<? extends Factory<U>> factoryClass) {
-        checkState();
-        ServiceBindingBuilder<U> builder = BindingBuilderFactory.newFactoryBinder(factoryClass);
-        bindings.add(builder);
-        return builder;
+        finishBinding();
+        return (ServiceBindingBuilder<U>) (activeBuilder = BindingBuilderFactory.newFactoryBinder(factoryClass));
     }
 
     public <U> ServiceBindingBuilder<U> bindFactory(
         @NonNull Class<? extends Factory<U>> factoryClass, Class<? extends Annotation> factoryScope
     ) {
-        checkState();
-        ServiceBindingBuilder<U> builder = BindingBuilderFactory.newFactoryBinder(factoryClass, factoryScope);
-        bindings.add(builder);
-        return builder;
+        finishBinding();
+        return (ServiceBindingBuilder<U>) (activeBuilder = BindingBuilderFactory.newFactoryBinder(factoryClass, factoryScope));
     }
 
     public <U> ServiceBindingBuilder<U> bindFactory(@NonNull Factory<U> factory) {
-        checkState();
-        ServiceBindingBuilder<U> builder = BindingBuilderFactory.newFactoryBinder(factory);
-        bindings.add(builder);
-        return builder;
+        finishBinding();
+        return (ServiceBindingBuilder<U>) (activeBuilder = BindingBuilderFactory.newFactoryBinder(factory));
     }
 
-    private void checkState() {
-        if (bound) {
-            throw new IllegalStateException("bind* methods must be called before the run() method");
+    /**
+     * Completes the {@link #activeBuilder} and adds it to the {@link #getLocator() service locator}
+     */
+    private void finishBinding() {
+        if (activeBuilder != null) {
+            DynamicConfiguration config = ServiceLocatorUtilities.createDynamicConfiguration(getLocator());
+            BindingBuilderFactory.addBinding(activeBuilder, config);
+            config.commit();
+            activeBuilder = null;
         }
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public void run(@NonNull T configuration, @NonNull Environment environment) {
-        // Register Jersey components to activate things when Jersey starts up
-        environment.jersey().register(HealthCheckActivator.class);
-        environment.jersey().register(MetricActivator.class);
-        environment.jersey().register(LifeCycleActivator.class);
-        environment.jersey().register(TaskActivator.class);
-        environment.jersey().register(HK2BridgeFeature.class);
+        finishBinding();
+        // Bridge into Jersey's locator
         environment.jersey().register(new AbstractBinder() {
             @Override
             protected void configure() {
                 bind(getLocator()).to(ServiceLocator.class).named(SERVICE_LOCATOR);
             }
         });
-        // Create bindings for Dropwizard classes
-        bind(environment).to(Environment.class);
-        bind(environment.healthChecks()).to(HealthCheckRegistry.class);
-        bind(environment.lifecycle()).to(LifecycleEnvironment.class);
-        bind(environment.metrics()).to(MetricRegistry.class);
-        bind(environment.getValidator()).to(Validator.class);
-        bind(configuration).to((Class) configuration.getClass()).to(Configuration.class);
-        bind(environment.getObjectMapper()).to(ObjectMapper.class);
-        // Register all outstanding bindings
-        ServiceLocatorUtilities.bind(getLocator(), this);
-        bound = true;
-        // Add a listener to expose the Jetty Server instance once it is available
+        // Make the service locator available to the admin context too.
+        environment.getAdminContext().setAttribute(SERVICE_LOCATOR, getLocator());
+        // Finish configuring HK2 when Jetty starts (after the Application.run() method)
         environment.lifecycle().addLifeCycleListener(new AbstractLifeCycleListener() {
             @Override
             public void lifeCycleStarting(LifeCycle event) {
                 if (event instanceof Server) {
+                    finishBinding();
                     ServiceLocatorUtilities.addOneConstant(getLocator(), event, null, Server.class);
                     immediateController.setImmediateState(ImmediateServiceState.RUNNING);
                 }
             }
         });
-        // Make the service locator available to the admin context too.
-        environment.getAdminContext().setAttribute(SERVICE_LOCATOR, getLocator());
+        // Create bindings for Dropwizard classes
+        ServiceLocatorUtilities.addOneConstant(getLocator(), environment, null, Environment.class);
+        ServiceLocatorUtilities.addOneConstant(getLocator(), environment.healthChecks(), null, HealthCheckRegistry.class);
+        ServiceLocatorUtilities.addOneConstant(getLocator(), environment.lifecycle(), null, LifecycleEnvironment.class);
+        ServiceLocatorUtilities.addOneConstant(getLocator(), environment.metrics(), null, MetricRegistry.class);
+        ServiceLocatorUtilities.addOneConstant(getLocator(), environment.getValidator(), null, Validator.class);
+        ServiceLocatorUtilities.addOneConstant(getLocator(), environment.getObjectMapper(), null, ObjectMapper.class);
+        ServiceLocatorUtilities.addOneConstant(getLocator(), bootstrap.getApplication(), null, Application.class);
+        ServiceLocatorUtilities.addOneConstant(getLocator(), configuration, null, Configuration.class);
+        ServiceLocatorUtilities.addOneConstant(getLocator(), configuration, null, bootstrap.getApplication().getConfigurationClass());
+        // Grab all bindings from other bundles
+        BootstrapUtils.getBundles(bootstrap).forEach(bundle -> {
+            if (bundle instanceof Binder) {
+                ServiceLocatorUtilities.bind(getLocator(), (Binder) bundle);
+            }
+        });
+        BootstrapUtils.getConfiguredBundles(bootstrap).forEach(bundle -> {
+            if (bundle instanceof Binder) {
+                ServiceLocatorUtilities.bind(getLocator(), (Binder) bundle);
+            }
+        });
+        // Register Jersey components to activate injectable dropwizard components when Jersey starts up
+        environment.jersey().register(HK2BridgeFeature.class);
+        environment.jersey().register(HealthCheckActivator.class);
+        environment.jersey().register(MetricActivator.class);
+        environment.jersey().register(LifeCycleActivator.class);
+        environment.jersey().register(TaskActivator.class);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public void initialize(Bootstrap<?> bootstrap) { }
+    public void initialize(Bootstrap<?> bootstrap) {
+        this.bootstrap = (Bootstrap<T>) bootstrap;
+    }
 }

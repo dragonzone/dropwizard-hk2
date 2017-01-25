@@ -35,7 +35,7 @@ public class InjectableLifeCycleListenerTest {
     public static class LCLApp extends Application<TestConfig> {
         @Override
         public void initialize(Bootstrap<TestConfig> bootstrap) {
-            bootstrap.addBundle(new HK2Bundle<>());
+            HK2Bundle.addTo(bootstrap);
         }
 
         @Override

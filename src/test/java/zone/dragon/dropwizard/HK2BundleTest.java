@@ -42,7 +42,7 @@ public class HK2BundleTest {
     private static HK2Bundle<TestConfig> bundle;
     private static ServiceLocator        jerseyLocator;
 
-    public static class BundleWithBinder implements Bundle, BundleBinder {
+    public static class BundleWithBinder implements Bundle, SimpleBinder {
         @Override
         public void initialize(Bootstrap<?> bootstrap) {
         }
@@ -72,7 +72,7 @@ public class HK2BundleTest {
     public static class HK2BundleApp extends Application<TestConfig> {
         @Override
         public void initialize(Bootstrap<TestConfig> bootstrap) {
-            bootstrap.addBundle(bundle = new HK2Bundle<>());
+            bundle = HK2Bundle.addTo(bootstrap);
             bootstrap.addBundle(new BundleWithBinder());
             bundle.bind("test1").to(String.class).named("parentBinding");
             bundle.bindAsContract(TestService.class).in(RequestScoped.class);

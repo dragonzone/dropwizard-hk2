@@ -7,7 +7,7 @@ import org.glassfish.hk2.utilities.binding.AbstractBinder;
 /**
  * @author Bryan Harclerode
  */
-public interface BundleBinder extends Binder {
+public interface SimpleBinder extends Binder {
     @Override
     default void bind(DynamicConfiguration config) {
         new AbstractBinder() {

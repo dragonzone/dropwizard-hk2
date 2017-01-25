@@ -11,7 +11,7 @@ import io.dropwizard.setup.Environment;
 public class TestApplication extends Application<TestConfig> {
     @Override
     public void initialize(Bootstrap<TestConfig> bootstrap) {
-        bootstrap.addBundle(new HK2Bundle<>());
+        HK2Bundle.addTo(bootstrap);
     }
 
     @Override

@@ -22,7 +22,6 @@ import org.glassfish.hk2.api.ImmediateController.ImmediateServiceState;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.api.ServiceLocatorFactory;
 import org.glassfish.hk2.extras.ExtrasUtilities;
-import org.glassfish.hk2.utilities.Binder;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.hk2.utilities.binding.BindingBuilder;
@@ -48,6 +47,19 @@ import java.lang.annotation.Annotation;
  */
 public class HK2Bundle<T extends Configuration> implements ConfiguredBundle<T> {
     public static final String SERVICE_LOCATOR = HK2Bundle.class.getName() + "__LOCATOR";
+
+    /**
+     * Adds this bundle to the given {@link Bootstrap} if it has not already been added by another bundle or the application.
+     *
+     * @param bootstrap
+     *     {@code Bootstrap} to which the {@code HK2Bundle} should be added
+     *
+     * @return The {@code HK2Bundle} registered with the {@code bootstrap}
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends Configuration> HK2Bundle<T> addTo(Bootstrap<T> bootstrap) {
+        return BootstrapExtensions.addConfiguredBundleIfNotExist(bootstrap, HK2Bundle.class, HK2Bundle::new);
+    }
 
     /**
      * Feature that bridges this bundle's {@link ServiceLocator} with Jersey's. We do this instead of setting the parent because it makes a
@@ -174,16 +186,12 @@ public class HK2Bundle<T extends Configuration> implements ConfiguredBundle<T> {
         ServiceLocatorUtilities.addOneConstant(getLocator(), configuration, null, Configuration.class);
         ServiceLocatorUtilities.addOneConstant(getLocator(), configuration, null, bootstrap.getApplication().getConfigurationClass());
         // Grab all bindings from other bundles
-        BootstrapUtils.getBundles(bootstrap).forEach(bundle -> {
-            if (bundle instanceof Binder) {
-                ServiceLocatorUtilities.bind(getLocator(), (Binder) bundle);
-            }
-        });
-        BootstrapUtils.getConfiguredBundles(bootstrap).forEach(bundle -> {
-            if (bundle instanceof Binder) {
-                ServiceLocatorUtilities.bind(getLocator(), (Binder) bundle);
-            }
-        });
+        BootstrapExtensions
+            .getImplementingBundles(bootstrap, SimpleBinder.class)
+            .forEach(bundle -> ServiceLocatorUtilities.bind(getLocator(), bundle));
+        BootstrapExtensions
+            .getImplementingBundles(bootstrap, Object.class)
+            .forEach(bundle -> ServiceLocatorUtilities.addOneConstant(getLocator(), bundle, null, bundle.getClass()));
         // Register Jersey components to activate injectable dropwizard components when Jersey starts up
         environment.jersey().register(HK2BridgeFeature.class);
         environment.jersey().register(HealthCheckActivator.class);

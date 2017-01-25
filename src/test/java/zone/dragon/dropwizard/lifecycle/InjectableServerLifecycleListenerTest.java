@@ -30,7 +30,7 @@ public class InjectableServerLifecycleListenerTest {
     public static class SLLApp extends Application<TestConfig> {
         @Override
         public void initialize(Bootstrap<TestConfig> bootstrap) {
-            bootstrap.addBundle(new HK2Bundle<>());
+            HK2Bundle.addTo(bootstrap);
         }
 
         @Override

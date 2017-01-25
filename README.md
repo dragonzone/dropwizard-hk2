@@ -2,13 +2,16 @@
 
 This bundle binds and integrates Dropwizard's `HealthCheck`, `Metric`, `MetricSet`, `LifeCycle`, `LifeCycle.Listener`, and `Managed`
 objects with HK2, allowing these components to be registered directly with Jersey and fully injected with any other services also known to
-HK2.
+HK2. Additionally, it provides access to the Jersey `ServiceLocator` from the admin `ServletContext`, default bindings for many Dropwizard
+components such as the `Validator`, `ObjectMapper`, `MetricRegistry`, `HealthCheckRegistry`, your `Application`, your `Configuration`, the
+`Environment` and `LifecycleEnvironment`, as well as each bundle added to your application.
 
 To use this bundle, add it to your application in the initialize method:
 
     @Override
     public void initialize(Bootstrap<YourConfig> bootstrap) {
-        bootstrap.addBundle(new HK2Bundle<>());
+        // This ensures there's only ever one HK2 bundle; don't use bootstrap.addBundle(new HK2Bundle<>());
+        HK2Bundle.addTo(bootstrap);
     }
 
 Then, update your health checks, metrics, and managed components to use the custom Jersey component marker interfaces:
@@ -48,3 +51,9 @@ Lastly, register your components directly with Jersey:
     }
 
 They will now be injected and registered properly with Dropwizard after HK2 and Jersey are initialized.
+
+To access the `ServiceLocator` from the admin `ServletContext`, query the context attribute identified by `HK2Bundle.SERVICE_LOCATOR`:
+
+    ServiceLocator locator = (ServiceLocator) getServletConfig().getServletContext().getAttribute(HK2Bundle.SERVICE_LOCATOR);
+
+`RequestScoped` bindings are unavailable in the admin context, but singletons and other scopes are available.

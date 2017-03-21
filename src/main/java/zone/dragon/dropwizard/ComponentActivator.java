@@ -50,7 +50,7 @@ public abstract class ComponentActivator implements ApplicationEventListener {
      * @param contract
      *     The contract that components must implement
      * @param consumer
-     *     Callback to invoke for each discovered component
+     *     Callback to provide for each discovered component
      * @param <T>
      *     Type of the component to find and activate
      */

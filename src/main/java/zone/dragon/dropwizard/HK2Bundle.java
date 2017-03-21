@@ -11,12 +11,12 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.util.component.AbstractLifeCycle.AbstractLifeCycleListener;
 import org.eclipse.jetty.util.component.LifeCycle;
 import org.glassfish.hk2.api.DynamicConfiguration;
 import org.glassfish.hk2.api.Factory;
+import org.glassfish.hk2.api.Immediate;
 import org.glassfish.hk2.api.ImmediateController;
 import org.glassfish.hk2.api.ImmediateController.ImmediateServiceState;
 import org.glassfish.hk2.api.ServiceLocator;
@@ -32,7 +32,12 @@ import org.glassfish.jersey.process.internal.RequestScoped;
 import zone.dragon.dropwizard.health.HealthCheckActivator;
 import zone.dragon.dropwizard.jmx.MBeanActivator;
 import zone.dragon.dropwizard.lifecycle.LifeCycleActivator;
+import zone.dragon.dropwizard.metrics.HK2MetricBinder;
 import zone.dragon.dropwizard.metrics.MetricActivator;
+import zone.dragon.dropwizard.metrics.factories.CounterFactory;
+import zone.dragon.dropwizard.metrics.factories.HistogramFactory;
+import zone.dragon.dropwizard.metrics.factories.MeterFactory;
+import zone.dragon.dropwizard.metrics.factories.TimerFactory;
 import zone.dragon.dropwizard.task.TaskActivator;
 
 import javax.inject.Inject;
@@ -65,42 +70,52 @@ public class HK2Bundle<T extends Configuration> implements ConfiguredBundle<T> {
     }
 
     /**
+     * Binds local services into a locator. These have to be bound both into our service locator and the Jersey service locator because
+     * they do not cross bridge or parent/child boundaries.
+     *
+     * @param locator
+     *     {@code ServiceLocator} into which local services should be installed
+     *
+     * @return Controller to activate {@link Immediate @Immediate} services
+     */
+    private static ImmediateController bindLocalServices(ServiceLocator locator) {
+        addClasses(locator, true, CounterFactory.class, HistogramFactory.class, MeterFactory.class, TimerFactory.class);
+        ServiceLocatorUtilities.enableInheritableThreadScope(locator);
+        ExtrasUtilities.enableDefaultInterceptorServiceImplementation(locator);
+        ExtrasUtilities.enableTopicDistribution(locator);
+        return ServiceLocatorUtilities.enableImmediateScopeSuspended(locator);
+    }
+
+    /**
      * Feature that bridges this bundle's {@link ServiceLocator} with Jersey's. We do this instead of setting the parent because it makes a
      * number of things such as the {@link RequestScoped} context work correctly in either locator.
      */
-    @RequiredArgsConstructor(onConstructor = @__(@Inject))
     private static class HK2BridgeFeature implements Feature {
-        @NonNull
         private final ServiceLocator serviceLocator;
+
+        @Inject
+        private HK2BridgeFeature(@NonNull ServiceLocator serviceLocator) {
+            this.serviceLocator = serviceLocator;
+        }
 
         @Override
         public boolean configure(FeatureContext context) {
             ServiceLocator bundleLocator = serviceLocator.getService(ServiceLocator.class, SERVICE_LOCATOR);
             ExtrasUtilities.bridgeServiceLocator(bundleLocator, serviceLocator);
             ExtrasUtilities.bridgeServiceLocator(serviceLocator, bundleLocator);
-            ExtrasUtilities.enableDefaultInterceptorServiceImplementation(serviceLocator);
-            ServiceLocatorUtilities.enableInheritableThreadScope(serviceLocator);
-            ServiceLocatorUtilities.enableImmediateScope(serviceLocator);
+            bindLocalServices(serviceLocator).setImmediateState(ImmediateServiceState.RUNNING);
             return true;
         }
     }
-
     @Getter
     private final ServiceLocator      locator             = ServiceLocatorFactory.getInstance().create(null);
-    private final ImmediateController immediateController = ServiceLocatorUtilities.enableImmediateScopeSuspended(getLocator());
+    private final ImmediateController immediateController = bindLocalServices(getLocator());
     private       BindingBuilder<?>   activeBuilder       = null;
-    private       Bootstrap<T>        bootstrap           = null;
 
     public HK2Bundle() {
-        ExtrasUtilities.enableDefaultInterceptorServiceImplementation(getLocator());
-        ExtrasUtilities.enableTopicDistribution(getLocator());
-        ServiceLocatorUtilities.enableInheritableThreadScope(getLocator());
-        ServiceLocatorUtilities.enablePerThreadScope(getLocator());
     }
 
-    public void autoBind(@NonNull Class<?>... serviceClasses) {
-        addClasses(getLocator(), serviceClasses);
-    }
+    private Bootstrap<T> bootstrap = null;
 
     public void autoBind(@NonNull Factory<?>... factories) {
         ServiceLocatorUtilities.addFactoryConstants(getLocator(), factories);
@@ -154,6 +169,10 @@ public class HK2Bundle<T extends Configuration> implements ConfiguredBundle<T> {
         }
     }
 
+    public void autoBind(@NonNull Class<?>... serviceClasses) {
+        addClasses(getLocator(), serviceClasses);
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public void run(@NonNull T configuration, @NonNull Environment environment) {
@@ -188,6 +207,7 @@ public class HK2Bundle<T extends Configuration> implements ConfiguredBundle<T> {
         ServiceLocatorUtilities.addOneConstant(getLocator(), bootstrap.getApplication(), null, Application.class);
         ServiceLocatorUtilities.addOneConstant(getLocator(), configuration, null, Configuration.class);
         ServiceLocatorUtilities.addOneConstant(getLocator(), configuration, null, bootstrap.getApplication().getConfigurationClass());
+        ServiceLocatorUtilities.bind(getLocator(), new HK2MetricBinder());
         // Grab all bindings from other bundles
         BootstrapExtensions
             .getImplementingBundles(bootstrap, SimpleBinder.class)

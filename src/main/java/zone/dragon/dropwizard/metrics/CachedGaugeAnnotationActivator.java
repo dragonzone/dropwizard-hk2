@@ -31,7 +31,7 @@ public class CachedGaugeAnnotationActivator extends MethodAnnotationActivator<Ca
     }
 
     @Override
-    protected <K> void activate(ActiveDescriptor<K> handle, K instance, Method method, CachedGauge annotation) {
+    protected void activate(ActiveDescriptor<?> handle, Object service, Method method, CachedGauge annotation) {
         if (method.getParameterCount() != 0) {
             log.error("@CachedGauge placed on method {} which must have zero parameters, but has {}", method, method.getParameterCount());
             return;
@@ -42,7 +42,7 @@ public class CachedGaugeAnnotationActivator extends MethodAnnotationActivator<Ca
             @Override
             protected Object loadValue() {
                 try {
-                    return method.invoke(instance);
+                    return method.invoke(service);
                 } catch (Exception e) {
                     throw new RuntimeException("Failed to read gauge value from " + method, e instanceof InvocationTargetException ? (
                         (InvocationTargetException) e

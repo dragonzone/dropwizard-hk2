@@ -1,7 +1,7 @@
 package zone.dragon.dropwizard.metrics;
 
-import com.codahale.metrics.Counter;
 import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.Timer;
 import com.codahale.metrics.annotation.Metric;
 import io.dropwizard.Application;
 import io.dropwizard.Configuration;
@@ -18,14 +18,15 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class CounterFactoryTest {
+public class TimerFactoryTest {
     @ClassRule
-    public static final DropwizardAppRule<Configuration> RULE = new DropwizardAppRule<>(CounterApp.class, new Configuration());
+    public static final DropwizardAppRule<Configuration> RULE = new DropwizardAppRule<>(TimerApp.class, new Configuration());
 
-    public static class CounterApp extends Application<Configuration> {
+    public static class TimerApp extends Application<Configuration> {
         @Override
         public void initialize(Bootstrap<Configuration> bootstrap) {
             HK2Bundle.addTo(bootstrap);
@@ -33,22 +34,22 @@ public class CounterFactoryTest {
 
         @Override
         public void run(Configuration configuration, Environment environment) throws Exception {
-            environment.jersey().register(CounterResource.class);
+            environment.jersey().register(TimerResource.class);
         }
     }
 
     @Path("/inc")
     @Singleton
-    public static class CounterResource {
+    public static class TimerResource {
         @Inject
-        public CounterResource(
-            Counter unnamedCounter,
-            @Metric(name = "com.metric") Counter metricCounter,
-            @Metric(name = "com.absoluteMetric", absolute = true) Counter absoluteMetricCounter
+        public TimerResource(
+            Timer unnamedTimer,
+            @Metric(name = "com.metric") Timer metricTimer,
+            @Metric(name = "com.absoluteMetric", absolute = true) Timer absoluteMetricTimer
         ) {
-            unnamedCounter.inc();
-            metricCounter.inc(2);
-            absoluteMetricCounter.inc(3);
+            unnamedTimer.update(123, TimeUnit.DAYS);
+            metricTimer.update(123, TimeUnit.MICROSECONDS);
+            absoluteMetricTimer.update(123, TimeUnit.MILLISECONDS);
         }
 
         @GET
@@ -60,23 +61,23 @@ public class CounterFactoryTest {
     protected JerseyWebTarget client = JerseyClientBuilder.createClient().target(String.format("http://localhost:%d", RULE.getLocalPort()));
 
     @Test
-    public void testAbsoluteNamedCounterCreated() {
+    public void testAbsoluteNamedTimerCreated() {
         int            result   = client.path("inc").request().get(Integer.class);
         MetricRegistry registry = RULE.getEnvironment().metrics();
-        assertThat(registry.getCounters()).containsKey("com.absoluteMetric");
+        assertThat(registry.getTimers()).containsKey("com.absoluteMetric");
     }
 
     @Test
-    public void testRelativeNamedCounterCreated() {
+    public void testRelativeNamedTimerCreated() {
         int            result   = client.path("inc").request().get(Integer.class);
         MetricRegistry registry = RULE.getEnvironment().metrics();
-        assertThat(registry.getCounters()).containsKey("zone.dragon.dropwizard.metrics.CounterFactoryTest.CounterResource.com.metric");
+        assertThat(registry.getTimers()).containsKey("zone.dragon.dropwizard.metrics.TimerFactoryTest.TimerResource.com.metric");
     }
 
     @Test
-    public void testUnnamedCounterCreated() {
+    public void testUnnamedTimerCreated() {
         int            result   = client.path("inc").request().get(Integer.class);
         MetricRegistry registry = RULE.getEnvironment().metrics();
-        assertThat(registry.getCounters()).containsKey("zone.dragon.dropwizard.metrics.CounterFactoryTest.CounterResource.arg0");
+        assertThat(registry.getTimers()).containsKey("zone.dragon.dropwizard.metrics.TimerFactoryTest.TimerResource.arg0");
     }
 }

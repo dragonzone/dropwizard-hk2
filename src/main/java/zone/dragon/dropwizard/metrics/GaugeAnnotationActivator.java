@@ -13,6 +13,10 @@ import javax.inject.Singleton;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+/**
+ * When a (@link Singleton singleton} is activated, any parameterless methods annotated with {@link Gauge @Gauge} will be
+ * used to provide values for a {@link com.codahale.metrics.Gauge Gauge}
+ */
 @Slf4j
 @Singleton
 public class GaugeAnnotationActivator extends MethodAnnotationActivator<Gauge> {
@@ -27,14 +31,14 @@ public class GaugeAnnotationActivator extends MethodAnnotationActivator<Gauge> {
     }
 
     @Override
-    protected <K> void activate(ActiveDescriptor<K> handle, K instance, Method method, Gauge annotation) {
+    protected void activate(ActiveDescriptor<?> handle, Object service, Method method, Gauge annotation) {
         if (method.getParameterCount() != 0) {
             log.error("@Gauge placed on method {} which must have zero parameters, but has {}", method, method.getParameterCount());
             return;
         }
         com.codahale.metrics.Gauge<?> gauge = () -> {
             try {
-                return method.invoke(instance);
+                return method.invoke(service);
             } catch (Exception e) {
                 throw new RuntimeException("Failed to read gauge value from " + method, e instanceof InvocationTargetException ? (
                     (InvocationTargetException) e

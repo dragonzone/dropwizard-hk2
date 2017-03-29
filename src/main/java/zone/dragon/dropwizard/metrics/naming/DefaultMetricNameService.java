@@ -1,8 +1,8 @@
 package zone.dragon.dropwizard.metrics.naming;
 
+import lombok.NonNull;
 import org.glassfish.hk2.api.IterableProvider;
 
-import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.lang.reflect.AnnotatedElement;
@@ -18,22 +18,22 @@ public class DefaultMetricNameService implements MetricNameService {
     private final MetricNameFormatter formatter;
 
     @Inject
-    public DefaultMetricNameService(@Nonnull IterableProvider<MetricNameFilter> filters, @Nonnull MetricNameFormatter formatter) {
+    public DefaultMetricNameService(@NonNull IterableProvider<MetricNameFilter> filters, @NonNull MetricNameFormatter formatter) {
         this.filters = filters;
         this.formatter = formatter;
     }
 
     @Override
-    public MetricName getMetricName(AnnotatedElement parent, Type metricType) {
-        MetricName name = MetricName.builder().name("").build();
+    public MetricName getMetricName(AnnotatedElement injectionSite, Type metricType, String baseName) {
+        MetricName name = MetricName.of(baseName);
         for (MetricNameFilter filter : filters) {
-            name = filter.buildName(name, parent, metricType);
+            name = filter.buildName(name, injectionSite, metricType);
         }
         return name;
     }
 
     @Override
-    public String getFormattedMetricName(AnnotatedElement parent, Type metricType) {
-        return formatter.formatName(getMetricName(parent, metricType));
+    public String getFormattedMetricName(AnnotatedElement injectionSite, Type metricType, String baseName) {
+        return formatter.formatName(getMetricName(injectionSite, metricType, baseName));
     }
 }

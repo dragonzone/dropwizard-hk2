@@ -10,6 +10,7 @@ import com.codahale.metrics.annotation.Gauge;
 import com.codahale.metrics.annotation.Metered;
 import com.codahale.metrics.annotation.Metric;
 import com.codahale.metrics.annotation.Timed;
+import lombok.Value;
 import org.glassfish.hk2.api.Rank;
 import org.glassfish.hk2.utilities.reflection.ReflectionHelper;
 
@@ -29,120 +30,99 @@ import java.lang.reflect.Type;
 @Rank(MetricNameFilter.DEFAULT_NAME_PRIORITY)
 public class CodahaleMetricNameFilter implements MetricNameFilter {
     @Override
-    public MetricName buildName(MetricName metricName, AnnotatedElement parent, Type metricType) {
-        String parentNamespace = getParentNamespace(parent);
-        String parentName      = getParentName(parent);
-        String annotatedName   = getAnnotatedName(parent, metricType);
-        boolean absolute = isAbsoluteName(parent, metricType);
+    public MetricName buildName(MetricName metricName, AnnotatedElement injectionSite, Type metricType) {
+        // only change if it's not already been set
+        if (metricName.getName() != null) {
+            return metricName;
+        }
+        String              injecteeNamespace = getNamespace(injectionSite);
+        String              injecteeName      = getName(injectionSite);
+        AnnotatedMetricInfo annotation      = getAnnotation(injectionSite, metricType);
+        boolean             absoluteName    = annotation != null && annotation.isAbsolute();
 
-        String name = parentName != null ? parentName : metricName.getName();
-        if (annotatedName != null && !annotatedName.isEmpty()) {
-            name = annotatedName;
+        String name = injecteeName != null ? injecteeName : metricName.getName();
+        if (annotation != null && annotation.getName() != null && !annotation.getName().isEmpty()) {
+            name = annotation.getName();
         }
-        if (!absolute && parentNamespace != null && !parentNamespace.isEmpty()) {
-            name = String.format("%s.%s", parentNamespace, name);
+        if (!absoluteName && injecteeNamespace != null && !injecteeNamespace.isEmpty()) {
+            name = String.format("%s.%s", injecteeNamespace, name);
         }
-        return metricName.withName(name);
+        return metricName.setName(name);
     }
 
-    protected String getAnnotatedName(AnnotatedElement parent, Type metricType) {
-        if (parent == null) {
+    /**
+     * Extracts name information from codahale annotations on the {@code injectionSite}
+     *
+     * @param injectionSite
+     *     Injection site into which the metric is being injected
+     * @param metricType
+     *     Type of metric being injected
+     *
+     * @return The name information for this injection site, and whether the name provided includes a namespace or not
+     */
+    protected AnnotatedMetricInfo getAnnotation(AnnotatedElement injectionSite, Type metricType) {
+        if (injectionSite == null) {
             return null;
         }
         if (metricType == null || ReflectionHelper.getRawClass(metricType) == Timer.class) {
-            Timed ann = parent.getAnnotation(Timed.class);
+            Timed ann = injectionSite.getAnnotation(Timed.class);
             if (ann != null) {
-                return ann.name();
+                return AnnotatedMetricInfo.of(ann.name(), ann.absolute());
             }
         }
         if (metricType == null || ReflectionHelper.getRawClass(metricType) == Counter.class) {
-            Counted ann = parent.getAnnotation(Counted.class);
+            Counted ann = injectionSite.getAnnotation(Counted.class);
             if (ann != null) {
-                return ann.name();
+                return AnnotatedMetricInfo.of(ann.name(), ann.absolute());
             }
         }
         if (metricType == null || ReflectionHelper.getRawClass(metricType) == Meter.class) {
-            Metered meteredAnn = parent.getAnnotation(Metered.class);
+            Metered meteredAnn = injectionSite.getAnnotation(Metered.class);
             if (meteredAnn != null) {
-                return meteredAnn.name();
+                return AnnotatedMetricInfo.of(meteredAnn.name(), meteredAnn.absolute());
             }
-            ExceptionMetered exceptionMeteredAnn = parent.getAnnotation(ExceptionMetered.class);
+            ExceptionMetered exceptionMeteredAnn = injectionSite.getAnnotation(ExceptionMetered.class);
             if (exceptionMeteredAnn != null) {
-                return exceptionMeteredAnn.name();
+                return AnnotatedMetricInfo.of(exceptionMeteredAnn.name(), exceptionMeteredAnn.absolute());
             }
         }
         if (metricType == null || ReflectionHelper.getRawClass(metricType) == com.codahale.metrics.Gauge.class) {
-            Gauge gaugedAnn = parent.getAnnotation(Gauge.class);
+            Gauge gaugedAnn = injectionSite.getAnnotation(Gauge.class);
             if (gaugedAnn != null) {
-                return gaugedAnn.name();
+                return AnnotatedMetricInfo.of(gaugedAnn.name(), gaugedAnn.absolute());
             }
-            CachedGauge cachedGaugeAnn = parent.getAnnotation(CachedGauge.class);
+            CachedGauge cachedGaugeAnn = injectionSite.getAnnotation(CachedGauge.class);
             if (cachedGaugeAnn != null) {
-                return cachedGaugeAnn.name();
+                return AnnotatedMetricInfo.of(cachedGaugeAnn.name(), cachedGaugeAnn.absolute());
             }
         }
-        Metric metricAnn = parent.getAnnotation(Metric.class);
+        Metric metricAnn = injectionSite.getAnnotation(Metric.class);
         if (metricAnn != null) {
-            return metricAnn.name();
+            return AnnotatedMetricInfo.of(metricAnn.name(), metricAnn.absolute());
         }
         return null;
     }
 
-    protected boolean isAbsoluteName(AnnotatedElement parent, Type metricType) {
-        if (parent == null) {
-            return false;
-        }
-        if (metricType == null || ReflectionHelper.getRawClass(metricType) == Timer.class) {
-            Timed ann = parent.getAnnotation(Timed.class);
-            if (ann != null) {
-                return ann.absolute();
+    /**
+     * Returns the name of the injection site; Usually this is the name of the element, except for constructors, which use the class name
+     *
+     * @param injectionSite
+     *     Injection site into which the metric is being injected
+     *
+     * @return The name of the injection site, or {@code null} if it cannot be determined
+     */
+    protected String getName(AnnotatedElement injectionSite) {
+        if (injectionSite instanceof Member) {
+            if (injectionSite instanceof Constructor) {
+                return ((Constructor) injectionSite).getDeclaringClass().getSimpleName();
             }
+            return ((Member) injectionSite).getName();
         }
-        if (metricType == null || ReflectionHelper.getRawClass(metricType) == Counter.class) {
-            Counted ann = parent.getAnnotation(Counted.class);
-            if (ann != null) {
-                return ann.absolute();
-            }
+        if (injectionSite instanceof Parameter) {
+            return ((Parameter) injectionSite).getName();
         }
-        if (metricType == null || ReflectionHelper.getRawClass(metricType) == Meter.class) {
-            Metered meteredAnn = parent.getAnnotation(Metered.class);
-            if (meteredAnn != null) {
-                return meteredAnn.absolute();
-            }
-            ExceptionMetered exceptionMeteredAnn = parent.getAnnotation(ExceptionMetered.class);
-            if (exceptionMeteredAnn != null) {
-                return exceptionMeteredAnn.absolute();
-            }
-        }
-        if (metricType == null || ReflectionHelper.getRawClass(metricType) == com.codahale.metrics.Gauge.class) {
-            Gauge gaugedAnn = parent.getAnnotation(Gauge.class);
-            if (gaugedAnn != null) {
-                return gaugedAnn.absolute();
-            }
-            CachedGauge cachedGaugeAnn = parent.getAnnotation(CachedGauge.class);
-            if (cachedGaugeAnn != null) {
-                return cachedGaugeAnn.absolute();
-            }
-        }
-        Metric metricAnn = parent.getAnnotation(Metric.class);
-        if (metricAnn != null) {
-            return metricAnn.absolute();
-        }
-        return false;
-    }
-
-    protected String getParentName(AnnotatedElement parent) {
-        if (parent instanceof Member) {
-            if (parent instanceof Constructor) {
-                return ((Constructor) parent).getDeclaringClass().getSimpleName();
-            }
-            return ((Member) parent).getName();
-        }
-        if (parent instanceof Parameter) {
-            return ((Parameter) parent).getName();
-        }
-        if (parent instanceof Type) {
-            String typeName = ((Type) parent).getTypeName();
+        if (injectionSite instanceof Type) {
+            String typeName = ((Type) injectionSite).getTypeName();
             if (typeName.contains(".")) {
                 return typeName.substring(typeName.lastIndexOf('.') + 1);
             }
@@ -151,23 +131,38 @@ public class CodahaleMetricNameFilter implements MetricNameFilter {
         return null;
     }
 
-    protected String getParentNamespace(AnnotatedElement parent) {
-        if (parent instanceof Member) {
-            return ((Member) parent).getDeclaringClass().getCanonicalName();
+    /**
+     * Returns the namespace of the injection site; Usually this is the name of the declaring class, except for top-level types, which
+     * use the package name.
+     *
+     * @param injectionSite
+     *     Injection site into which the metric is being injected
+     *
+     * @return The namespace of the injection site, or {@code null} if it cannot be determined
+     */
+    protected String getNamespace(AnnotatedElement injectionSite) {
+        if (injectionSite instanceof Member) {
+            return ((Member) injectionSite).getDeclaringClass().getCanonicalName();
         }
-        if (parent instanceof Parameter) {
-            Executable executable = ((Parameter) parent).getDeclaringExecutable();
+        if (injectionSite instanceof Parameter) {
+            Executable executable = ((Parameter) injectionSite).getDeclaringExecutable();
             if (executable instanceof Constructor) {
                 return executable.getDeclaringClass().getCanonicalName();
             }
             return String.format("%s.%s", executable.getDeclaringClass().getCanonicalName(), executable.getName());
         }
-        if (parent instanceof Type) {
-            String typeName = ((Type) parent).getTypeName();
+        if (injectionSite instanceof Type) {
+            String typeName = ((Type) injectionSite).getTypeName();
             if (typeName.contains(".")) {
                 return typeName.substring(0, typeName.lastIndexOf('.'));
             }
         }
         return null;
+    }
+
+    @Value(staticConstructor = "of")
+    protected static class AnnotatedMetricInfo {
+        String  name;
+        boolean absolute;
     }
 }

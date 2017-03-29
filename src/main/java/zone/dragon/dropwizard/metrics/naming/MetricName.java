@@ -1,26 +1,54 @@
 package zone.dragon.dropwizard.metrics.naming;
 
-import com.google.common.collect.ImmutableMap;
-import lombok.Builder;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NonNull;
-import lombok.Singular;
-import lombok.Value;
-import lombok.experimental.Wither;
+import lombok.experimental.Accessors;
+
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
+ * Represents a named metric, which may also contain tags
  */
-@Value(staticConstructor = "of")
-@Builder(toBuilder = true)
+@Data
+@AllArgsConstructor
+@Accessors(chain = true)
 public class MetricName {
-    @NonNull
-    @Wither
-    private final String                       name;
-    @Singular
-    @Wither
-    @NonNull
-    private       ImmutableMap<String, String> tags;
+    /**
+     * Creates a new metric name with no tags
+     *
+     * @param name
+     *     Name of the metric
+     */
+    public static MetricName of(String name) {
+        return of(name, new TreeMap<>());
+    }
 
-    public MetricName withTag(String key, String value) {
-        return toBuilder().tag(key, value).build();
+    /**
+     * Creates a new metric name
+     *
+     * @param name
+     *     Name of the metric
+     * @param tags
+     *     Tags for this metric
+     */
+    public static MetricName of(String name, @NonNull Map<String, String> tags) {
+        return new MetricName(name, tags);
+    }
+
+    /**
+     * Name of the metric, which uniquely identifies the type of information represented by the metric and the source of that information
+     */
+    private String              name;
+    /**
+     * Contextual tags of the metric, which hold attributes describing the code path used to reach the metric.
+     */
+    @NonNull
+    private Map<String, String> tags;
+
+    public MetricName addTag(@NonNull String key, @NonNull String value) {
+        getTags().put(key, value);
+        return this;
     }
 }

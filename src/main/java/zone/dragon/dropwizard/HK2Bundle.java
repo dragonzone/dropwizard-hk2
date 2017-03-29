@@ -79,6 +79,7 @@ public class HK2Bundle<T extends Configuration> implements ConfiguredBundle<T> {
      * @return Controller to activate {@link Immediate @Immediate} services
      */
     private static ImmediateController bindLocalServices(ServiceLocator locator) {
+        // These have to be local because they rely on the InstantiationService, which can only get the Injectee for local injections
         addClasses(locator, true, CounterFactory.class, HistogramFactory.class, MeterFactory.class, TimerFactory.class);
         ServiceLocatorUtilities.enableInheritableThreadScope(locator);
         ExtrasUtilities.enableDefaultInterceptorServiceImplementation(locator);

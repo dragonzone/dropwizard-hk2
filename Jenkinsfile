@@ -86,8 +86,10 @@ node("docker") {
                                     sh("GIT_ASKPASS=true git push origin ${tag}")
                                 }
                             } finally {
-                                sh("git config --unset credential.username")
-                                sh("git config --unset credential.helper")
+                                try {
+                                    sh("git config --unset credential.username")
+                                    sh("git config --unset credential.helper")
+                                } catch (e) {}
                             }
                         }
                     } finally {

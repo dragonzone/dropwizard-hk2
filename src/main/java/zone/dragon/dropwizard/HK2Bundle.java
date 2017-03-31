@@ -30,6 +30,7 @@ import org.glassfish.hk2.utilities.binding.ScopedBindingBuilder;
 import org.glassfish.hk2.utilities.binding.ServiceBindingBuilder;
 import org.glassfish.jersey.process.internal.RequestScoped;
 import zone.dragon.dropwizard.health.HealthCheckActivator;
+import zone.dragon.dropwizard.jmx.MBeanActivator;
 import zone.dragon.dropwizard.lifecycle.LifeCycleActivator;
 import zone.dragon.dropwizard.metrics.MetricActivator;
 import zone.dragon.dropwizard.task.TaskActivator;
@@ -39,6 +40,8 @@ import javax.validation.Validator;
 import javax.ws.rs.core.Feature;
 import javax.ws.rs.core.FeatureContext;
 import java.lang.annotation.Annotation;
+
+import static org.glassfish.hk2.utilities.ServiceLocatorUtilities.addClasses;
 
 /**
  * Provides integration between DropWizard and HK2, allowing developers to leverage the framework built into Jersey.
@@ -96,7 +99,7 @@ public class HK2Bundle<T extends Configuration> implements ConfiguredBundle<T> {
     }
 
     public void autoBind(@NonNull Class<?>... serviceClasses) {
-        ServiceLocatorUtilities.addClasses(getLocator(), serviceClasses);
+        addClasses(getLocator(), serviceClasses);
     }
 
     public void autoBind(@NonNull Factory<?>... factories) {
@@ -198,6 +201,7 @@ public class HK2Bundle<T extends Configuration> implements ConfiguredBundle<T> {
         environment.jersey().register(MetricActivator.class);
         environment.jersey().register(LifeCycleActivator.class);
         environment.jersey().register(TaskActivator.class);
+        addClasses(getLocator(), true, MBeanActivator.class);
     }
 
     @SuppressWarnings("unchecked")

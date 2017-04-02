@@ -2,6 +2,7 @@ package zone.dragon.dropwizard.metrics;
 
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.annotation.Counted;
 import com.codahale.metrics.annotation.Metric;
 import io.dropwizard.Application;
 import io.dropwizard.Configuration;
@@ -52,6 +53,7 @@ public class CounterFactoryTest {
         }
 
         @GET
+        @Counted(monotonic = true)
         public int increment() {
             return 6;
         }
@@ -78,5 +80,12 @@ public class CounterFactoryTest {
         int            result   = client.path("inc").request().get(Integer.class);
         MetricRegistry registry = RULE.getEnvironment().metrics();
         assertThat(registry.getCounters()).containsKey("zone.dragon.dropwizard.metrics.CounterFactoryTest.CounterResource.arg0");
+    }
+
+    @Test
+    public void testCounterAnnotationIntercepted() {
+        int            result   = client.path("inc").request().get(Integer.class);
+        MetricRegistry registry = RULE.getEnvironment().metrics();
+        assertThat(registry.getCounters()).containsKey("zone.dragon.dropwizard.metrics.CounterFactoryTest.CounterResource.increment");
     }
 }

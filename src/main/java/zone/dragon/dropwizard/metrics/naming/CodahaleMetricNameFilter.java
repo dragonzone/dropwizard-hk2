@@ -83,6 +83,12 @@ public class CodahaleMetricNameFilter implements MetricNameFilter {
             }
             ExceptionMetered exceptionMeteredAnn = injectionSite.getAnnotation(ExceptionMetered.class);
             if (exceptionMeteredAnn != null) {
+                if (exceptionMeteredAnn.name().isEmpty()) {
+                    return AnnotatedMetricInfo.of(
+                        String.format("%s.%s", getName(injectionSite), ExceptionMetered.DEFAULT_NAME_SUFFIX),
+                        exceptionMeteredAnn.absolute()
+                    );
+                }
                 return AnnotatedMetricInfo.of(exceptionMeteredAnn.name(), exceptionMeteredAnn.absolute());
             }
         }

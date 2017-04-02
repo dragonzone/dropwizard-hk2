@@ -3,6 +3,8 @@ package zone.dragon.dropwizard.metrics;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
 import com.codahale.metrics.annotation.Metric;
+import com.codahale.metrics.annotation.Timed;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.dropwizard.Application;
 import io.dropwizard.Configuration;
 import io.dropwizard.setup.Bootstrap;
@@ -53,6 +55,7 @@ public class TimerFactoryTest {
         }
 
         @GET
+        @Timed
         public int increment() {
             return 6;
         }
@@ -79,5 +82,13 @@ public class TimerFactoryTest {
         int            result   = client.path("inc").request().get(Integer.class);
         MetricRegistry registry = RULE.getEnvironment().metrics();
         assertThat(registry.getTimers()).containsKey("zone.dragon.dropwizard.metrics.TimerFactoryTest.TimerResource.arg0");
+    }
+
+    @Test
+    public void testTimerAnnotationIntercepted() throws JsonProcessingException {
+        int            result   = client.path("inc").request().get(Integer.class);
+        MetricRegistry registry = RULE.getEnvironment().metrics();
+        System.out.println(RULE.getObjectMapper().writer().withDefaultPrettyPrinter().writeValueAsString(registry));
+        assertThat(registry.getTimers()).containsKey("zone.dragon.dropwizard.metrics.TimerFactoryTest.TimerResource.increment");
     }
 }

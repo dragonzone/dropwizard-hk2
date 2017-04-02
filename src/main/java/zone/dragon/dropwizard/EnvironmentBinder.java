@@ -3,49 +3,43 @@ package zone.dragon.dropwizard;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.health.HealthCheckRegistry;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.dropwizard.Application;
 import io.dropwizard.Configuration;
 import io.dropwizard.lifecycle.setup.LifecycleEnvironment;
+import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import lombok.NonNull;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.util.component.AbstractLifeCycle.AbstractLifeCycleListener;
-import org.eclipse.jetty.util.component.LifeCycle;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 
 import javax.validation.Validator;
 
 /**
- * This binder makes much of the DropWizard environment available to HK2 to be injected into components that request it at runtime.
+ * This binder makes much of the Dropwizard environment available to HK2 to be injected into components that request it at runtime.
  * Specifically, the following components are bound: <ul> <li>{@link Environment}</li> <li>{@link HealthCheckRegistry}</li> <li>{@link
  * LifecycleEnvironment}</li> <li>{@link MetricRegistry}</li> <li>{@link Configuration}</li>
- * <li>{@link ObjectMapper}</li> <li>{@link Server}</li><li>{@link Validator}</li></ul>
+ * <li>{@link ObjectMapper}</li> <li>{@link Validator}</li>
+ * <li>{@link Application}</li></ul>
  *
- * @author Bryan Harclerode
  */
 public class EnvironmentBinder<T> extends AbstractBinder {
+    private final Bootstrap   bootstrap;
     private final T           configuration;
     private final Environment environment;
-    private       Server      server;
 
     /**
-     * Creates a new binder that exposes the DropWizard environment to HK2
+     * Creates a new binder that exposes the Dropwizard environment to HK2
      *
+     * @param bootstrap
+     *     Dropwizard boostrap
      * @param configuration
-     *     DropWizard configuration
+     *     Dropwizard configuration
      * @param environment
-     *     DropWizard environment
+     *     Dropwizard environment
      */
-    public EnvironmentBinder(@NonNull T configuration, @NonNull Environment environment) {
+    public EnvironmentBinder(@NonNull Bootstrap bootstrap, @NonNull T configuration, @NonNull Environment environment) {
+        this.bootstrap = bootstrap;
         this.configuration = configuration;
         this.environment = environment;
-        environment.lifecycle().addLifeCycleListener(new AbstractLifeCycleListener() {
-            @Override
-            public void lifeCycleStarting(LifeCycle event) {
-                if (event instanceof Server) {
-                    server = (Server) event;
-                }
-            }
-        });
     }
 
     @SuppressWarnings("unchecked")
@@ -56,8 +50,8 @@ public class EnvironmentBinder<T> extends AbstractBinder {
         bind(environment.lifecycle()).to(LifecycleEnvironment.class);
         bind(environment.metrics()).to(MetricRegistry.class);
         bind(environment.getValidator()).to(Validator.class);
-        bind(configuration).to((Class) configuration.getClass()).to(Configuration.class);
-        bind(server).to(Server.class);
+        bind(configuration).to(bootstrap.getApplication().getConfigurationClass()).to(Configuration.class);
         bind(environment.getObjectMapper()).to(ObjectMapper.class);
+        bind(bootstrap.getApplication()).to((Class) bootstrap.getApplication().getClass()).to(Application.class);
     }
 }

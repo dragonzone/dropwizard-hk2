@@ -2,6 +2,7 @@ package zone.dragon.dropwizard.jmx;
 
 import io.dropwizard.Application;
 import io.dropwizard.Configuration;
+import io.dropwizard.lifecycle.Managed;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.testing.junit.DropwizardAppRule;
@@ -27,7 +28,11 @@ import java.lang.management.ManagementFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class MBeanActivatorTest {
+/**
+ * @author Darth Android
+ * @date 4/2/2017
+ */
+public class JettyManagedTest {
     @ClassRule
     public static final DropwizardAppRule<Configuration> RULE = new DropwizardAppRule<>(JmxApp.class, new Configuration());
 
@@ -40,6 +45,7 @@ public class MBeanActivatorTest {
         @Override
         public void run(Configuration configuration, Environment environment) throws Exception {
             environment.jersey().register(JmxResource.class);
+            environment.lifecycle().manage(new TestManaged());
         }
     }
 
@@ -47,14 +53,25 @@ public class MBeanActivatorTest {
     @Singleton
     @ManagedObject
     public static class JmxResource {
+        @GET
+        public int getValue() {
+            return 3;
+        }
+    }
+
+    @ManagedObject
+    public static class TestManaged implements Managed {
         @ManagedAttribute("Returns an attribute")
         public int getAttribute() {
             return 42;
         }
 
-        @GET
-        public int getValue() {
-            return 3;
+        @Override
+        public void start() throws Exception {
+        }
+
+        @Override
+        public void stop() throws Exception {
         }
     }
 
@@ -64,8 +81,8 @@ public class MBeanActivatorTest {
     public void testJmxAttribute()
     throws MalformedObjectNameException, AttributeNotFoundException, MBeanException, ReflectionException, InstanceNotFoundException {
         MBeanServer platformMBeanServer = ManagementFactory.getPlatformMBeanServer();
-        int result = client.path("jmx").request().get(Integer.class);
-        assertThat(platformMBeanServer.getAttribute(new ObjectName("zone.dragon.dropwizard.jmx:id=0,type=mbeanactivatortest$jmxresource"),
+        int         result              = client.path("jmx").request().get(Integer.class);
+        assertThat(platformMBeanServer.getAttribute(new ObjectName("zone.dragon.dropwizard.jmx:id=0,type=jettymanagedtest$testmanaged"),
                                                     "attribute"
         )).isEqualTo(42);
     }

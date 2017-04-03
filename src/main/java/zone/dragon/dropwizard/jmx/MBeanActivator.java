@@ -7,7 +7,6 @@ import zone.dragon.dropwizard.ClassAnnotationActivator;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.lang.management.ManagementFactory;
 
 /**
  * Activator that automatically exposes HK2 singletons over JMX if they have the {@link ManagedObject} annotation
@@ -17,9 +16,9 @@ public class MBeanActivator extends ClassAnnotationActivator<ManagedObject> {
     private final MBeanContainer container;
 
     @Inject
-    public MBeanActivator() {
+    public MBeanActivator(MBeanContainer container) {
         super(ManagedObject.class);
-        container = new MBeanContainer(ManagementFactory.getPlatformMBeanServer());
+        this.container = container;
     }
 
     @Override

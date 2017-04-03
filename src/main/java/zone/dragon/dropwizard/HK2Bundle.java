@@ -1,22 +1,19 @@
 package zone.dragon.dropwizard;
 
-import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.health.HealthCheckRegistry;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.dropwizard.Application;
+import com.google.common.annotations.Beta;
 import io.dropwizard.Configuration;
 import io.dropwizard.ConfiguredBundle;
-import io.dropwizard.lifecycle.setup.LifecycleEnvironment;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import org.eclipse.jetty.jmx.MBeanContainer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.util.component.AbstractLifeCycle.AbstractLifeCycleListener;
 import org.eclipse.jetty.util.component.LifeCycle;
 import org.glassfish.hk2.api.DynamicConfiguration;
 import org.glassfish.hk2.api.Factory;
+import org.glassfish.hk2.api.Immediate;
 import org.glassfish.hk2.api.ImmediateController;
 import org.glassfish.hk2.api.ImmediateController.ImmediateServiceState;
 import org.glassfish.hk2.api.ServiceLocator;
@@ -31,15 +28,21 @@ import org.glassfish.hk2.utilities.binding.ServiceBindingBuilder;
 import org.glassfish.jersey.process.internal.RequestScoped;
 import zone.dragon.dropwizard.health.HealthCheckActivator;
 import zone.dragon.dropwizard.jmx.MBeanActivator;
+import zone.dragon.dropwizard.jmx.ManagedMBeanContainer;
 import zone.dragon.dropwizard.lifecycle.LifeCycleActivator;
+import zone.dragon.dropwizard.metrics.HK2MetricBinder;
 import zone.dragon.dropwizard.metrics.MetricActivator;
+import zone.dragon.dropwizard.metrics.factories.CounterFactory;
+import zone.dragon.dropwizard.metrics.factories.HistogramFactory;
+import zone.dragon.dropwizard.metrics.factories.MeterFactory;
+import zone.dragon.dropwizard.metrics.factories.TimerFactory;
 import zone.dragon.dropwizard.task.TaskActivator;
 
 import javax.inject.Inject;
-import javax.validation.Validator;
 import javax.ws.rs.core.Feature;
 import javax.ws.rs.core.FeatureContext;
 import java.lang.annotation.Annotation;
+import java.lang.management.ManagementFactory;
 
 import static org.glassfish.hk2.utilities.ServiceLocatorUtilities.addClasses;
 
@@ -65,71 +68,96 @@ public class HK2Bundle<T extends Configuration> implements ConfiguredBundle<T> {
     }
 
     /**
+     * Binds local services into a locator. These have to be bound both into our service locator and the Jersey service locator because
+     * they do not cross bridge or parent/child boundaries.
+     *
+     * @param locator
+     *     {@code ServiceLocator} into which local services should be installed
+     *
+     * @return Controller to activate {@link Immediate @Immediate} services
+     */
+    private static ImmediateController bindLocalServices(ServiceLocator locator) {
+        // These have to be local because they rely on the InstantiationService, which can only get the Injectee for local injections
+        addClasses(locator,
+                   true,
+                   CounterFactory.class,
+                   HistogramFactory.class,
+                   MeterFactory.class,
+                   TimerFactory.class,
+                   AnnotationInterceptionService.class
+        );
+        ServiceLocatorUtilities.enableInheritableThreadScope(locator);
+        ExtrasUtilities.enableDefaultInterceptorServiceImplementation(locator);
+        ExtrasUtilities.enableTopicDistribution(locator);
+        return ServiceLocatorUtilities.enableImmediateScopeSuspended(locator);
+    }
+
+    /**
      * Feature that bridges this bundle's {@link ServiceLocator} with Jersey's. We do this instead of setting the parent because it makes a
      * number of things such as the {@link RequestScoped} context work correctly in either locator.
      */
-    @RequiredArgsConstructor(onConstructor = @__(@Inject))
     private static class HK2BridgeFeature implements Feature {
-        @NonNull
         private final ServiceLocator serviceLocator;
+
+        @Inject
+        private HK2BridgeFeature(@NonNull ServiceLocator serviceLocator) {
+            this.serviceLocator = serviceLocator;
+        }
 
         @Override
         public boolean configure(FeatureContext context) {
             ServiceLocator bundleLocator = serviceLocator.getService(ServiceLocator.class, SERVICE_LOCATOR);
             ExtrasUtilities.bridgeServiceLocator(bundleLocator, serviceLocator);
             ExtrasUtilities.bridgeServiceLocator(serviceLocator, bundleLocator);
-            ExtrasUtilities.enableDefaultInterceptorServiceImplementation(serviceLocator);
-            ServiceLocatorUtilities.enableInheritableThreadScope(serviceLocator);
-            ServiceLocatorUtilities.enableImmediateScope(serviceLocator);
+            bindLocalServices(serviceLocator).setImmediateState(ImmediateServiceState.RUNNING);
             return true;
         }
     }
-
     @Getter
     private final ServiceLocator      locator             = ServiceLocatorFactory.getInstance().create(null);
-    private final ImmediateController immediateController = ServiceLocatorUtilities.enableImmediateScopeSuspended(getLocator());
+    private final ImmediateController immediateController = bindLocalServices(getLocator());
     private       BindingBuilder<?>   activeBuilder       = null;
-    private       Bootstrap<T>        bootstrap           = null;
+    private final MBeanContainer      mBeanContainer      = new MBeanContainer(ManagementFactory.getPlatformMBeanServer());
 
     public HK2Bundle() {
-        ExtrasUtilities.enableDefaultInterceptorServiceImplementation(getLocator());
-        ExtrasUtilities.enableTopicDistribution(getLocator());
-        ServiceLocatorUtilities.enableInheritableThreadScope(getLocator());
-        ServiceLocatorUtilities.enablePerThreadScope(getLocator());
     }
 
-    public void autoBind(@NonNull Class<?>... serviceClasses) {
-        addClasses(getLocator(), serviceClasses);
-    }
+    private Bootstrap<T> bootstrap = null;
 
     public void autoBind(@NonNull Factory<?>... factories) {
         ServiceLocatorUtilities.addFactoryConstants(getLocator(), factories);
     }
 
+    @Beta
     public <U> ServiceBindingBuilder<U> bind(@NonNull Class<U> serviceClass) {
         finishBinding();
         return (ServiceBindingBuilder<U>) (activeBuilder = BindingBuilderFactory.newBinder(serviceClass));
     }
 
+    @Beta
     public <U> ScopedBindingBuilder<U> bind(@NonNull U singleton) {
         finishBinding();
         return (ScopedBindingBuilder<U>) (activeBuilder = BindingBuilderFactory.newBinder(singleton));
     }
 
+    @Beta
     public <U> ServiceBindingBuilder<U> bindAsContract(@NonNull Class<U> serviceClass) {
         return bind(serviceClass).to(serviceClass);
     }
 
     @SuppressWarnings("unchecked")
+    @Beta
     public <U> ScopedBindingBuilder<U> bindAsContract(@NonNull U singleton) {
         return bind(singleton).to((Class) singleton.getClass());
     }
 
+    @Beta
     public <U> ServiceBindingBuilder<U> bindFactory(@NonNull Class<? extends Factory<U>> factoryClass) {
         finishBinding();
         return (ServiceBindingBuilder<U>) (activeBuilder = BindingBuilderFactory.newFactoryBinder(factoryClass));
     }
 
+    @Beta
     public <U> ServiceBindingBuilder<U> bindFactory(
         @NonNull Class<? extends Factory<U>> factoryClass, Class<? extends Annotation> factoryScope
     ) {
@@ -137,6 +165,7 @@ public class HK2Bundle<T extends Configuration> implements ConfiguredBundle<T> {
         return (ServiceBindingBuilder<U>) (activeBuilder = BindingBuilderFactory.newFactoryBinder(factoryClass, factoryScope));
     }
 
+    @Beta
     public <U> ServiceBindingBuilder<U> bindFactory(@NonNull Factory<U> factory) {
         finishBinding();
         return (ServiceBindingBuilder<U>) (activeBuilder = BindingBuilderFactory.newFactoryBinder(factory));
@@ -152,6 +181,10 @@ public class HK2Bundle<T extends Configuration> implements ConfiguredBundle<T> {
             config.commit();
             activeBuilder = null;
         }
+    }
+
+    public void autoBind(@NonNull Class<?>... serviceClasses) {
+        addClasses(getLocator(),true, serviceClasses);
     }
 
     @SuppressWarnings("unchecked")
@@ -175,33 +208,22 @@ public class HK2Bundle<T extends Configuration> implements ConfiguredBundle<T> {
                     finishBinding();
                     ServiceLocatorUtilities.addOneConstant(getLocator(), event, null, Server.class);
                     immediateController.setImmediateState(ImmediateServiceState.RUNNING);
+                    ((Server) event).addBean(mBeanContainer);
+                    ((Server) event).addBean(new ManagedMBeanContainer(mBeanContainer));
                 }
             }
         });
-        // Create bindings for Dropwizard classes
-        ServiceLocatorUtilities.addOneConstant(getLocator(), environment, null, Environment.class);
-        ServiceLocatorUtilities.addOneConstant(getLocator(), environment.healthChecks(), null, HealthCheckRegistry.class);
-        ServiceLocatorUtilities.addOneConstant(getLocator(), environment.lifecycle(), null, LifecycleEnvironment.class);
-        ServiceLocatorUtilities.addOneConstant(getLocator(), environment.metrics(), null, MetricRegistry.class);
-        ServiceLocatorUtilities.addOneConstant(getLocator(), environment.getValidator(), null, Validator.class);
-        ServiceLocatorUtilities.addOneConstant(getLocator(), environment.getObjectMapper(), null, ObjectMapper.class);
-        ServiceLocatorUtilities.addOneConstant(getLocator(), bootstrap.getApplication(), null, Application.class);
-        ServiceLocatorUtilities.addOneConstant(getLocator(), configuration, null, Configuration.class);
-        ServiceLocatorUtilities.addOneConstant(getLocator(), configuration, null, bootstrap.getApplication().getConfigurationClass());
-        // Grab all bindings from other bundles
-        BootstrapExtensions
-            .getImplementingBundles(bootstrap, SimpleBinder.class)
-            .forEach(bundle -> ServiceLocatorUtilities.bind(getLocator(), bundle));
-        BootstrapExtensions
-            .getImplementingBundles(bootstrap, Object.class)
-            .forEach(bundle -> ServiceLocatorUtilities.addOneConstant(getLocator(), bundle, null, bundle.getClass()));
+        ServiceLocatorUtilities.bind(getLocator(), new EnvironmentBinder<>(bootstrap, configuration, environment));
+        ServiceLocatorUtilities.bind(getLocator(), new HK2MetricBinder());
+        ServiceLocatorUtilities.bind(getLocator(), new BundleBinder(bootstrap));
+        ServiceLocatorUtilities.addOneConstant(getLocator(), mBeanContainer, null, MBeanContainer.class);
         // Register Jersey components to activate injectable dropwizard components when Jersey starts up
         environment.jersey().register(HK2BridgeFeature.class);
         environment.jersey().register(HealthCheckActivator.class);
         environment.jersey().register(MetricActivator.class);
         environment.jersey().register(LifeCycleActivator.class);
         environment.jersey().register(TaskActivator.class);
-        addClasses(getLocator(), true, MBeanActivator.class);
+        autoBind(MBeanActivator.class);
     }
 
     @SuppressWarnings("unchecked")

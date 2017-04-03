@@ -7,6 +7,7 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import lombok.Getter;
 import lombok.NonNull;
+import org.eclipse.jetty.jmx.MBeanContainer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.util.component.AbstractLifeCycle.AbstractLifeCycleListener;
 import org.eclipse.jetty.util.component.LifeCycle;
@@ -27,6 +28,7 @@ import org.glassfish.hk2.utilities.binding.ServiceBindingBuilder;
 import org.glassfish.jersey.process.internal.RequestScoped;
 import zone.dragon.dropwizard.health.HealthCheckActivator;
 import zone.dragon.dropwizard.jmx.MBeanActivator;
+import zone.dragon.dropwizard.jmx.ManagedMBeanContainer;
 import zone.dragon.dropwizard.lifecycle.LifeCycleActivator;
 import zone.dragon.dropwizard.metrics.HK2MetricBinder;
 import zone.dragon.dropwizard.metrics.MetricActivator;
@@ -40,6 +42,7 @@ import javax.inject.Inject;
 import javax.ws.rs.core.Feature;
 import javax.ws.rs.core.FeatureContext;
 import java.lang.annotation.Annotation;
+import java.lang.management.ManagementFactory;
 
 import static org.glassfish.hk2.utilities.ServiceLocatorUtilities.addClasses;
 
@@ -114,6 +117,7 @@ public class HK2Bundle<T extends Configuration> implements ConfiguredBundle<T> {
     private final ServiceLocator      locator             = ServiceLocatorFactory.getInstance().create(null);
     private final ImmediateController immediateController = bindLocalServices(getLocator());
     private       BindingBuilder<?>   activeBuilder       = null;
+    private final MBeanContainer      mBeanContainer      = new MBeanContainer(ManagementFactory.getPlatformMBeanServer());
 
     public HK2Bundle() {
     }
@@ -204,12 +208,15 @@ public class HK2Bundle<T extends Configuration> implements ConfiguredBundle<T> {
                     finishBinding();
                     ServiceLocatorUtilities.addOneConstant(getLocator(), event, null, Server.class);
                     immediateController.setImmediateState(ImmediateServiceState.RUNNING);
+                    ((Server) event).addBean(mBeanContainer);
+                    ((Server) event).addBean(new ManagedMBeanContainer(mBeanContainer));
                 }
             }
         });
         ServiceLocatorUtilities.bind(getLocator(), new EnvironmentBinder<>(bootstrap, configuration, environment));
         ServiceLocatorUtilities.bind(getLocator(), new HK2MetricBinder());
         ServiceLocatorUtilities.bind(getLocator(), new BundleBinder(bootstrap));
+        ServiceLocatorUtilities.addOneConstant(getLocator(), mBeanContainer, null, MBeanContainer.class);
         // Register Jersey components to activate injectable dropwizard components when Jersey starts up
         environment.jersey().register(HK2BridgeFeature.class);
         environment.jersey().register(HealthCheckActivator.class);

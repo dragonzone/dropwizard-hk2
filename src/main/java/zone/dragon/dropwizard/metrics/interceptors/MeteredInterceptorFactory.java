@@ -13,6 +13,8 @@ import zone.dragon.dropwizard.metrics.naming.MetricNameService;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.ws.rs.HttpMethod;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Method;
@@ -48,6 +50,12 @@ public class MeteredInterceptorFactory
 
     @Override
     public MethodInterceptor provide(Method method, Metered annotation) {
+        // Skip resource methods
+        for (Annotation ann : method.getAnnotations()) {
+            if (ann.annotationType().getAnnotation(HttpMethod.class) != null) {
+                return null;
+            }
+        }
         return invocation -> meter(method, invocation);
     }
 }

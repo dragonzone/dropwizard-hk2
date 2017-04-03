@@ -148,6 +148,12 @@ public class CodahaleMetricNameFilter implements MetricNameFilter {
      */
     protected String getNamespace(AnnotatedElement injectionSite) {
         if (injectionSite instanceof Member) {
+            Class<?> declaringClass = ((Member) injectionSite).getDeclaringClass();
+            if (injectionSite instanceof Constructor) {
+                return declaringClass.getDeclaringClass() == null
+                       ? declaringClass.getPackage().getName()
+                       : declaringClass.getDeclaringClass().getCanonicalName();
+            }
             return ((Member) injectionSite).getDeclaringClass().getCanonicalName();
         }
         if (injectionSite instanceof Parameter) {

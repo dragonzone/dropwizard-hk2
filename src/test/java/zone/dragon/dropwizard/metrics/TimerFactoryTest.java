@@ -44,6 +44,7 @@ public class TimerFactoryTest {
     @Singleton
     public static class TimerResource {
         @Inject
+        @Timed
         public TimerResource(
             Timer unnamedTimer,
             @Metric(name = "com.metric") Timer metricTimer,
@@ -89,6 +90,6 @@ public class TimerFactoryTest {
         int            result   = client.path("inc").request().get(Integer.class);
         MetricRegistry registry = RULE.getEnvironment().metrics();
         System.out.println(RULE.getObjectMapper().writer().withDefaultPrettyPrinter().writeValueAsString(registry));
-        assertThat(registry.getTimers()).containsKey("zone.dragon.dropwizard.metrics.TimerFactoryTest.TimerResource.increment");
+        assertThat(registry.getTimers()).containsKey("zone.dragon.dropwizard.metrics.TimerFactoryTest.TimerResource");
     }
 }

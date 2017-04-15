@@ -9,6 +9,7 @@ import org.aopalliance.intercept.Invocation;
 import org.aopalliance.intercept.MethodInterceptor;
 import zone.dragon.dropwizard.AnnotatedConstructorInterceptorFactory;
 import zone.dragon.dropwizard.AnnotatedMethodInterceptorFactory;
+import zone.dragon.dropwizard.AnnotationInterceptionService;
 import zone.dragon.dropwizard.metrics.naming.MetricNameService;
 
 import javax.inject.Inject;
@@ -20,8 +21,10 @@ import java.lang.reflect.Executable;
 import java.lang.reflect.Method;
 
 /**
- * Method interceptor that counts exceptions thrown from methods annotated with {@link ExceptionMetered @ExceptionMetered} using a
+ * Interceptor that counts exceptions thrown from methods and constructors annotated with {@link ExceptionMetered @ExceptionMetered} using a
  * {@link Meter}
+ *
+ * @see AnnotationInterceptionService
  */
 @Singleton
 public class ExceptionMeteredInterceptorFactory
@@ -29,12 +32,33 @@ public class ExceptionMeteredInterceptorFactory
     private final MetricRegistry    metricRegistry;
     private final MetricNameService metricNameService;
 
+    /**
+     * @param metricRegistry
+     *     Registry used for creating metrics
+     * @param metricNameService
+     *     Naming service used to build contextual metric names
+     */
     @Inject
     public ExceptionMeteredInterceptorFactory(@NonNull MetricRegistry metricRegistry, @NonNull MetricNameService metricNameService) {
         this.metricRegistry = metricRegistry;
         this.metricNameService = metricNameService;
     }
 
+    /**
+     * Runs the {@code invocation} and tracks when exceptions are thrown
+     *
+     * @param executable
+     *     Executable represented by {@code invocation}; used to determine the name of the
+     * @param annotation
+     *     Annotation instance containing information on which exceptions are metered
+     * @param invocation
+     *     Intercepted execution that should be metered
+     *
+     * @return The result of {@code invocation}
+     *
+     * @throws Throwable
+     *     Any exception thrown by {@code invocation}
+     */
     protected Object exceptionMeter(Executable executable, ExceptionMetered annotation, Invocation invocation) throws Throwable {
         Meter exceptionMeter = getExceptionMeter(executable);
         try {
@@ -47,6 +71,14 @@ public class ExceptionMeteredInterceptorFactory
         }
     }
 
+    /**
+     * Creates a {@link Meter} for the given {@code executable}
+     *
+     * @param executable
+     *     The method or constructor to track
+     *
+     * @return An appropriately named meter
+     */
     protected Meter getExceptionMeter(Executable executable) {
         return metricRegistry.meter(metricNameService.getFormattedMetricName(executable, Meter.class));
     }

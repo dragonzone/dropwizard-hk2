@@ -15,7 +15,7 @@ import zone.dragon.dropwizard.metrics.interceptors.CountedInterceptorFactory;
 import zone.dragon.dropwizard.metrics.interceptors.ExceptionMeteredInterceptorFactory;
 import zone.dragon.dropwizard.metrics.interceptors.MeteredInterceptorFactory;
 import zone.dragon.dropwizard.metrics.interceptors.TimedInterceptorFactory;
-import zone.dragon.dropwizard.metrics.naming.CodahaleMetricNameFilter;
+import zone.dragon.dropwizard.metrics.naming.filters.CodahaleMetricNameFilter;
 import zone.dragon.dropwizard.metrics.naming.DefaultMetricNameFormatter;
 import zone.dragon.dropwizard.metrics.naming.DefaultMetricNameService;
 import zone.dragon.dropwizard.metrics.naming.MetricNameFilter;

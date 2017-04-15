@@ -18,7 +18,10 @@ import zone.dragon.dropwizard.HK2Bundle;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.MediaType;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -57,6 +60,13 @@ public class CounterFactoryTest {
         public int increment() {
             return 6;
         }
+
+        @PUT
+        @Counted(monotonic = true)
+        public int update(int input) {
+            return input;
+        }
+
     }
 
     protected JerseyWebTarget client = JerseyClientBuilder.createClient().target(String.format("http://localhost:%d", RULE.getLocalPort()));
@@ -87,5 +97,12 @@ public class CounterFactoryTest {
         int            result   = client.path("inc").request().get(Integer.class);
         MetricRegistry registry = RULE.getEnvironment().metrics();
         assertThat(registry.getCounters()).containsKey("zone.dragon.dropwizard.metrics.CounterFactoryTest.CounterResource.increment");
+    }
+
+    @Test
+    public void testCounterAnnotationTagging() {
+        int            result   = client.path("inc").request().put(Entity.entity("1", MediaType.APPLICATION_JSON_TYPE), Integer.class);
+        MetricRegistry registry = RULE.getEnvironment().metrics();
+        assertThat(registry.getCounters()).containsKey("zone.dragon.dropwizard.metrics.CounterFactoryTest.CounterResource.update");
     }
 }

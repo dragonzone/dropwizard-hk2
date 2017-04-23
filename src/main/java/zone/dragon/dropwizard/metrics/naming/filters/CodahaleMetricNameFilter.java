@@ -1,4 +1,4 @@
-package zone.dragon.dropwizard.metrics.naming;
+package zone.dragon.dropwizard.metrics.naming.filters;
 
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Meter;
@@ -10,9 +10,14 @@ import com.codahale.metrics.annotation.Gauge;
 import com.codahale.metrics.annotation.Metered;
 import com.codahale.metrics.annotation.Metric;
 import com.codahale.metrics.annotation.Timed;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import lombok.Value;
+import lombok.extern.slf4j.Slf4j;
 import org.glassfish.hk2.api.Rank;
 import org.glassfish.hk2.utilities.reflection.ReflectionHelper;
+import zone.dragon.dropwizard.metrics.naming.MetricName;
+import zone.dragon.dropwizard.metrics.naming.MetricNameFilter;
 
 import javax.inject.Singleton;
 import java.lang.reflect.AnnotatedElement;
@@ -21,33 +26,55 @@ import java.lang.reflect.Executable;
 import java.lang.reflect.Member;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
+import java.util.concurrent.ExecutionException;
+
+import static com.google.common.base.MoreObjects.firstNonNull;
+import static com.google.common.base.Strings.emptyToNull;
+import static com.google.common.base.Strings.isNullOrEmpty;
 
 /**
  * Extracts names from the codahale metric annotations ({@link Gauge @Guage}, {@link CachedGauge @CachedGauge}, {@link Timed @Timed},
  * {@link Metered @Metered}, {@link ExceptionMetered @ExceptionMetered}, and {@link Metric @Metric})
  */
+@Slf4j
 @Singleton
 @Rank(MetricNameFilter.DEFAULT_NAME_PRIORITY)
 public class CodahaleMetricNameFilter implements MetricNameFilter {
+    private final Cache<AnnotatedElement, String> nameCache = CacheBuilder.newBuilder().weakKeys().build();
+
+    protected String buildCodahaleName(AnnotatedElement injectionSite, Type metricType) {
+        AnnotatedMetricInfo annotation    = getAnnotation(injectionSite, metricType);
+        String              annotatedName = annotation != null ? emptyToNull(annotation.getName()) : null;
+        boolean             absoluteName  = annotation != null && annotation.isAbsolute();
+        String              injecteeName  = getName(injectionSite);
+        if (annotatedName == null && injecteeName == null) {
+            return null;
+        }
+        String name = firstNonNull(annotatedName, injecteeName);
+        if (!absoluteName) {
+            String namespace = getNamespace(injectionSite);
+            if (!isNullOrEmpty(namespace)) {
+                name = String.format("%s.%s", namespace, name);
+            }
+        }
+        return name;
+    }
+
     @Override
     public MetricName buildName(MetricName metricName, AnnotatedElement injectionSite, Type metricType) {
-        // only change if it's not already been set
-        if (metricName.getName() != null) {
+        // only change if it's not already been set and we have an injection site to inspect
+        if (metricName.getName() != null || injectionSite == null) {
             return metricName;
         }
-        String              injecteeNamespace = getNamespace(injectionSite);
-        String              injecteeName      = getName(injectionSite);
-        AnnotatedMetricInfo annotation      = getAnnotation(injectionSite, metricType);
-        boolean             absoluteName    = annotation != null && annotation.isAbsolute();
-
-        String name = injecteeName != null ? injecteeName : metricName.getName();
-        if (annotation != null && annotation.getName() != null && !annotation.getName().isEmpty()) {
-            name = annotation.getName();
+        // Cache the names to avoid repeated annotation/reflection lookups
+        // metricType is not included in the key because an injeciton site should always have the same metric type
+        try {
+            String name = nameCache.get(injectionSite, () -> buildCodahaleName(injectionSite, metricType));
+            return metricName.setName(name);
+        } catch (ExecutionException e) {
+            log.warn("Failed to inspect metric annotations on %s", injectionSite, e);
+            return metricName;
         }
-        if (!absoluteName && injecteeNamespace != null && !injecteeNamespace.isEmpty()) {
-            name = String.format("%s.%s", injecteeNamespace, name);
-        }
-        return metricName.setName(name);
     }
 
     /**

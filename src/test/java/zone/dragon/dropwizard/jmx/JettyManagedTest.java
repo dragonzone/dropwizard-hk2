@@ -28,10 +28,6 @@ import java.lang.management.ManagementFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * @author Darth Android
- * @date 4/2/2017
- */
 public class JettyManagedTest {
     @ClassRule
     public static final DropwizardAppRule<Configuration> RULE = new DropwizardAppRule<>(JmxApp.class, new Configuration());

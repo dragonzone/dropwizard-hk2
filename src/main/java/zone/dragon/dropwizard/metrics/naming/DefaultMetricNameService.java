@@ -2,6 +2,7 @@ package zone.dragon.dropwizard.metrics.naming;
 
 import lombok.NonNull;
 import org.glassfish.hk2.api.IterableProvider;
+import org.jvnet.hk2.annotations.Optional;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -18,9 +19,9 @@ public class DefaultMetricNameService implements MetricNameService {
     private final MetricNameFormatter formatter;
 
     @Inject
-    public DefaultMetricNameService(@NonNull IterableProvider<MetricNameFilter> filters, @NonNull MetricNameFormatter formatter) {
+    public DefaultMetricNameService(@NonNull IterableProvider<MetricNameFilter> filters, @Optional MetricNameFormatter formatter) {
         this.filters = filters;
-        this.formatter = formatter;
+        this.formatter = formatter == null ? new DefaultMetricNameFormatter() : formatter;
     }
 
     @Override

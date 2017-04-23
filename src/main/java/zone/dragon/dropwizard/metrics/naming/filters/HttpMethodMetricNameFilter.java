@@ -1,0 +1,59 @@
+package zone.dragon.dropwizard.metrics.naming.filters;
+
+import lombok.NonNull;
+import lombok.Setter;
+import zone.dragon.dropwizard.metrics.naming.MetricName;
+import zone.dragon.dropwizard.metrics.naming.MetricNameFilter;
+
+import javax.annotation.Priority;
+import javax.inject.Inject;
+import javax.inject.Provider;
+import javax.inject.Singleton;
+import javax.ws.rs.core.Request;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Type;
+
+import static com.google.common.base.Preconditions.checkState;
+
+/**
+ * Tags request metrics with the HTTP method of the current request
+ */
+@Singleton
+@Priority(MetricNameFilter.DEFAULT_TAG_PRIORITY)
+public class HttpMethodMetricNameFilter extends RequestScopedMetricNameFilter {
+    public static final String DEFAULT_TAG_NAME = "httpOp";
+    private final String               tagName;
+    @NonNull
+    @Setter(onMethod = @__(@Inject))
+    private       Provider<Request>    requestProvider;
+
+    /**
+     * Creates a filter that tags request-scoped metrics with a tag named {@link #DEFAULT_TAG_NAME "httpOp"} and the current HTTP method as
+     * the value
+     */
+    @Inject
+    public HttpMethodMetricNameFilter() {
+        this(DEFAULT_TAG_NAME);
+    }
+
+    /**
+     * Creates a filter that tags request-scoped metrics with a tag named {@code tagName} and the current HTTP method as the value
+     *
+     * @param tagName
+     *     Name to use for the tag
+     */
+    public HttpMethodMetricNameFilter(@NonNull String tagName) {
+        this.tagName = tagName;
+    }
+
+    @Override
+    public MetricName buildRequestScopedName(MetricName metricName, AnnotatedElement injectionSite, Type metricType) {
+        checkState(requestProvider != null, "requestProvider must be set");
+        Request request = requestProvider.get();
+        if (request == null) {
+            return metricName;
+        }
+        return metricName.addTag(tagName, request.getMethod());
+    }
+}
+

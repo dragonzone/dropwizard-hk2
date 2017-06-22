@@ -1,12 +1,12 @@
 package zone.dragon.dropwizard;
 
-import com.google.common.annotations.Beta;
-import io.dropwizard.Configuration;
-import io.dropwizard.ConfiguredBundle;
-import io.dropwizard.setup.Bootstrap;
-import io.dropwizard.setup.Environment;
-import lombok.Getter;
-import lombok.NonNull;
+import java.lang.annotation.Annotation;
+import java.lang.management.ManagementFactory;
+
+import javax.inject.Inject;
+import javax.ws.rs.core.Feature;
+import javax.ws.rs.core.FeatureContext;
+
 import org.eclipse.jetty.jmx.MBeanContainer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.util.component.AbstractLifeCycle.AbstractLifeCycleListener;
@@ -19,6 +19,7 @@ import org.glassfish.hk2.api.ImmediateController.ImmediateServiceState;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.api.ServiceLocatorFactory;
 import org.glassfish.hk2.extras.ExtrasUtilities;
+import org.glassfish.hk2.internal.InheritableThreadContext;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.hk2.utilities.binding.BindingBuilder;
@@ -26,6 +27,15 @@ import org.glassfish.hk2.utilities.binding.BindingBuilderFactory;
 import org.glassfish.hk2.utilities.binding.ScopedBindingBuilder;
 import org.glassfish.hk2.utilities.binding.ServiceBindingBuilder;
 import org.glassfish.jersey.process.internal.RequestScoped;
+
+import com.google.common.annotations.Beta;
+
+import io.dropwizard.Configuration;
+import io.dropwizard.ConfiguredBundle;
+import io.dropwizard.setup.Bootstrap;
+import io.dropwizard.setup.Environment;
+import lombok.Getter;
+import lombok.NonNull;
 import zone.dragon.dropwizard.health.HealthCheckActivator;
 import zone.dragon.dropwizard.jmx.MBeanActivator;
 import zone.dragon.dropwizard.jmx.ManagedMBeanContainer;
@@ -37,12 +47,6 @@ import zone.dragon.dropwizard.metrics.factories.HistogramFactory;
 import zone.dragon.dropwizard.metrics.factories.MeterFactory;
 import zone.dragon.dropwizard.metrics.factories.TimerFactory;
 import zone.dragon.dropwizard.task.TaskActivator;
-
-import javax.inject.Inject;
-import javax.ws.rs.core.Feature;
-import javax.ws.rs.core.FeatureContext;
-import java.lang.annotation.Annotation;
-import java.lang.management.ManagementFactory;
 
 import static org.glassfish.hk2.utilities.ServiceLocatorUtilities.addClasses;
 
@@ -86,10 +90,15 @@ public class HK2Bundle<T extends Configuration> implements ConfiguredBundle<T> {
                    TimerFactory.class,
                    AnnotationInterceptionService.class
         );
-        ServiceLocatorUtilities.enableInheritableThreadScope(locator);
+        if (locator.getServiceHandle(InheritableThreadContext.class) == null) {
+            ServiceLocatorUtilities.enableInheritableThreadScope(locator);
+        }
         ExtrasUtilities.enableDefaultInterceptorServiceImplementation(locator);
         ExtrasUtilities.enableTopicDistribution(locator);
-        return ServiceLocatorUtilities.enableImmediateScopeSuspended(locator);
+        if (locator.getServiceHandle(ImmediateController.class) == null) {
+            return ServiceLocatorUtilities.enableImmediateScopeSuspended(locator);
+        }
+        return locator.getService(ImmediateController.class);
     }
 
     /**

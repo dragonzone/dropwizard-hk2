@@ -46,6 +46,7 @@ public class MBeanActivatorTest {
     @Path("/jmx")
     @Singleton
     @ManagedObject
+    @UseProxy(true)
     public static class JmxResource {
         @ManagedAttribute("Returns an attribute")
         public int getAttribute() {

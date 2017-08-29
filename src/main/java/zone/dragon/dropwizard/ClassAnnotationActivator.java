@@ -66,7 +66,7 @@ public abstract class ClassAnnotationActivator<T extends Annotation> implements 
             if (object == null) {
                 return;
             }
-            T annotation = object.getClass().getAnnotation(annotationType);
+            T annotation = descriptor.getImplementationClass().getAnnotation(annotationType);
             if (annotation != null) {
                 activate(descriptor, object, annotation);
             }

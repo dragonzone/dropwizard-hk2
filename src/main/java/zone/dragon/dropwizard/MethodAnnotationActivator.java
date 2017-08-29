@@ -61,7 +61,7 @@ public abstract class MethodAnnotationActivator<T extends Annotation> implements
             if (object == null) {
                 return;
             }
-            HELPER.getAllMethods(object.getClass()).forEach(wrapper -> {
+            HELPER.getAllMethods(descriptor.getImplementationClass()).forEach(wrapper -> {
                 Method method     = wrapper.getMethod();
                 T      annotation = method.getAnnotation(annotationType);
                 if (annotation != null) {

@@ -1,9 +1,11 @@
 package zone.dragon.dropwizard.metrics;
 
+import com.codahale.metrics.MetricFilter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
 import com.codahale.metrics.annotation.Metric;
 import com.codahale.metrics.annotation.Timed;
+import com.codahale.metrics.json.MetricsModule;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.dropwizard.Application;
 import io.dropwizard.Configuration;
@@ -31,6 +33,7 @@ public class TimerFactoryTest {
     public static class TimerApp extends Application<Configuration> {
         @Override
         public void initialize(Bootstrap<Configuration> bootstrap) {
+            bootstrap.getObjectMapper().registerModule(new MetricsModule(TimeUnit.SECONDS, TimeUnit.SECONDS, false, MetricFilter.ALL));
             HK2Bundle.addTo(bootstrap);
         }
 

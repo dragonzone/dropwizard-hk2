@@ -8,6 +8,7 @@ import org.junit.Test;
 import zone.dragon.dropwizard.TestApplication;
 import zone.dragon.dropwizard.TestConfig;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -29,6 +30,11 @@ public class InjectableHealthCheckFeatureTest {
     @Test
     public void testHealthCheckCreated() throws InterruptedException {
         assertEquals(2, RULE.getEnvironment().healthChecks().getNames().size());
-        assertEquals(Result.healthy("testValue"), RULE.getEnvironment().healthChecks().runHealthCheck("TestHealthCheck"));
+        final Result expected = Result.healthy("testValue");
+        final Result result = RULE.getEnvironment().healthChecks().runHealthCheck("TestHealthCheck");
+        assertThat(result.isHealthy()).isEqualTo(expected.isHealthy());
+        assertThat(result.getMessage()).isEqualTo(expected.getMessage());
+        assertThat(result.getDetails()).isEqualTo(expected.getDetails());
+        // Ignore timestamp differences
     }
 }

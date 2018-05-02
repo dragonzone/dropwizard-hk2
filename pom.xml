@@ -6,40 +6,34 @@
     <parent>
         <groupId>zone.dragon</groupId>
         <artifactId>base-java-pom</artifactId>
-        <version>1.0.35-fbc247</version>
+        <version>1.1.4-c1d255</version>
     </parent>
 
     <groupId>zone.dragon.dropwizard</groupId>
     <artifactId>dropwizard-hk2</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.2-SNAPSHOT</version>
 
-    <name>HK2 Integration for Dropwizard</name>
+    <name>Dropwizard :: HK2 Integration</name>
     <description>
         Adds support for Health Checks, LifeCycles, Metrics, and Tasks to be injected by HK2
     </description>
     <url>https://code.dragon.zone/dragonzone/dropwizard-hk2</url>
 
     <scm>
-        <connection>scm:git:http://code.dragon.zone/dragonzone/dropwizard-hk2.git</connection>
-        <developerConnection>scm:git:ssh://git@code.dragon.zone:dragonzone/dropwizard-hk2.git</developerConnection>
-        <url>https://code.dragon.zone/dragonzone/dropwizard-hk2/tree/master</url>
+        <connection>scm:git:http://github.com/dragonzone/dropwizard-hk2.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com:dragonzone/dropwizard-hk2.git</developerConnection>
+        <url>https://github.com/dragonzone/dropwizard-hk2/tree/master</url>
         <tag>HEAD</tag>
     </scm>
 
     <licenses>
         <license>
             <name>MIT License</name>
-            <url>https://code.dragon.zone/dragonzone/dropwizard-hk2/blob/master/LICENSE</url>
+            <url>https://github.com/dragonzone/dropwizard-hk2/blob/master/LICENSE</url>
         </license>
     </licenses>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <javadoc.plugin.version>2.10.4</javadoc.plugin.version>
-        <source.plugin.version>3.0.1</source.plugin.version>
         <!-- Keep up-to-date with dropwizard-bom -->
         <jetty.version>9.3.9.v20160517</jetty.version>
     </properties>

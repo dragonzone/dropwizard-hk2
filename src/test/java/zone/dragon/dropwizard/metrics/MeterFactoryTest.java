@@ -1,23 +1,25 @@
 package zone.dragon.dropwizard.metrics;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+
+import org.glassfish.jersey.client.JerseyClientBuilder;
+import org.glassfish.jersey.client.JerseyWebTarget;
+import org.junit.ClassRule;
+import org.junit.Test;
+
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.annotation.Metric;
+
 import io.dropwizard.Application;
 import io.dropwizard.Configuration;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.testing.junit.DropwizardAppRule;
-import org.glassfish.jersey.client.JerseyClientBuilder;
-import org.glassfish.jersey.client.JerseyWebTarget;
-import org.junit.ClassRule;
-import org.junit.Test;
 import zone.dragon.dropwizard.HK2Bundle;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -77,6 +79,6 @@ public class MeterFactoryTest {
     public void testUnnamedMeterCreated() {
         int            result   = client.path("inc").request().get(Integer.class);
         MetricRegistry registry = RULE.getEnvironment().metrics();
-        assertThat(registry.getMeters()).containsKey("zone.dragon.dropwizard.metrics.MeterFactoryTest.MeterResource.arg0");
+        assertThat(registry.getMeters()).containsKey("zone.dragon.dropwizard.metrics.MeterFactoryTest.MeterResource.unnamedMeter");
     }
 }

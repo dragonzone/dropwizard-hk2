@@ -88,7 +88,7 @@ public class TimerFactoryTest {
     public void testUnnamedTimerCreated() {
         int            result   = client.path("inc").request().get(Integer.class);
         MetricRegistry registry = RULE.getEnvironment().metrics();
-        assertThat(registry.getTimers()).containsKey("zone.dragon.dropwizard.metrics.TimerFactoryTest.TimerResource.arg0");
+        assertThat(registry.getTimers()).containsKey("zone.dragon.dropwizard.metrics.TimerFactoryTest.TimerResource.unnamedTimer");
     }
 
     @Test

@@ -6,18 +6,18 @@
     <parent>
         <groupId>zone.dragon</groupId>
         <artifactId>base-dropwizard-pom</artifactId>
-        <version>1.2.6-7d6623</version>
+        <version>1.3.10-2fe27d</version>
     </parent>
 
     <groupId>zone.dragon.dropwizard</groupId>
     <artifactId>dropwizard-hk2</artifactId>
-    <version>1.2-SNAPSHOT</version>
+    <version>1.3-SNAPSHOT</version>
 
     <name>Dropwizard :: HK2 Integration</name>
     <description>
         Adds support for Health Checks, LifeCycles, Metrics, and Tasks to be injected by HK2
     </description>
-    <url>https://code.dragon.zone/dragonzone/dropwizard-hk2</url>
+    <url>https://github.com/dragonzone/dropwizard-hk2</url>
 
     <scm>
         <connection>scm:git:http://github.com/dragonzone/dropwizard-hk2.git</connection>

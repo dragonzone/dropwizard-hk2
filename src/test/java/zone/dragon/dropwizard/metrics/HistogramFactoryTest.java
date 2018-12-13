@@ -1,23 +1,25 @@
 package zone.dragon.dropwizard.metrics;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+
+import org.glassfish.jersey.client.JerseyClientBuilder;
+import org.glassfish.jersey.client.JerseyWebTarget;
+import org.junit.ClassRule;
+import org.junit.Test;
+
 import com.codahale.metrics.Histogram;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.annotation.Metric;
+
 import io.dropwizard.Application;
 import io.dropwizard.Configuration;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.testing.junit.DropwizardAppRule;
-import org.glassfish.jersey.client.JerseyClientBuilder;
-import org.glassfish.jersey.client.JerseyWebTarget;
-import org.junit.ClassRule;
-import org.junit.Test;
 import zone.dragon.dropwizard.HK2Bundle;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -77,6 +79,6 @@ public class HistogramFactoryTest {
     public void testUnnamedHistogramCreated() {
         int            result   = client.path("inc").request().get(Integer.class);
         MetricRegistry registry = RULE.getEnvironment().metrics();
-        assertThat(registry.getHistograms()).containsKey("zone.dragon.dropwizard.metrics.HistogramFactoryTest.HistogramResource.arg0");
+        assertThat(registry.getHistograms()).containsKey("zone.dragon.dropwizard.metrics.HistogramFactoryTest.HistogramResource.unnamedHistogram");
     }
 }

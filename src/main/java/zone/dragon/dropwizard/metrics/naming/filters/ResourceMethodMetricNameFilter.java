@@ -1,17 +1,17 @@
 package zone.dragon.dropwizard.metrics.naming.filters;
 
-import lombok.NonNull;
-import lombok.Setter;
-import zone.dragon.dropwizard.metrics.naming.MetricName;
-import zone.dragon.dropwizard.metrics.naming.MetricNameFilter;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Type;
 
 import javax.annotation.Priority;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 import javax.ws.rs.container.ResourceInfo;
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Type;
+
+import lombok.NonNull;
+import zone.dragon.dropwizard.metrics.naming.MetricName;
+import zone.dragon.dropwizard.metrics.naming.MetricNameFilter;
 
 import static com.google.common.base.Preconditions.checkState;
 
@@ -23,8 +23,6 @@ import static com.google.common.base.Preconditions.checkState;
 public class ResourceMethodMetricNameFilter extends RequestScopedMetricNameFilter {
     public static final String DEFAULT_TAG_NAME = "action";
     private final String                 tagName;
-    @NonNull
-    @Setter(onMethod = @__(@Inject))
     private       Provider<ResourceInfo> resourceInfoProvider;
 
     /**
@@ -54,6 +52,10 @@ public class ResourceMethodMetricNameFilter extends RequestScopedMetricNameFilte
             return metricName;
         }
         return metricName.addTag(tagName, resourceInfo.getResourceMethod().getName());
+    }
+
+    public void setResourceInfoProvider(@NonNull Provider<ResourceInfo> resourceInfoProvider) {
+        this.resourceInfoProvider = resourceInfoProvider;
     }
 }
 

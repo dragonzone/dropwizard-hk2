@@ -1,19 +1,18 @@
 package zone.dragon.dropwizard.metrics.naming.filters;
 
-import lombok.NonNull;
-import lombok.Setter;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Type;
+
 import org.glassfish.hk2.api.Injectee;
 import org.glassfish.hk2.api.InstantiationData;
 import org.glassfish.hk2.api.InstantiationService;
 import org.glassfish.jersey.process.internal.RequestScope;
 import org.glassfish.jersey.process.internal.RequestScope.Instance;
 import org.glassfish.jersey.process.internal.RequestScoped;
+
+import lombok.NonNull;
 import zone.dragon.dropwizard.metrics.naming.MetricName;
 import zone.dragon.dropwizard.metrics.naming.MetricNameFilter;
-
-import javax.inject.Inject;
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Type;
 
 import static com.google.common.base.Preconditions.checkState;
 
@@ -22,11 +21,7 @@ import static com.google.common.base.Preconditions.checkState;
  * modifying metrics when outside of a request scope or the metric is being injected into a non-request-scoped object.
  */
 public abstract class RequestScopedMetricNameFilter implements MetricNameFilter {
-    @NonNull
-    @Setter(onMethod = @__(@Inject))
     private InstantiationService instantiationService;
-    @NonNull
-    @Setter(onMethod = @__(@Inject))
     private RequestScope         requestScope;
 
     @Override
@@ -49,6 +44,14 @@ public abstract class RequestScopedMetricNameFilter implements MetricNameFilter 
             }
         }
         return buildRequestScopedName(metricName, injectionSite, metricType);
+    }
+
+    public void setResourceInfoProvider(@NonNull InstantiationService instantiationService) {
+        this.instantiationService = instantiationService;
+    }
+
+    public void setResourceInfoProvider(@NonNull RequestScope requestScope) {
+        this.requestScope = requestScope;
     }
 
     /**

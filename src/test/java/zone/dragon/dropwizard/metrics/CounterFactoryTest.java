@@ -1,20 +1,5 @@
 package zone.dragon.dropwizard.metrics;
 
-import com.codahale.metrics.Counter;
-import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.annotation.Counted;
-import com.codahale.metrics.annotation.Metric;
-import io.dropwizard.Application;
-import io.dropwizard.Configuration;
-import io.dropwizard.setup.Bootstrap;
-import io.dropwizard.setup.Environment;
-import io.dropwizard.testing.junit.DropwizardAppRule;
-import org.glassfish.jersey.client.JerseyClientBuilder;
-import org.glassfish.jersey.client.JerseyWebTarget;
-import org.junit.ClassRule;
-import org.junit.Test;
-import zone.dragon.dropwizard.HK2Bundle;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.ws.rs.GET;
@@ -22,6 +7,23 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
+
+import org.glassfish.jersey.client.JerseyClientBuilder;
+import org.glassfish.jersey.client.JerseyWebTarget;
+import org.junit.ClassRule;
+import org.junit.Test;
+
+import com.codahale.metrics.Counter;
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.annotation.Counted;
+import com.codahale.metrics.annotation.Metric;
+
+import io.dropwizard.Application;
+import io.dropwizard.Configuration;
+import io.dropwizard.setup.Bootstrap;
+import io.dropwizard.setup.Environment;
+import io.dropwizard.testing.junit.DropwizardAppRule;
+import zone.dragon.dropwizard.HK2Bundle;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -89,7 +91,7 @@ public class CounterFactoryTest {
     public void testUnnamedCounterCreated() {
         int            result   = client.path("inc").request().get(Integer.class);
         MetricRegistry registry = RULE.getEnvironment().metrics();
-        assertThat(registry.getCounters()).containsKey("zone.dragon.dropwizard.metrics.CounterFactoryTest.CounterResource.arg0");
+        assertThat(registry.getCounters()).containsKey("zone.dragon.dropwizard.metrics.CounterFactoryTest.CounterResource.unnamedCounter");
     }
 
     @Test

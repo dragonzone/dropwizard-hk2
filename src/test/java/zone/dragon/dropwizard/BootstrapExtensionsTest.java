@@ -1,10 +1,5 @@
 package zone.dragon.dropwizard;
 
-import io.dropwizard.Bundle;
-import io.dropwizard.ConfiguredBundle;
-import io.dropwizard.setup.Bootstrap;
-import org.junit.Test;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -13,6 +8,13 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.function.Supplier;
+
+import org.junit.Test;
+
+import io.dropwizard.Bundle;
+import io.dropwizard.Configuration;
+import io.dropwizard.ConfiguredBundle;
+import io.dropwizard.setup.Bootstrap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
@@ -84,11 +86,11 @@ public class BootstrapExtensionsTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testGetConfiguredBundles() {
-        Bootstrap<?>     bootstrap = new Bootstrap<>(null);
+        Bootstrap<Configuration>     bootstrap = new Bootstrap<>(null);
         ConfiguredBundle bundle    = mock(ConfiguredBundle.class);
         bootstrap.addBundle(bundle);
         //
-        List<ConfiguredBundle> bundles = BootstrapExtensions.getConfiguredBundles(bootstrap);
+        List<ConfiguredBundle<Configuration>> bundles = BootstrapExtensions.getConfiguredBundles(bootstrap);
         //
         assertThat(bundles).isNotNull();
         assertThat(bundles).containsExactly(bundle);

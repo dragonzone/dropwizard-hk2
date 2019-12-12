@@ -1,5 +1,12 @@
 package zone.dragon.dropwizard.metrics;
 
+import java.lang.reflect.Type;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
+
+import org.jvnet.hk2.annotations.Optional;
+
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Histogram;
 import com.codahale.metrics.Meter;
@@ -7,14 +14,10 @@ import com.codahale.metrics.Metric;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.MetricSet;
 import com.codahale.metrics.Timer;
+
 import lombok.NonNull;
 import lombok.experimental.Delegate;
-import org.jvnet.hk2.annotations.Optional;
 import zone.dragon.dropwizard.metrics.naming.MetricNameService;
-
-import javax.inject.Inject;
-import javax.inject.Provider;
-import java.lang.reflect.Type;
 
 /**
  * Metric registry that supports contextual tagging of metrics. This wraps an existing {@link MetricRegistry} and adds tags to the names
@@ -33,6 +36,8 @@ public class TaggedMetricRegistry extends MetricRegistry {
         public <T extends Metric> T register(String name, T metric) throws IllegalArgumentException;
 
         public void registerAll(MetricSet metrics) throws IllegalArgumentException;
+
+        public void registerAll(String prefix, MetricSet metrics);
 
         public Timer timer(String name);
     }
@@ -135,7 +140,7 @@ public class TaggedMetricRegistry extends MetricRegistry {
         return delegate.timer(getTaggedName(name, Timer.class));
     }
 
-    protected void registerAll(String prefix, MetricSet metricSet) {
+    public void registerAll(String prefix, MetricSet metricSet) {
         metricSet.getMetrics().forEach((key, value) -> register(name(prefix, key), value));
     }
 }

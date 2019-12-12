@@ -6,8 +6,8 @@ import java.lang.reflect.Type;
 import org.glassfish.hk2.api.Injectee;
 import org.glassfish.hk2.api.InstantiationData;
 import org.glassfish.hk2.api.InstantiationService;
+import org.glassfish.jersey.process.internal.RequestContext;
 import org.glassfish.jersey.process.internal.RequestScope;
-import org.glassfish.jersey.process.internal.RequestScope.Instance;
 import org.glassfish.jersey.process.internal.RequestScoped;
 
 import lombok.NonNull;
@@ -29,7 +29,7 @@ public abstract class RequestScopedMetricNameFilter implements MetricNameFilter 
         checkState(instantiationService != null, "instantiationService must be set");
         checkState(requestScope != null, "requestScope must be set");
         // Ensure we're inside a request scope
-        Instance currentRequestScope = requestScope.suspendCurrent();
+        RequestContext currentRequestScope = requestScope.suspendCurrent();
         if (currentRequestScope == null) {
             return metricName;
         } else {

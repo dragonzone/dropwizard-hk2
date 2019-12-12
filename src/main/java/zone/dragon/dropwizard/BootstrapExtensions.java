@@ -1,6 +1,11 @@
 package zone.dragon.dropwizard;
 
-import com.google.common.collect.Lists;
+import java.lang.reflect.Field;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
 import io.dropwizard.Bundle;
 import io.dropwizard.Configuration;
 import io.dropwizard.ConfiguredBundle;
@@ -11,18 +16,12 @@ import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 
-import java.lang.reflect.Field;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.Supplier;
-
 /**
  * Utility methods for interacting with the {@link Bundle bundles} and {@link ConfiguredBundle configured bundles} in a {@link Bootstrap}
  */
 @Slf4j
 @UtilityClass
 public class BootstrapExtensions {
-    private final Field BUNDLES_FIELD            = getBootstrapField("bundles");
     private final Field CONFIGURED_BUNDLES_FIELD = getBootstrapField("configuredBundles");
 
     /**
@@ -40,6 +39,7 @@ public class BootstrapExtensions {
      *
      * @return The first bundle of type {@code T} in the {@code bootstrap}
      */
+    @Deprecated
     <T extends Bundle> T addBundleIfNotExist(
         @NonNull Bootstrap<?> bootstrap, @NonNull Class<T> bundleType, @NonNull Supplier<T> bundleSupplier
     ) {
@@ -104,12 +104,19 @@ public class BootstrapExtensions {
      *
      * @return The bundles in the {@code Bootstrap}
      *
+     * @deprecated Use {@link #getConfiguredBundles(Bootstrap)} instead
+     *
      * @see #getConfiguredBundles(Bootstrap)
      */
     @SuppressWarnings("unchecked")
+    @Deprecated
     @SneakyThrows
     List<Bundle> getBundles(@NonNull Bootstrap<?> bootstrap) {
-        return Collections.unmodifiableList((List<Bundle>) BUNDLES_FIELD.get(bootstrap));
+        return getConfiguredBundles(bootstrap)
+            .stream()
+            .filter(Bundle.class::isInstance)
+            .map(Bundle.class::cast)
+            .collect(Collectors.toList());
     }
 
     /**
@@ -125,8 +132,8 @@ public class BootstrapExtensions {
      */
     @SuppressWarnings("unchecked")
     @SneakyThrows
-    List<ConfiguredBundle> getConfiguredBundles(@NonNull Bootstrap<?> bootstrap) {
-        return Collections.unmodifiableList((List<ConfiguredBundle>) CONFIGURED_BUNDLES_FIELD.get(bootstrap));
+    <U extends Configuration> List<ConfiguredBundle<U>> getConfiguredBundles(@NonNull Bootstrap<U> bootstrap) {
+        return Collections.unmodifiableList((List<ConfiguredBundle<U>>) CONFIGURED_BUNDLES_FIELD.get(bootstrap));
     }
 
     /**
@@ -145,15 +152,11 @@ public class BootstrapExtensions {
      */
     @SuppressWarnings("unchecked")
     <T> List<T> getImplementingBundles(@NonNull Bootstrap<?> bootstrap, @NonNull Class<T> type) {
-        List<T> bundles = Lists.newArrayList();
-        getBundles(bootstrap)
+        return getConfiguredBundles(bootstrap)
             .stream()
             .filter(bundle -> type.isAssignableFrom(bundle.getClass()))
-            .forEach(bundle -> bundles.add((T) bundle));
-        getConfiguredBundles(bootstrap)
-            .stream()
-            .filter(bundle -> type.isAssignableFrom(bundle.getClass()))
-            .forEach(bundle -> bundles.add((T) bundle));
-        return bundles;
+            .map(type::cast)
+            .collect(Collectors.toList());
+
     }
 }

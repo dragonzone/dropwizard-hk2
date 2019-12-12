@@ -1,19 +1,6 @@
 package zone.dragon.dropwizard.jmx;
 
-import com.codahale.metrics.annotation.Timed;
-import io.dropwizard.Application;
-import io.dropwizard.Configuration;
-import io.dropwizard.setup.Bootstrap;
-import io.dropwizard.setup.Environment;
-import io.dropwizard.testing.junit.DropwizardAppRule;
-import org.eclipse.jetty.util.annotation.ManagedAttribute;
-import org.eclipse.jetty.util.annotation.ManagedObject;
-import org.glassfish.hk2.utilities.binding.AbstractBinder;
-import org.glassfish.jersey.client.JerseyClientBuilder;
-import org.glassfish.jersey.client.JerseyWebTarget;
-import org.junit.ClassRule;
-import org.junit.Test;
-import zone.dragon.dropwizard.HK2Bundle;
+import java.lang.management.ManagementFactory;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -26,7 +13,23 @@ import javax.management.ObjectName;
 import javax.management.ReflectionException;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import java.lang.management.ManagementFactory;
+
+import org.eclipse.jetty.util.annotation.ManagedAttribute;
+import org.eclipse.jetty.util.annotation.ManagedObject;
+import org.glassfish.hk2.utilities.binding.AbstractBinder;
+import org.glassfish.jersey.client.JerseyClientBuilder;
+import org.glassfish.jersey.client.JerseyWebTarget;
+import org.junit.ClassRule;
+import org.junit.Test;
+
+import com.codahale.metrics.annotation.Timed;
+
+import io.dropwizard.Application;
+import io.dropwizard.Configuration;
+import io.dropwizard.setup.Bootstrap;
+import io.dropwizard.setup.Environment;
+import io.dropwizard.testing.junit.DropwizardAppRule;
+import zone.dragon.dropwizard.HK2Bundle;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

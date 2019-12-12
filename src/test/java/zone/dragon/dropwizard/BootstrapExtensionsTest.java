@@ -72,7 +72,7 @@ public class BootstrapExtensionsTest {
         Bundle       bundle    = mock(Bundle.class);
         bootstrap.addBundle(bundle);
         //
-        List<Bundle> bundles = BootstrapExtensions.getBundles(bootstrap);
+        List<ConfiguredBundle<Configuration>> bundles = BootstrapExtensions.getBundles(bootstrap);
         //
         assertThat(bundles).isNotNull();
         assertThat(bundles).containsExactly(bundle);

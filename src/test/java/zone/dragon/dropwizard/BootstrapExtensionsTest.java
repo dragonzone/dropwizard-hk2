@@ -96,11 +96,6 @@ public class BootstrapExtensionsTest {
         assertThat(bundles).containsExactly(bundle);
     }
 
-    @Test(expected = NullPointerException.class)
-    public void testGetConfiguredBundlesWithNull() {
-        BootstrapExtensions.getBundles(null);
-    }
-
     @SuppressWarnings("unchecked")
     @Test
     public void testGetImplementingBundles() {

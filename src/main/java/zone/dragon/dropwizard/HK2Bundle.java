@@ -68,7 +68,7 @@ public class HK2Bundle<T extends Configuration> implements ConfiguredBundle<T> {
      */
     @SuppressWarnings("unchecked")
     public static <T extends Configuration> HK2Bundle<T> addTo(Bootstrap<T> bootstrap) {
-        return BootstrapExtensions.addConfiguredBundleIfNotExist(bootstrap, HK2Bundle.class, HK2Bundle::new);
+        return BootstrapExtensions.addBundleIfNotExist(bootstrap, HK2Bundle.class, HK2Bundle::new);
     }
 
     /**

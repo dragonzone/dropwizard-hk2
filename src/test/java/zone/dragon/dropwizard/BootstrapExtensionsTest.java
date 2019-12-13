@@ -29,7 +29,7 @@ public class BootstrapExtensionsTest {
     @Test
     public void testAddBundleIfNotExist() {
         Bundle       newBundle = mock(Bundle.class);
-        Bootstrap<?> bootstrap = new Bootstrap<>(null);
+        Bootstrap<Configuration> bootstrap = new Bootstrap<>(null);
         //
         Bundle addedBundle = BootstrapExtensions.addBundleIfNotExist(bootstrap, Bundle.class, () -> newBundle);
         //
@@ -56,7 +56,7 @@ public class BootstrapExtensionsTest {
     public void testAddBundleIfNotExistPreExisting() {
         Supplier<Bundle> bundleSupplier = mock(Supplier.class);
         Bundle           oldBundle      = mock(Bundle.class);
-        Bootstrap<?>     bootstrap      = new Bootstrap<>(null);
+        Bootstrap<Configuration>     bootstrap      = new Bootstrap<>(null);
         bootstrap.addBundle(oldBundle);
         //
         Bundle addedBundle = BootstrapExtensions.addBundleIfNotExist(bootstrap, Bundle.class, bundleSupplier);
@@ -68,11 +68,11 @@ public class BootstrapExtensionsTest {
 
     @Test
     public void testGetBundles() {
-        Bootstrap<?> bootstrap = new Bootstrap<>(null);
+        Bootstrap<Configuration> bootstrap = new Bootstrap<>(null);
         Bundle       bundle    = mock(Bundle.class);
         bootstrap.addBundle(bundle);
         //
-        List<Bundle> bundles = BootstrapExtensions.getBundles(bootstrap);
+        List<ConfiguredBundle<Configuration>> bundles = BootstrapExtensions.getBundles(bootstrap);
         //
         assertThat(bundles).isNotNull();
         assertThat(bundles).containsExactly(bundle);
@@ -90,15 +90,10 @@ public class BootstrapExtensionsTest {
         ConfiguredBundle bundle    = mock(ConfiguredBundle.class);
         bootstrap.addBundle(bundle);
         //
-        List<ConfiguredBundle<Configuration>> bundles = BootstrapExtensions.getConfiguredBundles(bootstrap);
+        List<ConfiguredBundle<Configuration>> bundles = BootstrapExtensions.getBundles(bootstrap);
         //
         assertThat(bundles).isNotNull();
         assertThat(bundles).containsExactly(bundle);
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void testGetConfiguredBundlesWithNull() {
-        BootstrapExtensions.getConfiguredBundles(null);
     }
 
     @SuppressWarnings("unchecked")

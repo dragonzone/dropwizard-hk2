@@ -6,7 +6,7 @@
     <parent>
         <groupId>zone.dragon</groupId>
         <artifactId>base-dropwizard-pom</artifactId>
-        <version>2.0.38-d562c0</version>
+        <version>2.0.39-515607</version>
     </parent>
 
     <groupId>zone.dragon.dropwizard</groupId>

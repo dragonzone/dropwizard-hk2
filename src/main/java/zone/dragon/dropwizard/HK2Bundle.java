@@ -21,7 +21,6 @@ import org.glassfish.hk2.api.ServiceLocatorFactory;
 import org.glassfish.hk2.extras.ExtrasUtilities;
 import org.glassfish.hk2.internal.InheritableThreadContext;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
-import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.hk2.utilities.binding.BindingBuilder;
 import org.glassfish.hk2.utilities.binding.BindingBuilderFactory;
 import org.glassfish.hk2.utilities.binding.ScopedBindingBuilder;
@@ -115,10 +114,14 @@ public class HK2Bundle<T extends Configuration> implements ConfiguredBundle<T> {
 
         @Override
         public boolean configure(FeatureContext context) {
-            ServiceLocator bundleLocator = serviceLocator.getService(ServiceLocator.class, SERVICE_LOCATOR);
+            ServiceLocator bundleLocator = (ServiceLocator) context.getConfiguration().getProperty(SERVICE_LOCATOR);
+            if (bundleLocator == null) {
+                throw new IllegalStateException("Service bridge missing from application context configuration");
+            }
             ExtrasUtilities.bridgeServiceLocator(bundleLocator, serviceLocator);
             ExtrasUtilities.bridgeServiceLocator(serviceLocator, bundleLocator);
             bindLocalServices(serviceLocator).setImmediateState(ImmediateServiceState.RUNNING);
+            ServiceLocatorUtilities.addOneConstant(serviceLocator, bundleLocator, SERVICE_LOCATOR, ServiceLocator.class);
             return true;
         }
     }
@@ -201,11 +204,9 @@ public class HK2Bundle<T extends Configuration> implements ConfiguredBundle<T> {
     public void run(@NonNull T configuration, @NonNull Environment environment) {
         finishBinding();
         // Bridge into Jersey's locator
-        environment.jersey().register(new AbstractBinder() {
-            @Override
-            protected void configure() {
-                bind(getLocator()).to(ServiceLocator.class).named(SERVICE_LOCATOR);
-            }
+        environment.jersey().register((Feature) context -> {
+            context.property(SERVICE_LOCATOR, getLocator());
+            return true;
         });
         // Make the service locator available to the admin context too.
         environment.getAdminContext().setAttribute(SERVICE_LOCATOR, getLocator());

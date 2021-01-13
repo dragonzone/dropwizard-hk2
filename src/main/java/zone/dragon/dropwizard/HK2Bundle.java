@@ -52,6 +52,9 @@ import static org.glassfish.hk2.utilities.ServiceLocatorUtilities.addClasses;
 /**
  * Provides integration between DropWizard and HK2, allowing developers to leverage the framework built into Jersey.
  *
+ * @param <T>
+ *     Application configuration type
+ *
  * @author Bryan Harclerode
  */
 public class HK2Bundle<T extends Configuration> implements ConfiguredBundle<T> {
@@ -60,6 +63,8 @@ public class HK2Bundle<T extends Configuration> implements ConfiguredBundle<T> {
     /**
      * Adds this bundle to the given {@link Bootstrap} if it has not already been added by another bundle or the application.
      *
+     * @param <T>
+     *     Application configuration type
      * @param bootstrap
      *     {@code Bootstrap} to which the {@code HK2Bundle} should be added
      *

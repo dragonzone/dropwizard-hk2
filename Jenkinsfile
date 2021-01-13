@@ -2,4 +2,4 @@
 
 @Library("dragonzone/jenkins-pipeline-library") _
 
-mavenPipeline()
+mavenCiPipeline()

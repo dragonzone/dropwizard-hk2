@@ -1,12 +1,12 @@
 package zone.dragon.dropwizard.metrics.naming;
 
+import java.util.Map;
+import java.util.TreeMap;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.experimental.Accessors;
-
-import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * Represents a named metric, which may also contain tags
@@ -20,6 +20,8 @@ public class MetricName {
      *
      * @param name
      *     Name of the metric
+     *
+     * @return MetricName representing a bare metric
      */
     public static MetricName of(String name) {
         return of(name, new TreeMap<>());
@@ -32,6 +34,8 @@ public class MetricName {
      *     Name of the metric
      * @param tags
      *     Tags for this metric
+     *
+     * @return MetricName representing a metric with tags
      */
     public static MetricName of(String name, @NonNull Map<String, String> tags) {
         return new MetricName(name, tags);

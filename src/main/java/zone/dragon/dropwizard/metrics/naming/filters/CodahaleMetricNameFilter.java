@@ -1,5 +1,18 @@
 package zone.dragon.dropwizard.metrics.naming.filters;
 
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Executable;
+import java.lang.reflect.Member;
+import java.lang.reflect.Parameter;
+import java.lang.reflect.Type;
+import java.util.concurrent.ExecutionException;
+
+import javax.inject.Singleton;
+
+import org.glassfish.hk2.api.Rank;
+import org.glassfish.hk2.utilities.reflection.ReflectionHelper;
+
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.Timer;
@@ -12,21 +25,11 @@ import com.codahale.metrics.annotation.Metric;
 import com.codahale.metrics.annotation.Timed;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
-import org.glassfish.hk2.api.Rank;
-import org.glassfish.hk2.utilities.reflection.ReflectionHelper;
 import zone.dragon.dropwizard.metrics.naming.MetricName;
 import zone.dragon.dropwizard.metrics.naming.MetricNameFilter;
-
-import javax.inject.Singleton;
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Executable;
-import java.lang.reflect.Member;
-import java.lang.reflect.Parameter;
-import java.lang.reflect.Type;
-import java.util.concurrent.ExecutionException;
 
 import static com.google.common.base.MoreObjects.firstNonNull;
 import static com.google.common.base.Strings.emptyToNull;
@@ -72,7 +75,7 @@ public class CodahaleMetricNameFilter implements MetricNameFilter {
             String name = nameCache.get(injectionSite, () -> buildCodahaleName(injectionSite, metricType));
             return metricName.setName(name);
         } catch (ExecutionException e) {
-            log.warn("Failed to inspect metric annotations on %s", injectionSite, e);
+            log.warn("Failed to inspect metric annotations on {}", injectionSite, e);
             return metricName;
         }
     }
@@ -147,7 +150,7 @@ public class CodahaleMetricNameFilter implements MetricNameFilter {
     protected String getName(AnnotatedElement injectionSite) {
         if (injectionSite instanceof Member) {
             if (injectionSite instanceof Constructor) {
-                return ((Constructor) injectionSite).getDeclaringClass().getSimpleName();
+                return ((Constructor<?>) injectionSite).getDeclaringClass().getSimpleName();
             }
             return ((Member) injectionSite).getName();
         }

@@ -11,8 +11,6 @@ import zone.dragon.dropwizard.TestApplication;
 import zone.dragon.dropwizard.TestConfig;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 /**
  * @author Bryan Harclerode
@@ -26,12 +24,12 @@ public class InjectableHealthCheckFeatureTest {
 
     @Test
     public void test() {
-        assertTrue(RULE.getEnvironment().lifecycle() != null);
+        assertThat(RULE.getEnvironment().lifecycle()).isNotNull();
     }
 
     @Test
-    public void testHealthCheckCreated() throws InterruptedException {
-        assertEquals(2, RULE.getEnvironment().healthChecks().getNames().size());
+    public void testHealthCheckCreated() {
+        assertThat(RULE.getEnvironment().healthChecks().getNames()).hasSize(2);
         final Result expected = Result.healthy("testValue");
         final Result result = RULE.getEnvironment().healthChecks().runHealthCheck("TestHealthCheck");
         assertThat(result.isHealthy()).isEqualTo(expected.isHealthy());

@@ -1,12 +1,13 @@
 package zone.dragon.dropwizard.health;
 
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import com.codahale.metrics.health.HealthCheck.Result;
 
 import io.dropwizard.testing.ResourceHelpers;
-import io.dropwizard.testing.junit.DropwizardAppRule;
+import io.dropwizard.testing.junit5.DropwizardAppExtension;
+import io.dropwizard.testing.junit5.DropwizardExtensionsSupport;
 import zone.dragon.dropwizard.TestApplication;
 import zone.dragon.dropwizard.TestConfig;
 
@@ -16,9 +17,9 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Bryan Harclerode
  * @date 9/23/2016
  */
+@ExtendWith(DropwizardExtensionsSupport.class)
 public class InjectableHealthCheckFeatureTest {
-    @ClassRule
-    public static final DropwizardAppRule<TestConfig> RULE = new DropwizardAppRule<>(TestApplication.class,
+    public static final DropwizardAppExtension<TestConfig> RULE = new DropwizardAppExtension<>(TestApplication.class,
                                                                                      ResourceHelpers.resourceFilePath("config.yaml")
     );
 

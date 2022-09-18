@@ -1,6 +1,6 @@
 package zone.dragon.dropwizard;
 
-import io.dropwizard.Configuration;
+import io.dropwizard.core.Configuration;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

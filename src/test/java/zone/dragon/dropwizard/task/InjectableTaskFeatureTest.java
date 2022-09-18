@@ -1,23 +1,24 @@
 package zone.dragon.dropwizard.task;
 
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
 import io.dropwizard.client.JerseyClientBuilder;
 import io.dropwizard.testing.ResourceHelpers;
-import io.dropwizard.testing.junit.DropwizardAppRule;
-import org.junit.ClassRule;
-import org.junit.Test;
+import io.dropwizard.testing.junit5.DropwizardAppExtension;
+import io.dropwizard.testing.junit5.DropwizardExtensionsSupport;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.Entity;
 import zone.dragon.dropwizard.TestApplication;
 import zone.dragon.dropwizard.TestConfig;
-
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.Entity;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  */
+@ExtendWith(DropwizardExtensionsSupport.class)
 public class InjectableTaskFeatureTest {
-    @ClassRule
-    public static final DropwizardAppRule<TestConfig> RULE = new DropwizardAppRule<>(TestApplication.class,
+    public static final DropwizardAppExtension<TestConfig> RULE = new DropwizardAppExtension<>(TestApplication.class,
                                                                                      ResourceHelpers.resourceFilePath("config.yaml")
     );
 

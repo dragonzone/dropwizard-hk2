@@ -1,33 +1,35 @@
 package zone.dragon.dropwizard.lifecycle;
 
-import io.dropwizard.Application;
-import io.dropwizard.setup.Bootstrap;
-import io.dropwizard.setup.Environment;
-import io.dropwizard.testing.ResourceHelpers;
-import io.dropwizard.testing.junit.DropwizardAppRule;
 import org.eclipse.jetty.util.component.LifeCycle;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+import io.dropwizard.core.Application;
+import io.dropwizard.core.setup.Bootstrap;
+import io.dropwizard.core.setup.Environment;
+import io.dropwizard.testing.ResourceHelpers;
+import io.dropwizard.testing.junit5.DropwizardAppExtension;
+import io.dropwizard.testing.junit5.DropwizardExtensionsSupport;
+import jakarta.inject.Inject;
 import zone.dragon.dropwizard.HK2Bundle;
 import zone.dragon.dropwizard.TestConfig;
 
-import javax.inject.Inject;
-
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * @author Bryan Harclerode
  * @date 10/29/2016
  */
+@ExtendWith(DropwizardExtensionsSupport.class)
 public class InjectableLifeCycleListenerTest {
     private static String testValue;
     private static boolean started;
     private static boolean stopping;
     private static boolean stopped;
 
-    @AfterClass
+    @AfterAll
     public static void verifyStopped() {
         assertThat(stopped).isEqualTo(true);
     }
@@ -55,7 +57,7 @@ public class InjectableLifeCycleListenerTest {
         @Override
         public void lifeCycleStarting(LifeCycle event) {
             if (testValue != null) {
-                Assert.fail("Invoked twice!");
+                fail("Invoked twice!");
             }
             testValue = config.getTestProperty();
         }
@@ -63,10 +65,10 @@ public class InjectableLifeCycleListenerTest {
         @Override
         public void lifeCycleStarted(LifeCycle event) {
             if (testValue == null) {
-                Assert.fail("Starting event not called");
+                fail("Starting event not called");
             }
             if (started) {
-                Assert.fail("Already started");
+                fail("Already started");
             }
             started = true;
         }
@@ -79,10 +81,10 @@ public class InjectableLifeCycleListenerTest {
         @Override
         public void lifeCycleStopping(LifeCycle event) {
             if (!started) {
-                Assert.fail("Started event not called");
+                fail("Started event not called");
             }
             if (stopping) {
-                Assert.fail("Already stopping");
+                fail("Already stopping");
             }
             stopping = true;
         }
@@ -90,17 +92,16 @@ public class InjectableLifeCycleListenerTest {
         @Override
         public void lifeCycleStopped(LifeCycle event) {
             if (!stopping) {
-                Assert.fail("Stopping event not called");
+                fail("Stopping event not called");
             }
             if (stopped) {
-                Assert.fail("Already stopped");
+                fail("Already stopped");
             }
             stopped = true;
         }
     }
 
-    @Rule
-    public final DropwizardAppRule<TestConfig> RULE = new DropwizardAppRule<>(LCLApp.class,
+    public final DropwizardAppExtension<TestConfig> RULE = new DropwizardAppExtension<>(LCLApp.class,
                                                                               ResourceHelpers.resourceFilePath("config.yaml")
     );
 

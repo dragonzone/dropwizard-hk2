@@ -5,8 +5,8 @@ import lombok.RequiredArgsConstructor;
 import zone.dragon.dropwizard.metrics.naming.MetricName;
 import zone.dragon.dropwizard.metrics.naming.MetricNameFilter;
 
-import javax.annotation.Priority;
-import javax.inject.Singleton;
+import jakarta.annotation.Priority;
+import jakarta.inject.Singleton;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Type;
 

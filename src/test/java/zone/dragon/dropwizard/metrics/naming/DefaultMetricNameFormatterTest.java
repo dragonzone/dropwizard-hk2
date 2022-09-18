@@ -1,8 +1,9 @@
 package zone.dragon.dropwizard.metrics.naming;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class DefaultMetricNameFormatterTest {
     private final DefaultMetricNameFormatter formatter = new DefaultMetricNameFormatter("NP", "NS", "TSP", "TP", "KV", "TE", "TX", "TSS");
@@ -14,9 +15,9 @@ public class DefaultMetricNameFormatterTest {
         assertThat(formattedName).isEqualTo("NPtestNS");
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testNullMetricName() {
-        formatter.formatName(null);
+        assertThatThrownBy(() -> formatter.formatName(null)).isInstanceOf(NullPointerException.class);
     }
 
     @Test

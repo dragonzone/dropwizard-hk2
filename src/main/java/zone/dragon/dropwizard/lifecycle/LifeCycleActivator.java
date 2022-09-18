@@ -1,12 +1,13 @@
 package zone.dragon.dropwizard.lifecycle;
 
-import io.dropwizard.lifecycle.JettyManaged;
-import lombok.NonNull;
+import jakarta.inject.Inject;
+
 import org.eclipse.jetty.server.Server;
 import org.glassfish.hk2.api.ServiceLocator;
-import zone.dragon.dropwizard.ComponentActivator;
 
-import javax.inject.Inject;
+import io.dropwizard.lifecycle.JettyManaged;
+import lombok.NonNull;
+import zone.dragon.dropwizard.ComponentActivator;
 
 /**
  * Activates {@link InjectableLifeCycle}, {@link InjectableLifeCycleListener}, and {@link InjectableManaged} components registered with
@@ -29,7 +30,7 @@ public class LifeCycleActivator extends ComponentActivator {
         activate(InjectableManaged.class, (name, component) -> container.addBean(new JettyManaged(component)));
         activate(InjectableLifeCycle.class, (name, component) -> container.addBean(component));
         activate(InjectableLifeCycleListener.class, (name, component) -> {
-            container.addLifeCycleListener(component);
+            container.addEventListener(component);
             // synthesize starting and started event since we've already begun.
             component.lifeCycleStarting(container);
         });

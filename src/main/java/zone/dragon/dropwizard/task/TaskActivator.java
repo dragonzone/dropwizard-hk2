@@ -1,12 +1,12 @@
 package zone.dragon.dropwizard.task;
 
-import io.dropwizard.setup.Environment;
+import org.glassfish.hk2.api.ServiceLocator;
+
+import io.dropwizard.core.setup.Environment;
+import jakarta.inject.Inject;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.glassfish.hk2.api.ServiceLocator;
 import zone.dragon.dropwizard.ComponentActivator;
-
-import javax.inject.Inject;
 
 /**
  * Activates and initializes all {@link io.dropwizard.servlets.tasks.Task tasks} registered with Jersey and adds them to DropWizard.

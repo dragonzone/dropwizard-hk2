@@ -1,28 +1,29 @@
 package zone.dragon.dropwizard.lifecycle;
 
-import io.dropwizard.Application;
-import io.dropwizard.setup.Bootstrap;
-import io.dropwizard.setup.Environment;
-import io.dropwizard.testing.ResourceHelpers;
-import io.dropwizard.testing.junit.DropwizardAppRule;
 import org.eclipse.jetty.server.Server;
-import org.junit.Assert;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+import io.dropwizard.core.Application;
+import io.dropwizard.core.setup.Bootstrap;
+import io.dropwizard.core.setup.Environment;
+import io.dropwizard.testing.ResourceHelpers;
+import io.dropwizard.testing.junit5.DropwizardAppExtension;
+import io.dropwizard.testing.junit5.DropwizardExtensionsSupport;
+import jakarta.inject.Inject;
 import zone.dragon.dropwizard.HK2Bundle;
 import zone.dragon.dropwizard.TestConfig;
 
-import javax.inject.Inject;
-
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * @author Bryan Harclerode
  * @date 10/29/2016
  */
+@ExtendWith(DropwizardExtensionsSupport.class)
 public class InjectableServerLifecycleListenerTest {
-    @ClassRule
-    public static final DropwizardAppRule<TestConfig> RULE = new DropwizardAppRule<>(SLLApp.class,
+    public static final DropwizardAppExtension<TestConfig> RULE = new DropwizardAppExtension<>(SLLApp.class,
                                                                                      ResourceHelpers.resourceFilePath("config.yaml")
     );
     private static String testValue;
@@ -50,7 +51,7 @@ public class InjectableServerLifecycleListenerTest {
         @Override
         public void serverStarted(Server server) {
             if (testValue != null) {
-                Assert.fail("Invoked twice!");
+                fail("Invoked twice!");
             }
             testValue = config.getTestProperty();
         }

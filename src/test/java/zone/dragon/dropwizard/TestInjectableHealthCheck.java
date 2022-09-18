@@ -2,8 +2,8 @@ package zone.dragon.dropwizard;
 
 import zone.dragon.dropwizard.health.InjectableHealthCheck;
 
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 /**
  * @author Bryan Harclerode

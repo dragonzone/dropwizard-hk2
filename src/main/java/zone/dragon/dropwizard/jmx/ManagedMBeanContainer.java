@@ -7,7 +7,7 @@ import org.eclipse.jetty.jmx.MBeanContainer;
 import org.eclipse.jetty.util.component.Container;
 import org.eclipse.jetty.util.component.Container.InheritedListener;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 /**
  * Registers {@link Managed} objects as MBeans

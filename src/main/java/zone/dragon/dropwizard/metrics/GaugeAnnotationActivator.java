@@ -8,8 +8,8 @@ import org.glassfish.hk2.api.ActiveDescriptor;
 import zone.dragon.dropwizard.MethodAnnotationActivator;
 import zone.dragon.dropwizard.metrics.naming.MetricNameService;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 

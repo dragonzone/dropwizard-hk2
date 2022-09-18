@@ -1,24 +1,26 @@
 package zone.dragon.dropwizard.metrics.interceptors;
 
-import com.codahale.metrics.Meter;
-import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.annotation.ExceptionMetered;
-import lombok.NonNull;
-import org.aopalliance.intercept.ConstructorInterceptor;
-import org.aopalliance.intercept.Invocation;
-import org.aopalliance.intercept.MethodInterceptor;
-import zone.dragon.dropwizard.AnnotatedConstructorInterceptorFactory;
-import zone.dragon.dropwizard.AnnotatedMethodInterceptorFactory;
-import zone.dragon.dropwizard.AnnotationInterceptionService;
-import zone.dragon.dropwizard.metrics.naming.MetricNameService;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import javax.ws.rs.HttpMethod;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Method;
+
+import org.aopalliance.intercept.ConstructorInterceptor;
+import org.aopalliance.intercept.Invocation;
+import org.aopalliance.intercept.MethodInterceptor;
+
+import com.codahale.metrics.Meter;
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.annotation.ExceptionMetered;
+
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+import jakarta.ws.rs.HttpMethod;
+import lombok.NonNull;
+import zone.dragon.dropwizard.AnnotatedConstructorInterceptorFactory;
+import zone.dragon.dropwizard.AnnotatedMethodInterceptorFactory;
+import zone.dragon.dropwizard.AnnotationInterceptionService;
+import zone.dragon.dropwizard.metrics.naming.MetricNameService;
 
 /**
  * Interceptor that counts exceptions thrown from methods and constructors annotated with {@link ExceptionMetered @ExceptionMetered} using a

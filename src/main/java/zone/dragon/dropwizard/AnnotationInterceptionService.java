@@ -15,8 +15,8 @@ import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.api.Visibility;
 import org.glassfish.hk2.utilities.reflection.ReflectionHelper;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;

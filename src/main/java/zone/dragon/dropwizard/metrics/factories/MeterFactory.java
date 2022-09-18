@@ -1,12 +1,13 @@
 package zone.dragon.dropwizard.metrics.factories;
 
+import org.glassfish.hk2.api.InstantiationService;
+
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
-import org.glassfish.hk2.api.InstantiationService;
-import zone.dragon.dropwizard.metrics.naming.MetricNameService;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+import zone.dragon.dropwizard.metrics.naming.MetricNameService;
 
 /**
  * Factory that injects tagged {@link Meter meters}

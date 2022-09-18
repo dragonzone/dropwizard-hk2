@@ -1,23 +1,25 @@
 package zone.dragon.dropwizard.metrics.factories;
 
-import com.codahale.metrics.Metric;
-import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.util.UUID;
+import java.util.function.Function;
+
 import org.glassfish.hk2.api.DescriptorVisibility;
 import org.glassfish.hk2.api.Factory;
 import org.glassfish.hk2.api.Injectee;
 import org.glassfish.hk2.api.InstantiationService;
 import org.glassfish.hk2.api.PerLookup;
 import org.glassfish.hk2.api.Visibility;
-import zone.dragon.dropwizard.metrics.naming.MetricNameService;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.util.UUID;
-import java.util.function.Function;
+import com.codahale.metrics.Metric;
+
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
+import zone.dragon.dropwizard.metrics.naming.MetricNameService;
 
 /**
  * Factory that handles injecting metrics named based on the injection site

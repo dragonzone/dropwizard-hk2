@@ -11,8 +11,8 @@ import zone.dragon.dropwizard.AnnotatedConstructorInterceptorFactory;
 import zone.dragon.dropwizard.AnnotatedMethodInterceptorFactory;
 import zone.dragon.dropwizard.metrics.naming.MetricNameService;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Method;

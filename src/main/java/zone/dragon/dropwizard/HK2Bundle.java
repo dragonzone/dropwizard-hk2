@@ -3,10 +3,6 @@ package zone.dragon.dropwizard;
 import java.lang.annotation.Annotation;
 import java.lang.management.ManagementFactory;
 
-import javax.inject.Inject;
-import javax.ws.rs.core.Feature;
-import javax.ws.rs.core.FeatureContext;
-
 import org.eclipse.jetty.jmx.MBeanContainer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.util.component.AbstractLifeCycle.AbstractLifeCycleListener;
@@ -29,10 +25,13 @@ import org.glassfish.jersey.process.internal.RequestScoped;
 
 import com.google.common.annotations.Beta;
 
-import io.dropwizard.Configuration;
-import io.dropwizard.ConfiguredBundle;
-import io.dropwizard.setup.Bootstrap;
-import io.dropwizard.setup.Environment;
+import io.dropwizard.core.Configuration;
+import io.dropwizard.core.ConfiguredBundle;
+import io.dropwizard.core.setup.Bootstrap;
+import io.dropwizard.core.setup.Environment;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.core.Feature;
+import jakarta.ws.rs.core.FeatureContext;
 import lombok.Getter;
 import lombok.NonNull;
 import zone.dragon.dropwizard.health.HealthCheckActivator;
@@ -216,7 +215,7 @@ public class HK2Bundle<T extends Configuration> implements ConfiguredBundle<T> {
         // Make the service locator available to the admin context too.
         environment.getAdminContext().setAttribute(SERVICE_LOCATOR, getLocator());
         // Finish configuring HK2 when Jetty starts (after the Application.run() method)
-        environment.lifecycle().addLifeCycleListener(new AbstractLifeCycleListener() {
+        environment.lifecycle().addEventListener(new LifeCycle.Listener() {
             @Override
             public void lifeCycleStarting(LifeCycle event) {
                 if (event instanceof Server) {

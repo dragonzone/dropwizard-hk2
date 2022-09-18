@@ -3,12 +3,12 @@ package zone.dragon.dropwizard.metrics.naming.filters;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Type;
 
-import javax.annotation.Priority;
-import javax.inject.Inject;
-import javax.inject.Provider;
-import javax.inject.Singleton;
-import javax.ws.rs.core.Request;
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
+import jakarta.inject.Singleton;
 
+import jakarta.annotation.Priority;
+import jakarta.ws.rs.core.Request;
 import lombok.NonNull;
 import zone.dragon.dropwizard.metrics.naming.MetricName;
 import zone.dragon.dropwizard.metrics.naming.MetricNameFilter;

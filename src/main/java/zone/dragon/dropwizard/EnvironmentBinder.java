@@ -1,17 +1,18 @@
 package zone.dragon.dropwizard;
 
+import org.glassfish.hk2.utilities.binding.AbstractBinder;
+
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.health.HealthCheckRegistry;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.dropwizard.Application;
-import io.dropwizard.Configuration;
-import io.dropwizard.lifecycle.setup.LifecycleEnvironment;
-import io.dropwizard.setup.Bootstrap;
-import io.dropwizard.setup.Environment;
-import lombok.NonNull;
-import org.glassfish.hk2.utilities.binding.AbstractBinder;
 
-import javax.validation.Validator;
+import io.dropwizard.core.Application;
+import io.dropwizard.core.Configuration;
+import io.dropwizard.core.setup.Bootstrap;
+import io.dropwizard.core.setup.Environment;
+import io.dropwizard.lifecycle.setup.LifecycleEnvironment;
+import jakarta.validation.Validator;
+import lombok.NonNull;
 
 /**
  * This binder makes much of the Dropwizard environment available to HK2 to be injected into components that request it at runtime.

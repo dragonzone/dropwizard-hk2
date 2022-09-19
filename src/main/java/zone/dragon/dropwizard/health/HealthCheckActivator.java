@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.glassfish.hk2.api.ServiceLocator;
 import zone.dragon.dropwizard.ComponentActivator;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.UUID;
 
 /**

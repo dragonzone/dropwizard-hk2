@@ -10,7 +10,7 @@ import org.glassfish.hk2.api.InstanceLifecycleListener;
 import org.glassfish.hk2.utilities.reflection.ClassReflectionHelper;
 import org.glassfish.hk2.utilities.reflection.internal.ClassReflectionHelperImpl;
 
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 

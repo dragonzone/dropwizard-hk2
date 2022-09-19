@@ -3,7 +3,7 @@ package zone.dragon.dropwizard.lifecycle;
 import org.eclipse.jetty.util.component.Container;
 import org.glassfish.jersey.spi.Contract;
 
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 
 /**
  * Marker interface to tag a {@link Container.Listener} as a Jersey component; Implement this instead of the standard {@link

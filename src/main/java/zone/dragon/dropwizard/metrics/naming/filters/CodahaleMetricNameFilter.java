@@ -8,7 +8,7 @@ import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
 import java.util.concurrent.ExecutionException;
 
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 
 import org.glassfish.hk2.api.Rank;
 import org.glassfish.hk2.utilities.reflection.ReflectionHelper;

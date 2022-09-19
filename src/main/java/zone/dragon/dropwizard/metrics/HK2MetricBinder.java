@@ -22,7 +22,7 @@ import zone.dragon.dropwizard.metrics.naming.MetricNameFilter;
 import zone.dragon.dropwizard.metrics.naming.MetricNameFormatter;
 import zone.dragon.dropwizard.metrics.naming.MetricNameService;
 
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 
 /**
  * Binder that registers all of the metric components with HK2; It is expected that the {@link MetricRegistry} and

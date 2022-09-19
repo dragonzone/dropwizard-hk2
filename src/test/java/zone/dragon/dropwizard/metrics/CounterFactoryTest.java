@@ -1,35 +1,35 @@
 package zone.dragon.dropwizard.metrics;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.MediaType;
-
 import org.glassfish.jersey.client.JerseyClientBuilder;
 import org.glassfish.jersey.client.JerseyWebTarget;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.annotation.Counted;
 import com.codahale.metrics.annotation.Metric;
 
-import io.dropwizard.Application;
-import io.dropwizard.Configuration;
-import io.dropwizard.setup.Bootstrap;
-import io.dropwizard.setup.Environment;
-import io.dropwizard.testing.junit.DropwizardAppRule;
+import io.dropwizard.core.Application;
+import io.dropwizard.core.Configuration;
+import io.dropwizard.core.setup.Bootstrap;
+import io.dropwizard.core.setup.Environment;
+import io.dropwizard.testing.junit5.DropwizardAppExtension;
+import io.dropwizard.testing.junit5.DropwizardExtensionsSupport;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.core.MediaType;
 import zone.dragon.dropwizard.HK2Bundle;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@ExtendWith(DropwizardExtensionsSupport.class)
 public class CounterFactoryTest {
-    @ClassRule
-    public static final DropwizardAppRule<Configuration> RULE = new DropwizardAppRule<>(CounterApp.class, new Configuration());
+    public static final DropwizardAppExtension<Configuration> RULE = new DropwizardAppExtension<>(CounterApp.class, new Configuration());
 
     public static class CounterApp extends Application<Configuration> {
         @Override

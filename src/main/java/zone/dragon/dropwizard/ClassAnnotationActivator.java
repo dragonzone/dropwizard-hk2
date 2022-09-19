@@ -8,7 +8,7 @@ import org.glassfish.hk2.api.InstanceLifecycleEvent;
 import org.glassfish.hk2.api.InstanceLifecycleEventType;
 import org.glassfish.hk2.api.InstanceLifecycleListener;
 
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.lang.annotation.Annotation;
 
 /**

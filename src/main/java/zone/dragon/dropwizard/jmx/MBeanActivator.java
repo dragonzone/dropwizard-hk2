@@ -5,8 +5,8 @@ import org.eclipse.jetty.util.annotation.ManagedObject;
 import org.glassfish.hk2.api.ActiveDescriptor;
 import zone.dragon.dropwizard.ClassAnnotationActivator;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 
 /**
  * Activator that automatically exposes HK2 singletons over JMX if they have the {@link ManagedObject} annotation

@@ -1,54 +1,56 @@
 package zone.dragon.dropwizard;
 
-import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.health.HealthCheckRegistry;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.dropwizard.Application;
-import io.dropwizard.Bundle;
-import io.dropwizard.Configuration;
-import io.dropwizard.lifecycle.setup.LifecycleEnvironment;
-import io.dropwizard.setup.Bootstrap;
-import io.dropwizard.setup.Environment;
-import io.dropwizard.testing.ResourceHelpers;
-import io.dropwizard.testing.junit.DropwizardAppRule;
 import org.eclipse.jetty.server.Server;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.client.JerseyClientBuilder;
 import org.glassfish.jersey.process.internal.RequestScoped;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-import javax.inject.Inject;
-import javax.validation.Validator;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Feature;
-import javax.ws.rs.core.FeatureContext;
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.health.HealthCheckRegistry;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.dropwizard.core.Application;
+import io.dropwizard.core.Configuration;
+import io.dropwizard.core.ConfiguredBundle;
+import io.dropwizard.core.setup.Bootstrap;
+import io.dropwizard.core.setup.Environment;
+import io.dropwizard.lifecycle.setup.LifecycleEnvironment;
+import io.dropwizard.testing.ResourceHelpers;
+import io.dropwizard.testing.junit5.DropwizardAppExtension;
+import io.dropwizard.testing.junit5.DropwizardExtensionsSupport;
+import jakarta.inject.Inject;
+import jakarta.validation.Validator;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.Feature;
+import jakarta.ws.rs.core.FeatureContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Bryan Harclerode
  */
+@ExtendWith(DropwizardExtensionsSupport.class)
 public class HK2BundleTest {
-    @ClassRule
-    public static final DropwizardAppRule<TestConfig> RULE = new DropwizardAppRule<>(HK2BundleApp.class,
+    public static final DropwizardAppExtension<TestConfig> RULE = new DropwizardAppExtension<>(HK2BundleApp.class,
                                                                                      ResourceHelpers.resourceFilePath("config.yaml")
     );
     private static HK2Bundle<TestConfig> bundle;
     private static ServiceLocator        jerseyLocator;
 
-    public static class BundleWithBinder implements Bundle, SimpleBinder {
+    public static class BundleWithBinder implements ConfiguredBundle<TestConfig>, SimpleBinder {
         @Override
         public void initialize(Bootstrap<?> bootstrap) {
         }
 
         @Override
-        public void run(Environment environment) {
+        public void run(TestConfig config, Environment environment) {
         }
 
         @Override

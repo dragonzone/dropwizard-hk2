@@ -1,20 +1,7 @@
 package zone.dragon.dropwizard.jmx;
 
-import io.dropwizard.Application;
-import io.dropwizard.Configuration;
-import io.dropwizard.lifecycle.Managed;
-import io.dropwizard.setup.Bootstrap;
-import io.dropwizard.setup.Environment;
-import io.dropwizard.testing.junit.DropwizardAppRule;
-import org.eclipse.jetty.util.annotation.ManagedAttribute;
-import org.eclipse.jetty.util.annotation.ManagedObject;
-import org.glassfish.jersey.client.JerseyClientBuilder;
-import org.glassfish.jersey.client.JerseyWebTarget;
-import org.junit.ClassRule;
-import org.junit.Test;
-import zone.dragon.dropwizard.HK2Bundle;
+import java.lang.management.ManagementFactory;
 
-import javax.inject.Singleton;
 import javax.management.AttributeNotFoundException;
 import javax.management.InstanceNotFoundException;
 import javax.management.MBeanException;
@@ -22,15 +9,31 @@ import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 import javax.management.ReflectionException;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import java.lang.management.ManagementFactory;
+
+import org.eclipse.jetty.util.annotation.ManagedAttribute;
+import org.eclipse.jetty.util.annotation.ManagedObject;
+import org.glassfish.jersey.client.JerseyClientBuilder;
+import org.glassfish.jersey.client.JerseyWebTarget;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+import io.dropwizard.core.Application;
+import io.dropwizard.core.Configuration;
+import io.dropwizard.core.setup.Bootstrap;
+import io.dropwizard.core.setup.Environment;
+import io.dropwizard.lifecycle.Managed;
+import io.dropwizard.testing.junit5.DropwizardAppExtension;
+import io.dropwizard.testing.junit5.DropwizardExtensionsSupport;
+import jakarta.inject.Singleton;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import zone.dragon.dropwizard.HK2Bundle;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@ExtendWith(DropwizardExtensionsSupport.class)
 public class JettyManagedTest {
-    @ClassRule
-    public static final DropwizardAppRule<Configuration> RULE = new DropwizardAppRule<>(JmxApp.class, new Configuration());
+    public static final DropwizardAppExtension<Configuration> RULE = new DropwizardAppExtension<>(JmxApp.class, new Configuration());
 
     public static class JmxApp extends Application<Configuration> {
         @Override

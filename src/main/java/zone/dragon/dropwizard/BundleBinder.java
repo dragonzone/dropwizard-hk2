@@ -1,6 +1,6 @@
 package zone.dragon.dropwizard;
 
-import io.dropwizard.setup.Bootstrap;
+import io.dropwizard.core.setup.Bootstrap;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.glassfish.hk2.api.DynamicConfiguration;

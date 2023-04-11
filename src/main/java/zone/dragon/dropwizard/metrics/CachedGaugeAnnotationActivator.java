@@ -1,20 +1,22 @@
 package zone.dragon.dropwizard.metrics;
 
-import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.annotation.CachedGauge;
-import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
-import org.glassfish.hk2.api.ActiveDescriptor;
-import zone.dragon.dropwizard.MethodAnnotationActivator;
-import zone.dragon.dropwizard.metrics.naming.MetricNameService;
-
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.glassfish.hk2.api.ActiveDescriptor;
+
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.annotation.CachedGauge;
+
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
+import zone.dragon.dropwizard.MethodAnnotationActivator;
+import zone.dragon.dropwizard.metrics.naming.MetricNameService;
+
 /**
- * When a (@link Singleton singleton} is activated, any parameterless methods annotated with {@link CachedGauge @CachedGauge} will be
+ * When a {@link Singleton singleton} is activated, any parameterless methods annotated with {@link CachedGauge @CachedGauge} will be
  * used to provide values for a {@link com.codahale.metrics.CachedGauge CachedGauge}
  */
 @Slf4j

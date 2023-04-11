@@ -2,9 +2,6 @@ package zone.dragon.dropwizard.metrics;
 
 import java.lang.reflect.Type;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Provider;
-
 import org.jvnet.hk2.annotations.Optional;
 
 import com.codahale.metrics.Counter;
@@ -15,6 +12,8 @@ import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.MetricSet;
 import com.codahale.metrics.Timer;
 
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
 import lombok.NonNull;
 import lombok.experimental.Delegate;
 import zone.dragon.dropwizard.metrics.naming.MetricNameService;
@@ -66,6 +65,7 @@ public class TaggedMetricRegistry extends MetricRegistry {
         return metricNameService.getFormattedMetricName(null, type, baseName);
     }
 
+    @Override
     public <T extends Metric> T register(String name, T metric) throws IllegalArgumentException {
         if (metric instanceof MetricSet) {
             registerAll(name, (MetricSet) metric);
@@ -84,6 +84,7 @@ public class TaggedMetricRegistry extends MetricRegistry {
      * @throws IllegalArgumentException
      *     if any of the names are already registered
      */
+    @Override
     public void registerAll(MetricSet metrics) throws IllegalArgumentException {
         registerAll(null, metrics);
     }
@@ -97,6 +98,7 @@ public class TaggedMetricRegistry extends MetricRegistry {
      *
      * @return a new or pre-existing {@link Counter}
      */
+    @Override
     public Counter counter(String name) {
         return delegate.counter(getTaggedName(name, Counter.class));
     }
@@ -110,6 +112,7 @@ public class TaggedMetricRegistry extends MetricRegistry {
      *
      * @return a new or pre-existing {@link Histogram}
      */
+    @Override
     public Histogram histogram(String name) {
         return delegate.histogram(getTaggedName(name, Histogram.class));
     }
@@ -123,6 +126,7 @@ public class TaggedMetricRegistry extends MetricRegistry {
      *
      * @return a new or pre-existing {@link Meter}
      */
+    @Override
     public Meter meter(String name) {
         return delegate.meter(getTaggedName(name, Meter.class));
     }
@@ -136,10 +140,12 @@ public class TaggedMetricRegistry extends MetricRegistry {
      *
      * @return a new or pre-existing {@link Timer}
      */
+    @Override
     public Timer timer(String name) {
         return delegate.timer(getTaggedName(name, Timer.class));
     }
 
+    @Override
     public void registerAll(String prefix, MetricSet metricSet) {
         metricSet.getMetrics().forEach((key, value) -> register(name(prefix, key), value));
     }

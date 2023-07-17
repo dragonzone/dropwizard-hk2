@@ -63,22 +63,23 @@ public class HistogramFactoryTest {
 
     @Test
     public void testAbsoluteNamedHistogramCreated() {
-        int            result   = client.path("inc").request().get(Integer.class);
+        int result = client.path("inc").request().get(Integer.class);
         MetricRegistry registry = RULE.getEnvironment().metrics();
         assertThat(registry.getHistograms()).containsKey("com.absoluteMetric");
     }
 
     @Test
     public void testRelativeNamedHistogramCreated() {
-        int            result   = client.path("inc").request().get(Integer.class);
+        int result = client.path("inc").request().get(Integer.class);
         MetricRegistry registry = RULE.getEnvironment().metrics();
         assertThat(registry.getHistograms()).containsKey("zone.dragon.dropwizard.metrics.HistogramFactoryTest.HistogramResource.com.metric");
     }
 
     @Test
     public void testUnnamedHistogramCreated() {
-        int            result   = client.path("inc").request().get(Integer.class);
+        int result = client.path("inc").request().get(Integer.class);
         MetricRegistry registry = RULE.getEnvironment().metrics();
-        assertThat(registry.getHistograms()).containsKey("zone.dragon.dropwizard.metrics.HistogramFactoryTest.HistogramResource.unnamedHistogram");
+        assertThat(registry.getHistograms()).containsKey(
+            "zone.dragon.dropwizard.metrics.HistogramFactoryTest.HistogramResource.unnamedHistogram");
     }
 }

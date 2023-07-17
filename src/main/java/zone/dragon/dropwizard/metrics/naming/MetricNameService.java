@@ -1,13 +1,13 @@
 package zone.dragon.dropwizard.metrics.naming;
 
-import org.jvnet.hk2.annotations.Contract;
-
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Type;
 
+import org.jvnet.hk2.annotations.Contract;
+
 /**
- * Service that generates a metric name for injection sites based on the context of the injection site and any annotations on the
- * injection site.
+ * Service that generates a metric name for injection sites based on the context of the injection site and any annotations on the injection
+ * site.
  */
 @Contract
 @org.glassfish.jersey.spi.Contract
@@ -29,8 +29,8 @@ public interface MetricNameService {
     }
 
     /**
-     * Returns a contextual name for a metric, given the injection site and type of metric; this may include additional information from
-     * the current application scope.
+     * Returns a contextual name for a metric, given the injection site and type of metric; this may include additional information from the
+     * current application scope.
      *
      * @param injectionSite
      *     Parameter/field being injected or method/constructor being intercepted, or {@code null} if a metric is not being named due to an
@@ -46,8 +46,8 @@ public interface MetricNameService {
     String getFormattedMetricName(AnnotatedElement injectionSite, Type metricType, String baseName);
 
     /**
-     * Returns a contextual name for a metric, given the injection site and type of metric; this may include additional information from
-     * the current application scope. A default base name is assumed
+     * Returns a contextual name for a metric, given the injection site and type of metric; this may include additional information from the
+     * current application scope. A default base name is assumed
      *
      * @param injectionSite
      *     Parameter/field being injected or method/constructor being intercepted, or {@code null} if a metric is not being named due to an
@@ -62,8 +62,8 @@ public interface MetricNameService {
     }
 
     /**
-     * Returns a contextual name for a metric, given the injection site and type of metric; this may include additional information from
-     * the current application scope.
+     * Returns a contextual name for a metric, given the injection site and type of metric; this may include additional information from the
+     * current application scope.
      *
      * @param injectionSite
      *     Parameter/field being injected or method/constructor being intercepted, or {@code null} if a metric is not being named due to an

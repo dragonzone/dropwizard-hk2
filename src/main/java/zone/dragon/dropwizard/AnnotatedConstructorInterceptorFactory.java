@@ -1,10 +1,10 @@
 package zone.dragon.dropwizard;
 
-import org.aopalliance.intercept.ConstructorInterceptor;
-import org.glassfish.jersey.spi.Contract;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
+
+import org.aopalliance.intercept.ConstructorInterceptor;
+import org.glassfish.jersey.spi.Contract;
 
 /**
  * Factory for building {@link ConstructorInterceptor constructor interceptors} for classes and constructors annotated with {@link T}

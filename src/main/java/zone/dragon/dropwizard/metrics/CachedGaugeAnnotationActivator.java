@@ -16,13 +16,14 @@ import zone.dragon.dropwizard.MethodAnnotationActivator;
 import zone.dragon.dropwizard.metrics.naming.MetricNameService;
 
 /**
- * When a {@link Singleton singleton} is activated, any parameterless methods annotated with {@link CachedGauge @CachedGauge} will be
- * used to provide values for a {@link com.codahale.metrics.CachedGauge CachedGauge}
+ * When a {@link Singleton singleton} is activated, any parameterless methods annotated with {@link CachedGauge @CachedGauge} will be used
+ * to provide values for a {@link com.codahale.metrics.CachedGauge CachedGauge}
  */
 @Slf4j
 @Singleton
 public class CachedGaugeAnnotationActivator extends MethodAnnotationActivator<CachedGauge> {
     private final MetricRegistry metricRegistry;
+
     private final MetricNameService metricNameService;
 
     @Inject
@@ -38,8 +39,9 @@ public class CachedGaugeAnnotationActivator extends MethodAnnotationActivator<Ca
             log.error("@CachedGauge placed on method {} which must have zero parameters, but has {}", method, method.getParameterCount());
             return;
         }
-        com.codahale.metrics.CachedGauge<?> gauge = new com.codahale.metrics.CachedGauge<Object>(annotation.timeout(),
-                                                                                                 annotation.timeoutUnit()
+        com.codahale.metrics.CachedGauge<?> gauge = new com.codahale.metrics.CachedGauge<>(
+            annotation.timeout(),
+            annotation.timeoutUnit()
         ) {
             @Override
             protected Object loadValue() {

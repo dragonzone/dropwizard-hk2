@@ -6,8 +6,8 @@ import org.glassfish.jersey.spi.Contract;
 import jakarta.inject.Singleton;
 
 /**
- * Marker interface to tag a {@link Container.Listener} as a Jersey component; Implement this instead of the standard {@link
- * Container.Listener} to allow registration of the component with Jersey.
+ * Marker interface to tag a {@link Container.Listener} as a Jersey component; Implement this instead of the standard
+ * {@link Container.Listener} to allow registration of the component with Jersey.
  *
  * @author Bryan Harclerode
  */

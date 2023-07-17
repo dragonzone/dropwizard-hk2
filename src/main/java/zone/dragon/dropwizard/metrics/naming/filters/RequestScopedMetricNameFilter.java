@@ -17,12 +17,13 @@ import zone.dragon.dropwizard.metrics.naming.MetricNameFilter;
 import static com.google.common.base.Preconditions.checkState;
 
 /**
- * Filter that only runs when generating names for request-scoped metrics; Use this to avoid accessing request-scoped providers or
- * modifying metrics when outside of a request scope or the metric is being injected into a non-request-scoped object.
+ * Filter that only runs when generating names for request-scoped metrics; Use this to avoid accessing request-scoped providers or modifying
+ * metrics when outside of a request scope or the metric is being injected into a non-request-scoped object.
  */
 public abstract class RequestScopedMetricNameFilter implements MetricNameFilter {
     private InstantiationService instantiationService;
-    private RequestScope         requestScope;
+
+    private RequestScope requestScope;
 
     @Override
     public MetricName buildName(MetricName metricName, AnnotatedElement injectionSite, Type metricType) {

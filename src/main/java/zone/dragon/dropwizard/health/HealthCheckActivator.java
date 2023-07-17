@@ -1,13 +1,15 @@
 package zone.dragon.dropwizard.health;
 
-import com.codahale.metrics.health.HealthCheckRegistry;
-import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
+import java.util.UUID;
+
 import org.glassfish.hk2.api.ServiceLocator;
-import zone.dragon.dropwizard.ComponentActivator;
+
+import com.codahale.metrics.health.HealthCheckRegistry;
 
 import jakarta.inject.Inject;
-import java.util.UUID;
+import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
+import zone.dragon.dropwizard.ComponentActivator;
 
 /**
  * Activates and initializes all {@link InjectableHealthCheck health checks} registered with Jersey and adds them to DropWizard's

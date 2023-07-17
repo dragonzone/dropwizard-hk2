@@ -19,9 +19,9 @@ import lombok.experimental.Delegate;
 import zone.dragon.dropwizard.metrics.naming.MetricNameService;
 
 /**
- * Metric registry that supports contextual tagging of metrics. This wraps an existing {@link MetricRegistry} and adds tags to the names
- * of metrics as they are created by leveraging the {@link MetricNameService} to extract contextual tag information at the time the
- * metric is created. If no metric name service is available, no tags are added.
+ * Metric registry that supports contextual tagging of metrics. This wraps an existing {@link MetricRegistry} and adds tags to the names of
+ * metrics as they are created by leveraging the {@link MetricNameService} to extract contextual tag information at the time the metric is
+ * created. If no metric name service is available, no tags are added.
  */
 public class TaggedMetricRegistry extends MetricRegistry {
     // Marker used to exclude the methods we want to override from @Delegate
@@ -42,7 +42,8 @@ public class TaggedMetricRegistry extends MetricRegistry {
     }
 
     @Delegate(excludes = ExcludedMethods.class)
-    private final MetricRegistry              delegate;
+    private final MetricRegistry delegate;
+
     private final Provider<MetricNameService> metricNameServiceProvider;
 
     public TaggedMetricRegistry(@NonNull MetricRegistry registry, @NonNull MetricNameService metricNameService) {
@@ -90,8 +91,7 @@ public class TaggedMetricRegistry extends MetricRegistry {
     }
 
     /**
-     * Return the {@link Counter} registered under this name; or create and register
-     * a new {@link Counter} if none is registered.
+     * Return the {@link Counter} registered under this name; or create and register a new {@link Counter} if none is registered.
      *
      * @param name
      *     the name of the metric
@@ -104,8 +104,7 @@ public class TaggedMetricRegistry extends MetricRegistry {
     }
 
     /**
-     * Return the {@link Histogram} registered under this name; or create and register
-     * a new {@link Histogram} if none is registered.
+     * Return the {@link Histogram} registered under this name; or create and register a new {@link Histogram} if none is registered.
      *
      * @param name
      *     the name of the metric
@@ -118,8 +117,7 @@ public class TaggedMetricRegistry extends MetricRegistry {
     }
 
     /**
-     * Return the {@link Meter} registered under this name; or create and register
-     * a new {@link Meter} if none is registered.
+     * Return the {@link Meter} registered under this name; or create and register a new {@link Meter} if none is registered.
      *
      * @param name
      *     the name of the metric
@@ -132,8 +130,7 @@ public class TaggedMetricRegistry extends MetricRegistry {
     }
 
     /**
-     * Return the {@link Timer} registered under this name; or create and register
-     * a new {@link Timer} if none is registered.
+     * Return the {@link Timer} registered under this name; or create and register a new {@link Timer} if none is registered.
      *
      * @param name
      *     the name of the metric

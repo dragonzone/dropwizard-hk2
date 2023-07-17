@@ -23,9 +23,11 @@ import static org.junit.jupiter.api.Assertions.fail;
  */
 @ExtendWith(DropwizardExtensionsSupport.class)
 public class InjectableServerLifecycleListenerTest {
-    public static final DropwizardAppExtension<TestConfig> RULE = new DropwizardAppExtension<>(SLLApp.class,
-                                                                                     ResourceHelpers.resourceFilePath("config.yaml")
+    public static final DropwizardAppExtension<TestConfig> RULE = new DropwizardAppExtension<>(
+        SLLApp.class,
+        ResourceHelpers.resourceFilePath("config.yaml")
     );
+
     private static String testValue;
 
     public static class SLLApp extends Application<TestConfig> {

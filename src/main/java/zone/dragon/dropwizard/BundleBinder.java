@@ -1,14 +1,15 @@
 package zone.dragon.dropwizard;
 
-import io.dropwizard.core.setup.Bootstrap;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import org.glassfish.hk2.api.DynamicConfiguration;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 
+import io.dropwizard.core.setup.Bootstrap;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+
 /**
- * Binds all installed bundles so that they can be injected by type into other components, and adds any bindings exposed from bundles
- * that implement {@link SimpleBinder}
+ * Binds all installed bundles so that they can be injected by type into other components, and adds any bindings exposed from bundles that
+ * implement {@link SimpleBinder}
  */
 @RequiredArgsConstructor
 public class BundleBinder extends AbstractBinder {

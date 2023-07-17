@@ -44,7 +44,8 @@ public class MetricName {
     /**
      * Name of the metric, which uniquely identifies the type of information represented by the metric and the source of that information
      */
-    private String              name;
+    private String name;
+
     /**
      * Contextual tags of the metric, which hold attributes describing the code path used to reach the metric.
      */

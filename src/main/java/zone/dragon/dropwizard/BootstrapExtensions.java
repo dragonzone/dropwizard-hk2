@@ -82,7 +82,7 @@ public class BootstrapExtensions {
 
     /**
      * Return a filtered list of all bundles that have been added to {@link Bootstrap bootstrap} which implement the given {@code type}.
-     * This is useful for one bundle to interact with other bundles in the {@link ConfiguredBundle#run(T,Environment) run} method.
+     * This is useful for one bundle to interact with other bundles in the {@link ConfiguredBundle#run(T, Environment) run} method.
      *
      * @param bootstrap
      *     {@code Bootstrap} from which to retrieve bundles.
@@ -91,8 +91,8 @@ public class BootstrapExtensions {
      * @param <T>
      *     Implemented type by which bundles should be filtered
      *
-     * @return A list of all {@link ConfiguredBundle configured bundles} which implement {@code type} and are
-     * registered with the {@code bootstrap}
+     * @return A list of all {@link ConfiguredBundle configured bundles} which implement {@code type} and are registered with the
+     * {@code bootstrap}
      */
     @SuppressWarnings("unchecked")
     <T> List<T> getImplementingBundles(@NonNull Bootstrap<?> bootstrap, @NonNull Class<T> type) {

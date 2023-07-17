@@ -3,11 +3,10 @@ package zone.dragon.dropwizard.metrics.naming.filters;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Type;
 
+import jakarta.annotation.Priority;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
 import jakarta.inject.Singleton;
-
-import jakarta.annotation.Priority;
 import jakarta.ws.rs.core.Request;
 import lombok.NonNull;
 import zone.dragon.dropwizard.metrics.naming.MetricName;
@@ -22,8 +21,10 @@ import static com.google.common.base.Preconditions.checkState;
 @Priority(MetricNameFilter.DEFAULT_TAG_PRIORITY)
 public class HttpMethodMetricNameFilter extends RequestScopedMetricNameFilter {
     public static final String DEFAULT_TAG_NAME = "httpOp";
-    private final String               tagName;
-    private       Provider<Request>    requestProvider;
+
+    private final String tagName;
+
+    private Provider<Request> requestProvider;
 
     /**
      * Creates a filter that tags request-scoped metrics with a tag named {@link #DEFAULT_TAG_NAME "httpOp"} and the current HTTP method as

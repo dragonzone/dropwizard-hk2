@@ -1,7 +1,8 @@
 package zone.dragon.dropwizard.health;
 
-import com.codahale.metrics.health.HealthCheck;
 import org.glassfish.jersey.spi.Contract;
+
+import com.codahale.metrics.health.HealthCheck;
 
 import jakarta.inject.Singleton;
 

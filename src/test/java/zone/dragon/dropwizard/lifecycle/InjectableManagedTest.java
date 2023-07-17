@@ -24,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 @ExtendWith(DropwizardExtensionsSupport.class)
 public class InjectableManagedTest {
     private static String testValue;
+
     private static boolean stopped;
 
     @AfterAll
@@ -68,8 +69,9 @@ public class InjectableManagedTest {
         }
     }
 
-    public final DropwizardAppExtension<TestConfig> RULE = new DropwizardAppExtension<>(ManagedApp.class,
-                                                                              ResourceHelpers.resourceFilePath("config.yaml")
+    public final DropwizardAppExtension<TestConfig> RULE = new DropwizardAppExtension<>(
+        ManagedApp.class,
+        ResourceHelpers.resourceFilePath("config.yaml")
     );
 
     @Test

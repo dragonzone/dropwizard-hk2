@@ -72,28 +72,28 @@ public class TimerFactoryTest {
 
     @Test
     public void testAbsoluteNamedTimerCreated() {
-        int            result   = client.path("inc").request().get(Integer.class);
+        int result = client.path("inc").request().get(Integer.class);
         MetricRegistry registry = RULE.getEnvironment().metrics();
         assertThat(registry.getTimers()).containsKey("com.absoluteMetric");
     }
 
     @Test
     public void testRelativeNamedTimerCreated() {
-        int            result   = client.path("inc").request().get(Integer.class);
+        int result = client.path("inc").request().get(Integer.class);
         MetricRegistry registry = RULE.getEnvironment().metrics();
         assertThat(registry.getTimers()).containsKey("zone.dragon.dropwizard.metrics.TimerFactoryTest.TimerResource.com.metric");
     }
 
     @Test
     public void testUnnamedTimerCreated() {
-        int            result   = client.path("inc").request().get(Integer.class);
+        int result = client.path("inc").request().get(Integer.class);
         MetricRegistry registry = RULE.getEnvironment().metrics();
         assertThat(registry.getTimers()).containsKey("zone.dragon.dropwizard.metrics.TimerFactoryTest.TimerResource.unnamedTimer");
     }
 
     @Test
     public void testTimerAnnotationIntercepted() throws JsonProcessingException {
-        int            result   = client.path("inc").request().get(Integer.class);
+        int result = client.path("inc").request().get(Integer.class);
         MetricRegistry registry = RULE.getEnvironment().metrics();
         System.out.println(RULE.getObjectMapper().writer().withDefaultPrettyPrinter().writeValueAsString(registry));
         assertThat(registry.getTimers()).containsKey("zone.dragon.dropwizard.metrics.TimerFactoryTest.TimerResource");

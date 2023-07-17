@@ -10,8 +10,8 @@ public class DefaultMetricNameFormatterTest {
 
     @Test
     public void testNoTagsName() {
-        MetricName name          = MetricName.of("test");
-        String     formattedName = formatter.formatName(name);
+        MetricName name = MetricName.of("test");
+        String formattedName = formatter.formatName(name);
         assertThat(formattedName).isEqualTo("NPtestNS");
     }
 
@@ -22,15 +22,15 @@ public class DefaultMetricNameFormatterTest {
 
     @Test
     public void testTaggedNameMulti() {
-        MetricName name          = MetricName.of("test").addTag("key", "value").addTag("key2", "value2");
-        String     formattedName = formatter.formatName(name);
+        MetricName name = MetricName.of("test").addTag("key", "value").addTag("key2", "value2");
+        String formattedName = formatter.formatName(name);
         assertThat(formattedName).isEqualTo("NPtestNSTSPTPkeyKVvalueTXTETPkey2KVvalue2TXTSS");
     }
 
     @Test
     public void testTaggedNameSingle() {
-        MetricName name          = MetricName.of("test").addTag("key", "value");
-        String     formattedName = formatter.formatName(name);
+        MetricName name = MetricName.of("test").addTag("key", "value");
+        String formattedName = formatter.formatName(name);
         assertThat(formattedName).isEqualTo("NPtestNSTSPTPkeyKVvalueTXTSS");
     }
 }

@@ -1,21 +1,23 @@
 package zone.dragon.dropwizard.metrics.interceptors;
 
-import com.codahale.metrics.Counter;
-import com.codahale.metrics.MetricRegistry;
-import com.codahale.metrics.annotation.Counted;
-import lombok.NonNull;
-import org.aopalliance.intercept.ConstructorInterceptor;
-import org.aopalliance.intercept.Invocation;
-import org.aopalliance.intercept.MethodInterceptor;
-import zone.dragon.dropwizard.AnnotatedConstructorInterceptorFactory;
-import zone.dragon.dropwizard.AnnotatedMethodInterceptorFactory;
-import zone.dragon.dropwizard.metrics.naming.MetricNameService;
-
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Method;
+
+import org.aopalliance.intercept.ConstructorInterceptor;
+import org.aopalliance.intercept.Invocation;
+import org.aopalliance.intercept.MethodInterceptor;
+
+import com.codahale.metrics.Counter;
+import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.annotation.Counted;
+
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+import lombok.NonNull;
+import zone.dragon.dropwizard.AnnotatedConstructorInterceptorFactory;
+import zone.dragon.dropwizard.AnnotatedMethodInterceptorFactory;
+import zone.dragon.dropwizard.metrics.naming.MetricNameService;
 
 /**
  * Method interceptor that counts calls to methods annotated with {@link Counted @Counted} using a {@link Counter}
@@ -23,7 +25,8 @@ import java.lang.reflect.Method;
 @Singleton
 public class CountedInterceptorFactory
     implements AnnotatedMethodInterceptorFactory<Counted>, AnnotatedConstructorInterceptorFactory<Counted> {
-    private final MetricRegistry    metricRegistry;
+    private final MetricRegistry metricRegistry;
+
     private final MetricNameService metricNameService;
 
     @Inject

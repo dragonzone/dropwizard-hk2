@@ -1,10 +1,10 @@
 package zone.dragon.dropwizard;
 
-import org.aopalliance.intercept.MethodInterceptor;
-import org.glassfish.jersey.spi.Contract;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+
+import org.aopalliance.intercept.MethodInterceptor;
+import org.glassfish.jersey.spi.Contract;
 
 /**
  * Factory for building {@link MethodInterceptor constructor interceptors} for methods annotated with {@link T}

@@ -28,8 +28,10 @@ import zone.dragon.dropwizard.metrics.naming.MetricNameService;
 @Slf4j
 public class MetricFactory<T extends Metric> implements Factory<T> {
     private final InstantiationService instantiationService;
-    private final MetricNameService    nameService;
-    private final Function<String, T>  metricSupplier;
+
+    private final MetricNameService nameService;
+
+    private final Function<String, T> metricSupplier;
 
     @Inject
     public MetricFactory(
@@ -47,10 +49,10 @@ public class MetricFactory<T extends Metric> implements Factory<T> {
     @Visibility(DescriptorVisibility.LOCAL)
     public T provide() {
         Injectee injectee = instantiationService.getInstantiationData().getParentInjectee();
-        String   name;
+        String name;
         if (injectee == null) {
             log.warn("Creating metric with no injection context; Use the metric registry directly instead of dynamically creating it "
-                     + "through HK2", new Exception());
+                + "through HK2", new Exception());
             name = UUID.randomUUID().toString();
         } else {
             AnnotatedElement parent = injectee.getParent();

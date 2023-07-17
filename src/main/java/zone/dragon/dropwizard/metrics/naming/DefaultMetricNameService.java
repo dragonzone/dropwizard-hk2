@@ -1,21 +1,23 @@
 package zone.dragon.dropwizard.metrics.naming;
 
-import lombok.NonNull;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Type;
+
 import org.glassfish.hk2.api.IterableProvider;
 import org.jvnet.hk2.annotations.Optional;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Type;
+import lombok.NonNull;
 
 /**
- * Builds metric names using all available {@link MetricNameFilter} and a {@link MetricNameFormatter}; Filters are processed descending
- * rank order, with highest rank running first and lowest rank running last.
+ * Builds metric names using all available {@link MetricNameFilter} and a {@link MetricNameFormatter}; Filters are processed descending rank
+ * order, with highest rank running first and lowest rank running last.
  */
 @Singleton
 public class DefaultMetricNameService implements MetricNameService {
     private final IterableProvider<MetricNameFilter> filters;
+
     private final MetricNameFormatter formatter;
 
     @Inject

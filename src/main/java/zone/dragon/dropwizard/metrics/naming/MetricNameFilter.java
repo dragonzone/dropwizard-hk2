@@ -1,9 +1,9 @@
 package zone.dragon.dropwizard.metrics.naming;
 
-import org.glassfish.jersey.spi.Contract;
-
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Type;
+
+import org.glassfish.jersey.spi.Contract;
 
 /**
  * Filter for renaming or tagging metrics
@@ -14,19 +14,22 @@ public interface MetricNameFilter {
     /**
      * Priority for filters that generate a base name for a metric when one doesn't already exist
      */
-    int DEFAULT_NAME_PRIORITY  = 4000;
+    int DEFAULT_NAME_PRIORITY = 4000;
+
     /**
      * Priority for filters that primarily update, replace, or otherwise alter existing metric names
      */
     int OVERRIDE_NAME_PRIORITY = 3000;
+
     /**
      * Priority for filters that primarily add new tags to a metric
      */
-    int DEFAULT_TAG_PRIORITY   = 2000;
+    int DEFAULT_TAG_PRIORITY = 2000;
+
     /**
      * Priority for filters that primarily override or update existing tags on a metric
      */
-    int OVERRIDE_TAG_PRIORITY  = 1000;
+    int OVERRIDE_TAG_PRIORITY = 1000;
 
     /**
      * Updates the name or tags on a metric, or replaces them entirely

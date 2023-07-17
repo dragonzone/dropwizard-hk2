@@ -6,8 +6,8 @@ import io.dropwizard.servlets.tasks.Task;
 import jakarta.inject.Singleton;
 
 /**
- * Marker class to tag a {@link io.dropwizard.servlets.tasks.Task} as a Jersey component; Extend this instead of the standard {@link
- * io.dropwizard.servlets.tasks.Task} to allow registration of the component with Jersey.
+ * Marker class to tag a {@link io.dropwizard.servlets.tasks.Task} as a Jersey component; Extend this instead of the standard
+ * {@link io.dropwizard.servlets.tasks.Task} to allow registration of the component with Jersey.
  */
 @Contract
 @Singleton

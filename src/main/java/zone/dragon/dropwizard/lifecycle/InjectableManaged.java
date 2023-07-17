@@ -1,8 +1,8 @@
 package zone.dragon.dropwizard.lifecycle;
 
-import io.dropwizard.lifecycle.Managed;
 import org.glassfish.jersey.spi.Contract;
 
+import io.dropwizard.lifecycle.Managed;
 import jakarta.inject.Singleton;
 
 /**

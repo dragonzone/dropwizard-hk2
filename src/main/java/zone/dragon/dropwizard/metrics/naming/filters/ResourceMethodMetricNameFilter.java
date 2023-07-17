@@ -8,7 +8,6 @@ import jakarta.inject.Inject;
 import jakarta.inject.Provider;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.container.ResourceInfo;
-
 import lombok.NonNull;
 import zone.dragon.dropwizard.metrics.naming.MetricName;
 import zone.dragon.dropwizard.metrics.naming.MetricNameFilter;
@@ -22,12 +21,14 @@ import static com.google.common.base.Preconditions.checkState;
 @Priority(MetricNameFilter.DEFAULT_TAG_PRIORITY)
 public class ResourceMethodMetricNameFilter extends RequestScopedMetricNameFilter {
     public static final String DEFAULT_TAG_NAME = "action";
-    private final String                 tagName;
-    private       Provider<ResourceInfo> resourceInfoProvider;
+
+    private final String tagName;
+
+    private Provider<ResourceInfo> resourceInfoProvider;
 
     /**
-     * Creates a filter that tags request-scoped metrics with a tag named {@link #DEFAULT_TAG_NAME "action"} and the current resource
-     * method name as the value
+     * Creates a filter that tags request-scoped metrics with a tag named {@link #DEFAULT_TAG_NAME "action"} and the current resource method
+     * name as the value
      */
     @Inject
     public ResourceMethodMetricNameFilter() {

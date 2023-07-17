@@ -1,7 +1,7 @@
 package zone.dragon.dropwizard;
 
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import java.lang.annotation.Annotation;
+
 import org.glassfish.hk2.api.ActiveDescriptor;
 import org.glassfish.hk2.api.Filter;
 import org.glassfish.hk2.api.InstanceLifecycleEvent;
@@ -9,12 +9,13 @@ import org.glassfish.hk2.api.InstanceLifecycleEventType;
 import org.glassfish.hk2.api.InstanceLifecycleListener;
 
 import jakarta.inject.Singleton;
-import java.lang.annotation.Annotation;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 /**
- * {@link InstanceLifecycleListener} that listens for {@link Singleton singleton} services that are annotated with {@link T};
- * The {@link #activate(ActiveDescriptor, Object, Annotation) activate} method will be invoked for the service that has the annotation
- * after the service has been created.
+ * {@link InstanceLifecycleListener} that listens for {@link Singleton singleton} services that are annotated with {@link T}; The
+ * {@link #activate(ActiveDescriptor, Object, Annotation) activate} method will be invoked for the service that has the annotation after the
+ * service has been created.
  *
  * @param <T>
  *     Annotation type that is used to indicate if the {@link #activate(ActiveDescriptor, Object, Annotation) activate} should be called.
@@ -23,6 +24,7 @@ import java.lang.annotation.Annotation;
 @RequiredArgsConstructor
 public abstract class ClassAnnotationActivator<T extends Annotation> implements InstanceLifecycleListener {
     private static final Filter SINGLETON_FILTER = descriptor -> Singleton.class.getName().equals(descriptor.getScope());
+
     /**
      * Annotation type that is used to indicate if the {@link #activate(ActiveDescriptor, Object, Annotation) activate} should be called.
      */
@@ -61,7 +63,7 @@ public abstract class ClassAnnotationActivator<T extends Annotation> implements 
     @Override
     public void lifecycleEvent(InstanceLifecycleEvent lifecycleEvent) {
         if (lifecycleEvent.getEventType() == InstanceLifecycleEventType.POST_PRODUCTION) {
-            Object              object     = lifecycleEvent.getLifecycleObject();
+            Object object = lifecycleEvent.getLifecycleObject();
             ActiveDescriptor<?> descriptor = lifecycleEvent.getActiveDescriptor();
             if (object == null) {
                 return;
@@ -71,7 +73,7 @@ public abstract class ClassAnnotationActivator<T extends Annotation> implements 
                 activate(descriptor, object, annotation);
             }
         } else if (lifecycleEvent.getEventType() == InstanceLifecycleEventType.PRE_DESTRUCTION) {
-            Object              object     = lifecycleEvent.getLifecycleObject();
+            Object object = lifecycleEvent.getLifecycleObject();
             ActiveDescriptor<?> descriptor = lifecycleEvent.getActiveDescriptor();
             if (object == null) {
                 return;

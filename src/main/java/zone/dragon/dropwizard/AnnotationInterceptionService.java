@@ -1,8 +1,12 @@
 package zone.dragon.dropwizard;
 
-import com.google.common.collect.Lists;
-import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Executable;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.List;
+
 import org.aopalliance.intercept.ConstructorInterceptor;
 import org.aopalliance.intercept.Interceptor;
 import org.aopalliance.intercept.MethodInterceptor;
@@ -15,14 +19,12 @@ import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.api.Visibility;
 import org.glassfish.hk2.utilities.reflection.ReflectionHelper;
 
+import com.google.common.collect.Lists;
+
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Executable;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.List;
+import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Interception service that binds method and constructor interceptors by annotation. This service allows for interception based on any
@@ -40,9 +42,11 @@ public class AnnotationInterceptionService implements InterceptionService {
         R apply(F first, S second, T third);
     }
 
-    private final IterableProvider<AnnotatedMethodInterceptorFactory<?>>      annotatedMethodInterceptorFactories;
+    private final IterableProvider<AnnotatedMethodInterceptorFactory<?>> annotatedMethodInterceptorFactories;
+
     private final IterableProvider<AnnotatedConstructorInterceptorFactory<?>> annotatedConstructorInterceptorFactories;
-    private final ServiceLocator                                              locator;
+
+    private final ServiceLocator locator;
 
     @Inject
     public AnnotationInterceptionService(
@@ -110,7 +114,7 @@ public class AnnotationInterceptionService implements InterceptionService {
                     }
                     if (ann != null) {
                         // Create the factory and produce an interceptor
-                        F factory     = handle.getService();
+                        F factory = handle.getService();
                         I interceptor = interceptorProvider.apply(factory, interceptee, ann);
                         if (interceptor != null) {
                             interceptors.add(interceptor);

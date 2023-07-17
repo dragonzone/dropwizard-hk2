@@ -5,7 +5,6 @@ import java.lang.management.ManagementFactory;
 
 import org.eclipse.jetty.jmx.MBeanContainer;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.util.component.AbstractLifeCycle.AbstractLifeCycleListener;
 import org.eclipse.jetty.util.component.LifeCycle;
 import org.glassfish.hk2.api.DynamicConfiguration;
 import org.glassfish.hk2.api.Factory;
@@ -75,8 +74,8 @@ public class HK2Bundle<T extends Configuration> implements ConfiguredBundle<T> {
     }
 
     /**
-     * Binds local services into a locator. These have to be bound both into our service locator and the Jersey service locator because
-     * they do not cross bridge or parent/child boundaries.
+     * Binds local services into a locator. These have to be bound both into our service locator and the Jersey service locator because they
+     * do not cross bridge or parent/child boundaries.
      *
      * @param locator
      *     {@code ServiceLocator} into which local services should be installed
@@ -85,13 +84,14 @@ public class HK2Bundle<T extends Configuration> implements ConfiguredBundle<T> {
      */
     private static ImmediateController bindLocalServices(ServiceLocator locator) {
         // These have to be local because they rely on the InstantiationService, which can only get the Injectee for local injections
-        addClasses(locator,
-                   true,
-                   CounterFactory.class,
-                   HistogramFactory.class,
-                   MeterFactory.class,
-                   TimerFactory.class,
-                   AnnotationInterceptionService.class
+        addClasses(
+            locator,
+            true,
+            CounterFactory.class,
+            HistogramFactory.class,
+            MeterFactory.class,
+            TimerFactory.class,
+            AnnotationInterceptionService.class
         );
         if (locator.getServiceHandle(InheritableThreadContext.class) == null) {
             ServiceLocatorUtilities.enableInheritableThreadScope(locator);
@@ -129,11 +129,15 @@ public class HK2Bundle<T extends Configuration> implements ConfiguredBundle<T> {
             return true;
         }
     }
+
     @Getter
-    private final ServiceLocator      locator             = ServiceLocatorFactory.getInstance().create(null);
+    private final ServiceLocator locator = ServiceLocatorFactory.getInstance().create(null);
+
     private final ImmediateController immediateController = bindLocalServices(getLocator());
-    private       BindingBuilder<?>   activeBuilder       = null;
-    private final MBeanContainer      mBeanContainer      = new MBeanContainer(ManagementFactory.getPlatformMBeanServer());
+
+    private BindingBuilder<?> activeBuilder = null;
+
+    private final MBeanContainer mBeanContainer = new MBeanContainer(ManagementFactory.getPlatformMBeanServer());
 
     public HK2Bundle() {
     }
@@ -164,7 +168,7 @@ public class HK2Bundle<T extends Configuration> implements ConfiguredBundle<T> {
     @SuppressWarnings("unchecked")
     @Beta
     public <U> ScopedBindingBuilder<U> bindAsContract(@NonNull U singleton) {
-        return bind(singleton).to((Class) singleton.getClass());
+        return bind(singleton).to((Class<U>) singleton.getClass());
     }
 
     @Beta
@@ -200,7 +204,7 @@ public class HK2Bundle<T extends Configuration> implements ConfiguredBundle<T> {
     }
 
     public void autoBind(@NonNull Class<?>... serviceClasses) {
-        addClasses(getLocator(),true, serviceClasses);
+        addClasses(getLocator(), true, serviceClasses);
     }
 
     @SuppressWarnings("unchecked")

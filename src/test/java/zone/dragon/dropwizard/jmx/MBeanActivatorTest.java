@@ -98,11 +98,12 @@ public class MBeanActivatorTest {
 
     @Test
     public void testJmxAttribute()
-    throws MalformedObjectNameException, AttributeNotFoundException, MBeanException, ReflectionException, InstanceNotFoundException {
+        throws MalformedObjectNameException, AttributeNotFoundException, MBeanException, ReflectionException, InstanceNotFoundException {
         MBeanServer platformMBeanServer = ManagementFactory.getPlatformMBeanServer();
-        int         result              = client.path("jmx").request().get(Integer.class);
-        assertThat(platformMBeanServer.getAttribute(new ObjectName("zone.dragon.dropwizard.jmx:id=0,type=mbeanactivatortest$jmxresource"),
-                                                    "attribute"
+        int result = client.path("jmx").request().get(Integer.class);
+        assertThat(platformMBeanServer.getAttribute(
+            new ObjectName("zone.dragon.dropwizard.jmx:id=0,type=mbeanactivatortest$jmxresource"),
+            "attribute"
         )).isEqualTo(42);
         ObjectName name = platformMBeanServer
             .queryNames(new ObjectName("zone.dragon.dropwizard.jmx:id=0," + "type=mbeanactivatortest$exposedobject*"), null)

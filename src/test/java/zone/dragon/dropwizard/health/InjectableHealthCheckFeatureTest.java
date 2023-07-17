@@ -19,8 +19,9 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @ExtendWith(DropwizardExtensionsSupport.class)
 public class InjectableHealthCheckFeatureTest {
-    public static final DropwizardAppExtension<TestConfig> RULE = new DropwizardAppExtension<>(TestApplication.class,
-                                                                                     ResourceHelpers.resourceFilePath("config.yaml")
+    public static final DropwizardAppExtension<TestConfig> RULE = new DropwizardAppExtension<>(
+        TestApplication.class,
+        ResourceHelpers.resourceFilePath("config.yaml")
     );
 
     @Test

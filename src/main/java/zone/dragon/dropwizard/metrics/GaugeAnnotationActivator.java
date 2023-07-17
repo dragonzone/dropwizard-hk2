@@ -16,13 +16,14 @@ import zone.dragon.dropwizard.MethodAnnotationActivator;
 import zone.dragon.dropwizard.metrics.naming.MetricNameService;
 
 /**
- * When a {@link Singleton singleton} is activated, any parameterless methods annotated with {@link Gauge @Gauge} will be
- * used to provide values for a {@link com.codahale.metrics.Gauge Gauge}
+ * When a {@link Singleton singleton} is activated, any parameterless methods annotated with {@link Gauge @Gauge} will be used to provide
+ * values for a {@link com.codahale.metrics.Gauge Gauge}
  */
 @Slf4j
 @Singleton
 public class GaugeAnnotationActivator extends MethodAnnotationActivator<Gauge> {
-    private final MetricRegistry    metricRegistry;
+    private final MetricRegistry metricRegistry;
+
     private final MetricNameService metricNameService;
 
     @Inject

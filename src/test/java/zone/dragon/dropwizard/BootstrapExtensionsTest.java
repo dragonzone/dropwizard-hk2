@@ -29,7 +29,7 @@ import static org.mockito.Mockito.withSettings;
 public class BootstrapExtensionsTest {
     @Test
     public void testAddBundleIfNotExist() {
-        ConfiguredBundle       newBundle = mock(ConfiguredBundle.class);
+        ConfiguredBundle newBundle = mock(ConfiguredBundle.class);
         Bootstrap<Configuration> bootstrap = new Bootstrap<>(null);
         //
         ConfiguredBundle addedBundle = BootstrapExtensions.addBundleIfNotExist(bootstrap, ConfiguredBundle.class, () -> newBundle);
@@ -65,8 +65,8 @@ public class BootstrapExtensionsTest {
     @Test
     public void testAddBundleIfNotExistPreExisting() {
         Supplier<ConfiguredBundle> bundleSupplier = mock(Supplier.class);
-        ConfiguredBundle           oldBundle      = mock(ConfiguredBundle.class);
-        Bootstrap<Configuration>     bootstrap      = new Bootstrap<>(null);
+        ConfiguredBundle oldBundle = mock(ConfiguredBundle.class);
+        Bootstrap<Configuration> bootstrap = new Bootstrap<>(null);
         bootstrap.addBundle(oldBundle);
         //
         ConfiguredBundle addedBundle = BootstrapExtensions.addBundleIfNotExist(bootstrap, ConfiguredBundle.class, bundleSupplier);
@@ -85,8 +85,8 @@ public class BootstrapExtensionsTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testGetConfiguredBundles() {
-        Bootstrap<Configuration>     bootstrap = new Bootstrap<>(null);
-        ConfiguredBundle bundle    = mock(ConfiguredBundle.class);
+        Bootstrap<Configuration> bootstrap = new Bootstrap<>(null);
+        ConfiguredBundle bundle = mock(ConfiguredBundle.class);
         bootstrap.addBundle(bundle);
         //
         List<ConfiguredBundle<Configuration>> bundles = BootstrapExtensions.getBundles(bootstrap);
@@ -98,9 +98,15 @@ public class BootstrapExtensionsTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testGetImplementingBundles() {
-        Bootstrap<?>     bootstrap     = new Bootstrap<>(null);
-        ConfiguredBundle hashSetBundle = (ConfiguredBundle) mock(HashSet.class, withSettings().extraInterfaces(ConfiguredBundle.class).defaultAnswer(RETURNS_DEEP_STUBS));
-        ConfiguredBundle hashMapBundle = (ConfiguredBundle) mock(HashMap.class, withSettings().extraInterfaces(ConfiguredBundle.class).defaultAnswer(RETURNS_DEEP_STUBS));
+        Bootstrap<?> bootstrap = new Bootstrap<>(null);
+        ConfiguredBundle hashSetBundle = (ConfiguredBundle) mock(
+            HashSet.class,
+            withSettings().extraInterfaces(ConfiguredBundle.class).defaultAnswer(RETURNS_DEEP_STUBS)
+        );
+        ConfiguredBundle hashMapBundle = (ConfiguredBundle) mock(
+            HashMap.class,
+            withSettings().extraInterfaces(ConfiguredBundle.class).defaultAnswer(RETURNS_DEEP_STUBS)
+        );
         bootstrap.addBundle(hashMapBundle);
         bootstrap.addBundle(hashSetBundle);
         //

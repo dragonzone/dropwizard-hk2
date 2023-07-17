@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import jakarta.inject.Inject;
-
 import zone.dragon.dropwizard.task.InjectableTask;
 
 public class TestInjectableTask extends InjectableTask {

@@ -25,8 +25,11 @@ import static org.junit.jupiter.api.Assertions.fail;
 @ExtendWith(DropwizardExtensionsSupport.class)
 public class InjectableLifeCycleListenerTest {
     private static String testValue;
+
     private static boolean started;
+
     private static boolean stopping;
+
     private static boolean stopped;
 
     @AfterAll
@@ -101,8 +104,9 @@ public class InjectableLifeCycleListenerTest {
         }
     }
 
-    public final DropwizardAppExtension<TestConfig> RULE = new DropwizardAppExtension<>(LCLApp.class,
-                                                                              ResourceHelpers.resourceFilePath("config.yaml")
+    public final DropwizardAppExtension<TestConfig> RULE = new DropwizardAppExtension<>(
+        LCLApp.class,
+        ResourceHelpers.resourceFilePath("config.yaml")
     );
 
     @Test

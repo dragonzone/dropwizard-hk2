@@ -8,8 +8,6 @@ import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
 import java.util.concurrent.ExecutionException;
 
-import jakarta.inject.Singleton;
-
 import org.glassfish.hk2.api.Rank;
 import org.glassfish.hk2.utilities.reflection.ReflectionHelper;
 
@@ -26,6 +24,7 @@ import com.codahale.metrics.annotation.Timed;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
+import jakarta.inject.Singleton;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import zone.dragon.dropwizard.metrics.naming.MetricName;
@@ -46,10 +45,10 @@ public class CodahaleMetricNameFilter implements MetricNameFilter {
     private final Cache<AnnotatedElement, String> nameCache = CacheBuilder.newBuilder().weakKeys().build();
 
     protected String buildCodahaleName(AnnotatedElement injectionSite, Type metricType) {
-        AnnotatedMetricInfo annotation    = getAnnotation(injectionSite, metricType);
-        String              annotatedName = annotation != null ? emptyToNull(annotation.getName()) : null;
-        boolean             absoluteName  = annotation != null && annotation.isAbsolute();
-        String              injecteeName  = getName(injectionSite);
+        AnnotatedMetricInfo annotation = getAnnotation(injectionSite, metricType);
+        String annotatedName = annotation != null ? emptyToNull(annotation.getName()) : null;
+        boolean absoluteName = annotation != null && annotation.isAbsolute();
+        String injecteeName = getName(injectionSite);
         if (annotatedName == null && injecteeName == null) {
             return null;
         }
@@ -168,8 +167,8 @@ public class CodahaleMetricNameFilter implements MetricNameFilter {
     }
 
     /**
-     * Returns the namespace of the injection site; Usually this is the name of the declaring class, except for top-level types, which
-     * use the package name.
+     * Returns the namespace of the injection site; Usually this is the name of the declaring class, except for top-level types, which use
+     * the package name.
      *
      * @param injectionSite
      *     Injection site into which the metric is being injected
@@ -181,8 +180,8 @@ public class CodahaleMetricNameFilter implements MetricNameFilter {
             Class<?> declaringClass = ((Member) injectionSite).getDeclaringClass();
             if (injectionSite instanceof Constructor) {
                 return declaringClass.getDeclaringClass() == null
-                       ? declaringClass.getPackage().getName()
-                       : declaringClass.getDeclaringClass().getCanonicalName();
+                    ? declaringClass.getPackage().getName()
+                    : declaringClass.getDeclaringClass().getCanonicalName();
             }
             return ((Member) injectionSite).getDeclaringClass().getCanonicalName();
         }
@@ -204,7 +203,8 @@ public class CodahaleMetricNameFilter implements MetricNameFilter {
 
     @Value(staticConstructor = "of")
     protected static class AnnotatedMetricInfo {
-        String  name;
+        String name;
+
         boolean absolute;
     }
 }

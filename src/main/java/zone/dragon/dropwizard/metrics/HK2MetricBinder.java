@@ -1,13 +1,16 @@
 package zone.dragon.dropwizard.metrics;
 
+import org.glassfish.hk2.api.InstanceLifecycleListener;
+import org.glassfish.hk2.api.TypeLiteral;
+import org.glassfish.hk2.utilities.binding.AbstractBinder;
+
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.annotation.Counted;
 import com.codahale.metrics.annotation.ExceptionMetered;
 import com.codahale.metrics.annotation.Metered;
 import com.codahale.metrics.annotation.Timed;
-import org.glassfish.hk2.api.InstanceLifecycleListener;
-import org.glassfish.hk2.api.TypeLiteral;
-import org.glassfish.hk2.utilities.binding.AbstractBinder;
+
+import jakarta.inject.Singleton;
 import zone.dragon.dropwizard.AnnotatedConstructorInterceptorFactory;
 import zone.dragon.dropwizard.AnnotatedMethodInterceptorFactory;
 import zone.dragon.dropwizard.AnnotationInterceptionService;
@@ -15,14 +18,12 @@ import zone.dragon.dropwizard.metrics.interceptors.CountedInterceptorFactory;
 import zone.dragon.dropwizard.metrics.interceptors.ExceptionMeteredInterceptorFactory;
 import zone.dragon.dropwizard.metrics.interceptors.MeteredInterceptorFactory;
 import zone.dragon.dropwizard.metrics.interceptors.TimedInterceptorFactory;
-import zone.dragon.dropwizard.metrics.naming.filters.CodahaleMetricNameFilter;
 import zone.dragon.dropwizard.metrics.naming.DefaultMetricNameFormatter;
 import zone.dragon.dropwizard.metrics.naming.DefaultMetricNameService;
 import zone.dragon.dropwizard.metrics.naming.MetricNameFilter;
 import zone.dragon.dropwizard.metrics.naming.MetricNameFormatter;
 import zone.dragon.dropwizard.metrics.naming.MetricNameService;
-
-import jakarta.inject.Singleton;
+import zone.dragon.dropwizard.metrics.naming.filters.CodahaleMetricNameFilter;
 
 /**
  * Binder that registers all of the metric components with HK2; It is expected that the {@link MetricRegistry} and

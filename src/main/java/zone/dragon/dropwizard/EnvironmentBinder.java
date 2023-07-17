@@ -1,5 +1,6 @@
 package zone.dragon.dropwizard;
 
+import org.glassfish.hk2.internal.ConstantActiveDescriptor;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 
 import com.codahale.metrics.MetricRegistry;
@@ -16,15 +17,16 @@ import lombok.NonNull;
 
 /**
  * This binder makes much of the Dropwizard environment available to HK2 to be injected into components that request it at runtime.
- * Specifically, the following components are bound: <ul> <li>{@link Environment}</li> <li>{@link HealthCheckRegistry}</li> <li>{@link
- * LifecycleEnvironment}</li> <li>{@link MetricRegistry}</li> <li>{@link Configuration}</li>
+ * Specifically, the following components are bound: <ul> <li>{@link Environment}</li> <li>{@link HealthCheckRegistry}</li>
+ * <li>{@link LifecycleEnvironment}</li> <li>{@link MetricRegistry}</li> <li>{@link Configuration}</li>
  * <li>{@link ObjectMapper}</li> <li>{@link Validator}</li>
  * <li>{@link Application}</li></ul>
- *
  */
-public class EnvironmentBinder<T> extends AbstractBinder {
-    private final Bootstrap   bootstrap;
-    private final T           configuration;
+public class EnvironmentBinder<T extends Configuration> extends AbstractBinder {
+    private final Bootstrap<T> bootstrap;
+
+    private final T configuration;
+
     private final Environment environment;
 
     /**

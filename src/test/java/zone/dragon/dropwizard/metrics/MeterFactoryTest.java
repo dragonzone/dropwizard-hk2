@@ -63,21 +63,21 @@ public class MeterFactoryTest {
 
     @Test
     public void testAbsoluteNamedMeterCreated() {
-        int            result   = client.path("inc").request().get(Integer.class);
+        int result = client.path("inc").request().get(Integer.class);
         MetricRegistry registry = RULE.getEnvironment().metrics();
         assertThat(registry.getMeters()).containsKey("com.absoluteMetric");
     }
 
     @Test
     public void testRelativeNamedMeterCreated() {
-        int            result   = client.path("inc").request().get(Integer.class);
+        int result = client.path("inc").request().get(Integer.class);
         MetricRegistry registry = RULE.getEnvironment().metrics();
         assertThat(registry.getMeters()).containsKey("zone.dragon.dropwizard.metrics.MeterFactoryTest.MeterResource.com.metric");
     }
 
     @Test
     public void testUnnamedMeterCreated() {
-        int            result   = client.path("inc").request().get(Integer.class);
+        int result = client.path("inc").request().get(Integer.class);
         MetricRegistry registry = RULE.getEnvironment().metrics();
         assertThat(registry.getMeters()).containsKey("zone.dragon.dropwizard.metrics.MeterFactoryTest.MeterResource.unnamedMeter");
     }

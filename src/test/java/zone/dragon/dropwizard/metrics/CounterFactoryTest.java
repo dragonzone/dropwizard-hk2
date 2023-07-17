@@ -75,35 +75,35 @@ public class CounterFactoryTest {
 
     @Test
     public void testAbsoluteNamedCounterCreated() {
-        int            result   = client.path("inc").request().get(Integer.class);
+        int result = client.path("inc").request().get(Integer.class);
         MetricRegistry registry = RULE.getEnvironment().metrics();
         assertThat(registry.getCounters()).containsKey("com.absoluteMetric");
     }
 
     @Test
     public void testRelativeNamedCounterCreated() {
-        int            result   = client.path("inc").request().get(Integer.class);
+        int result = client.path("inc").request().get(Integer.class);
         MetricRegistry registry = RULE.getEnvironment().metrics();
         assertThat(registry.getCounters()).containsKey("zone.dragon.dropwizard.metrics.CounterFactoryTest.CounterResource.com.metric");
     }
 
     @Test
     public void testUnnamedCounterCreated() {
-        int            result   = client.path("inc").request().get(Integer.class);
+        int result = client.path("inc").request().get(Integer.class);
         MetricRegistry registry = RULE.getEnvironment().metrics();
         assertThat(registry.getCounters()).containsKey("zone.dragon.dropwizard.metrics.CounterFactoryTest.CounterResource.unnamedCounter");
     }
 
     @Test
     public void testCounterAnnotationIntercepted() {
-        int            result   = client.path("inc").request().get(Integer.class);
+        int result = client.path("inc").request().get(Integer.class);
         MetricRegistry registry = RULE.getEnvironment().metrics();
         assertThat(registry.getCounters()).containsKey("zone.dragon.dropwizard.metrics.CounterFactoryTest.CounterResource.increment");
     }
 
     @Test
     public void testCounterAnnotationTagging() {
-        int            result   = client.path("inc").request().put(Entity.entity("1", MediaType.APPLICATION_JSON_TYPE), Integer.class);
+        int result = client.path("inc").request().put(Entity.entity("1", MediaType.APPLICATION_JSON_TYPE), Integer.class);
         MetricRegistry registry = RULE.getEnvironment().metrics();
         assertThat(registry.getCounters()).containsKey("zone.dragon.dropwizard.metrics.CounterFactoryTest.CounterResource.update");
     }

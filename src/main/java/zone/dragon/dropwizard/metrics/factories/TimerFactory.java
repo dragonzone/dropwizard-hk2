@@ -11,6 +11,7 @@ import zone.dragon.dropwizard.metrics.naming.MetricNameService;
 
 /**
  * Factory that injects tagged {@link Timer timers}
+ *
  * @see MetricRegistry
  * @see MetricNameService
  */

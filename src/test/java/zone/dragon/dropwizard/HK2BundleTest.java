@@ -38,11 +38,14 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @ExtendWith(DropwizardExtensionsSupport.class)
 public class HK2BundleTest {
-    public static final DropwizardAppExtension<TestConfig> RULE = new DropwizardAppExtension<>(HK2BundleApp.class,
-                                                                                     ResourceHelpers.resourceFilePath("config.yaml")
+    public static final DropwizardAppExtension<TestConfig> RULE = new DropwizardAppExtension<>(
+        HK2BundleApp.class,
+        ResourceHelpers.resourceFilePath("config.yaml")
     );
+
     private static HK2Bundle<TestConfig> bundle;
-    private static ServiceLocator        jerseyLocator;
+
+    private static ServiceLocator jerseyLocator;
 
     public static class BundleWithBinder implements ConfiguredBundle<TestConfig>, SimpleBinder {
         @Override
@@ -163,9 +166,9 @@ public class HK2BundleTest {
 
     @Test
     public void testRequestScopedFromParent() {
-        Client    client   = JerseyClientBuilder.newClient();
-        WebTarget target   = client.target("http://localhost:" + RULE.getLocalPort());
-        String    response = target.path("test").request().get(String.class);
+        Client client = JerseyClientBuilder.newClient();
+        WebTarget target = client.target("http://localhost:" + RULE.getLocalPort());
+        String response = target.path("test").request().get(String.class);
         assertThat(response).isEqualTo("test2");
     }
 

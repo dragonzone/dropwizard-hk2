@@ -1,7 +1,8 @@
 package zone.dragon.dropwizard.metrics;
 
-import com.codahale.metrics.MetricSet;
 import org.glassfish.jersey.spi.Contract;
+
+import com.codahale.metrics.MetricSet;
 
 import jakarta.inject.Singleton;
 

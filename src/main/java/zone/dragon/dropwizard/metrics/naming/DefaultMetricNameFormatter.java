@@ -1,10 +1,11 @@
 package zone.dragon.dropwizard.metrics.naming;
 
+import java.util.TreeMap;
+
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 
 import jakarta.inject.Singleton;
-import java.util.TreeMap;
 
 /**
  * Formats metric names as a name followed by a set of tags
@@ -12,8 +13,11 @@ import java.util.TreeMap;
 @Singleton
 public class DefaultMetricNameFormatter implements MetricNameFormatter {
     private final String tagSeparator;
+
     private final String kvSeparator;
+
     private final String nameFormat;
+
     private final String taggedNameFormat;
 
     /**

@@ -5,8 +5,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Method;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
 
 import org.aopalliance.intercept.ConstructorInterceptor;
 import org.aopalliance.intercept.Invocation;
@@ -17,6 +15,8 @@ import com.codahale.metrics.Timer;
 import com.codahale.metrics.Timer.Context;
 import com.codahale.metrics.annotation.Timed;
 
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import jakarta.ws.rs.HttpMethod;
 import lombok.NonNull;
 import zone.dragon.dropwizard.AnnotatedConstructorInterceptorFactory;
@@ -28,7 +28,8 @@ import zone.dragon.dropwizard.metrics.naming.MetricNameService;
  */
 @Singleton
 public class TimedInterceptorFactory implements AnnotatedMethodInterceptorFactory<Timed>, AnnotatedConstructorInterceptorFactory<Timed> {
-    private final MetricRegistry    metricRegistry;
+    private final MetricRegistry metricRegistry;
+
     private final MetricNameService metricNameService;
 
     @Inject

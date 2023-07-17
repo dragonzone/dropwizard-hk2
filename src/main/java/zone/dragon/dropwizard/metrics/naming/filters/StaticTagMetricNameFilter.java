@@ -1,14 +1,14 @@
 package zone.dragon.dropwizard.metrics.naming.filters;
 
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Type;
+
+import jakarta.annotation.Priority;
+import jakarta.inject.Singleton;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import zone.dragon.dropwizard.metrics.naming.MetricName;
 import zone.dragon.dropwizard.metrics.naming.MetricNameFilter;
-
-import jakarta.annotation.Priority;
-import jakarta.inject.Singleton;
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Type;
 
 /**
  * Applies a static tag to all metrics
@@ -22,6 +22,7 @@ public class StaticTagMetricNameFilter implements MetricNameFilter {
      */
     @NonNull
     private final String tagName;
+
     /**
      * Value of the tag to add
      */

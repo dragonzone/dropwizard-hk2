@@ -31,7 +31,8 @@ import zone.dragon.dropwizard.metrics.naming.MetricNameService;
 @Singleton
 public class ExceptionMeteredInterceptorFactory
     implements AnnotatedMethodInterceptorFactory<ExceptionMetered>, AnnotatedConstructorInterceptorFactory<ExceptionMetered> {
-    private final MetricRegistry    metricRegistry;
+    private final MetricRegistry metricRegistry;
+
     private final MetricNameService metricNameService;
 
     /**

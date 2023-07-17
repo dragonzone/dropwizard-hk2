@@ -4,7 +4,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Method;
-
+import java.util.concurrent.CompletionStage;
 
 import org.aopalliance.intercept.ConstructorInterceptor;
 import org.aopalliance.intercept.Invocation;
@@ -44,11 +44,12 @@ public class TimedInterceptorFactory implements AnnotatedMethodInterceptorFactor
 
     @Override
     public MethodInterceptor provide(Method method, Timed annotation) {
-        // Skip resource methods
-        for (Annotation ann : method.getAnnotations()) {
-            if (ann.annotationType().getAnnotation(HttpMethod.class) != null) {
-                return null;
-            }
+        // Skip resource methods since Dropwizard already installs a RequestEventListener for those
+        if (isResourceMethod(method)) {
+            return null;
+        }
+        if (CompletionStage.class.isAssignableFrom(method.getReturnType())) {
+            return invocation -> timeAsync(method, invocation);
         }
         return invocation -> time(method, invocation);
     }
@@ -58,12 +59,31 @@ public class TimedInterceptorFactory implements AnnotatedMethodInterceptorFactor
         return invocation -> time(constructor, invocation);
     }
 
-    protected Object time(Executable executable, Invocation invocation) throws Throwable {
+    protected boolean isResourceMethod(Method method) {
+        // Check for the HttpMethod meta-annotation
+        for (Annotation ann : method.getAnnotations()) {
+            if (ann.annotationType().getAnnotation(HttpMethod.class) != null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    protected Object timeAsync(Executable executable, Invocation invocation) throws Throwable {
         Context context = getTimer(executable).time();
         try {
-            return invocation.proceed();
-        } finally {
+            CompletionStage<?> promise = (CompletionStage<?>) invocation.proceed();
+            promise.whenComplete((result, error) -> context.stop());
+            return promise;
+        } catch (Throwable t) {
             context.stop();
+            throw t;
+        }
+    }
+
+    protected Object time(Executable executable, Invocation invocation) throws Throwable {
+        try (Context ignored = getTimer(executable).time()) {
+            return invocation.proceed();
         }
     }
 }

@@ -1,3 +1,28 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2016-2023 Bryan Harclerode
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
+ */
+
 package zone.dragon.dropwizard.metrics;
 
 import java.lang.reflect.Type;
@@ -26,19 +51,19 @@ import zone.dragon.dropwizard.metrics.naming.MetricNameService;
 public class TaggedMetricRegistry extends MetricRegistry {
     // Marker used to exclude the methods we want to override from @Delegate
     private interface ExcludedMethods {
-        public Counter counter(String name);
+        Counter counter(String name);
 
-        public Histogram histogram(String name);
+        Histogram histogram(String name);
 
-        public Meter meter(String name);
+        Meter meter(String name);
 
-        public <T extends Metric> T register(String name, T metric) throws IllegalArgumentException;
+        <T extends Metric> T register(String name, T metric) throws IllegalArgumentException;
 
-        public void registerAll(MetricSet metrics) throws IllegalArgumentException;
+        void registerAll(MetricSet metrics) throws IllegalArgumentException;
 
-        public void registerAll(String prefix, MetricSet metrics);
+        void registerAll(String prefix, MetricSet metrics);
 
-        public Timer timer(String name);
+        Timer timer(String name);
     }
 
     @Delegate(excludes = ExcludedMethods.class)

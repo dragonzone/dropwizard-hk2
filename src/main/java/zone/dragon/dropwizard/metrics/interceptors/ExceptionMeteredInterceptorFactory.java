@@ -1,9 +1,35 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2016-2023 Bryan Harclerode
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
+ */
+
 package zone.dragon.dropwizard.metrics.interceptors;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Method;
+import java.util.concurrent.CompletionStage;
 
 import org.aopalliance.intercept.ConstructorInterceptor;
 import org.aopalliance.intercept.Invocation;
@@ -31,7 +57,8 @@ import zone.dragon.dropwizard.metrics.naming.MetricNameService;
 @Singleton
 public class ExceptionMeteredInterceptorFactory
     implements AnnotatedMethodInterceptorFactory<ExceptionMetered>, AnnotatedConstructorInterceptorFactory<ExceptionMetered> {
-    private final MetricRegistry    metricRegistry;
+    private final MetricRegistry metricRegistry;
+
     private final MetricNameService metricNameService;
 
     /**
@@ -74,6 +101,42 @@ public class ExceptionMeteredInterceptorFactory
     }
 
     /**
+     * Runs the {@code invocation} and tracks when exceptions are thrown either by the method or a {@link CompletionStage} returned by the
+     * method
+     *
+     * @param executable
+     *     Executable represented by {@code invocation}; used to determine the name of the
+     * @param annotation
+     *     Annotation instance containing information on which exceptions are metered
+     * @param invocation
+     *     Intercepted execution that should be metered
+     *
+     * @return The result of {@code invocation}
+     *
+     * @throws Throwable
+     *     Any exception thrown by {@code invocation}
+     */
+    protected Object exceptionMeterAsync(Executable executable, ExceptionMetered annotation, Invocation invocation) throws Throwable {
+        Meter exceptionMeter = getExceptionMeter(executable);
+        try {
+            CompletionStage<?> promise = (CompletionStage<?>) invocation.proceed();
+            if (promise != null) {
+                promise.whenComplete((result, error) -> {
+                    if (annotation.cause().isAssignableFrom(error.getClass())) {
+                        exceptionMeter.mark();
+                    }
+                });
+            }
+            return promise;
+        } catch (Throwable t) {
+            if (annotation.cause().isAssignableFrom(t.getClass())) {
+                exceptionMeter.mark();
+            }
+            throw t;
+        }
+    }
+
+    /**
      * Creates a {@link Meter} for the given {@code executable}
      *
      * @param executable
@@ -88,10 +151,11 @@ public class ExceptionMeteredInterceptorFactory
     @Override
     public MethodInterceptor provide(Method method, ExceptionMetered annotation) {
         // Skip resource methods
-        for (Annotation ann : method.getAnnotations()) {
-            if (ann.annotationType().getAnnotation(HttpMethod.class) != null) {
-                return null;
-            }
+        if (isResourceMethod(method)) {
+            return null;
+        }
+        if (CompletionStage.class.isAssignableFrom(method.getReturnType())) {
+            return invocation -> exceptionMeterAsync(method, annotation, invocation);
         }
         return invocation -> exceptionMeter(method, annotation, invocation);
     }
@@ -99,5 +163,15 @@ public class ExceptionMeteredInterceptorFactory
     @Override
     public ConstructorInterceptor provide(Constructor<?> constructor, ExceptionMetered annotation) {
         return invocation -> exceptionMeter(constructor, annotation, invocation);
+    }
+
+    protected boolean isResourceMethod(Method method) {
+        // Check for the HttpMethod meta-annotation
+        for (Annotation ann : method.getAnnotations()) {
+            if (ann.annotationType().getAnnotation(HttpMethod.class) != null) {
+                return true;
+            }
+        }
+        return false;
     }
 }

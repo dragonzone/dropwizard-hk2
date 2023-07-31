@@ -1,3 +1,28 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2016-2023 Bryan Harclerode
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
+ */
+
 package zone.dragon.dropwizard;
 
 import java.util.HashMap;
@@ -29,7 +54,7 @@ import static org.mockito.Mockito.withSettings;
 public class BootstrapExtensionsTest {
     @Test
     public void testAddBundleIfNotExist() {
-        ConfiguredBundle       newBundle = mock(ConfiguredBundle.class);
+        ConfiguredBundle newBundle = mock(ConfiguredBundle.class);
         Bootstrap<Configuration> bootstrap = new Bootstrap<>(null);
         //
         ConfiguredBundle addedBundle = BootstrapExtensions.addBundleIfNotExist(bootstrap, ConfiguredBundle.class, () -> newBundle);
@@ -65,8 +90,8 @@ public class BootstrapExtensionsTest {
     @Test
     public void testAddBundleIfNotExistPreExisting() {
         Supplier<ConfiguredBundle> bundleSupplier = mock(Supplier.class);
-        ConfiguredBundle           oldBundle      = mock(ConfiguredBundle.class);
-        Bootstrap<Configuration>     bootstrap      = new Bootstrap<>(null);
+        ConfiguredBundle oldBundle = mock(ConfiguredBundle.class);
+        Bootstrap<Configuration> bootstrap = new Bootstrap<>(null);
         bootstrap.addBundle(oldBundle);
         //
         ConfiguredBundle addedBundle = BootstrapExtensions.addBundleIfNotExist(bootstrap, ConfiguredBundle.class, bundleSupplier);
@@ -85,8 +110,8 @@ public class BootstrapExtensionsTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testGetConfiguredBundles() {
-        Bootstrap<Configuration>     bootstrap = new Bootstrap<>(null);
-        ConfiguredBundle bundle    = mock(ConfiguredBundle.class);
+        Bootstrap<Configuration> bootstrap = new Bootstrap<>(null);
+        ConfiguredBundle bundle = mock(ConfiguredBundle.class);
         bootstrap.addBundle(bundle);
         //
         List<ConfiguredBundle<Configuration>> bundles = BootstrapExtensions.getBundles(bootstrap);
@@ -98,9 +123,15 @@ public class BootstrapExtensionsTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testGetImplementingBundles() {
-        Bootstrap<?>     bootstrap     = new Bootstrap<>(null);
-        ConfiguredBundle hashSetBundle = (ConfiguredBundle) mock(HashSet.class, withSettings().extraInterfaces(ConfiguredBundle.class).defaultAnswer(RETURNS_DEEP_STUBS));
-        ConfiguredBundle hashMapBundle = (ConfiguredBundle) mock(HashMap.class, withSettings().extraInterfaces(ConfiguredBundle.class).defaultAnswer(RETURNS_DEEP_STUBS));
+        Bootstrap<?> bootstrap = new Bootstrap<>(null);
+        ConfiguredBundle hashSetBundle = (ConfiguredBundle) mock(
+            HashSet.class,
+            withSettings().extraInterfaces(ConfiguredBundle.class).defaultAnswer(RETURNS_DEEP_STUBS)
+        );
+        ConfiguredBundle hashMapBundle = (ConfiguredBundle) mock(
+            HashMap.class,
+            withSettings().extraInterfaces(ConfiguredBundle.class).defaultAnswer(RETURNS_DEEP_STUBS)
+        );
         bootstrap.addBundle(hashMapBundle);
         bootstrap.addBundle(hashSetBundle);
         //

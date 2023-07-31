@@ -1,3 +1,28 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2016-2023 Bryan Harclerode
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
+ */
+
 package zone.dragon.dropwizard;
 
 import java.lang.annotation.Annotation;
@@ -5,7 +30,6 @@ import java.lang.management.ManagementFactory;
 
 import org.eclipse.jetty.jmx.MBeanContainer;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.util.component.AbstractLifeCycle.AbstractLifeCycleListener;
 import org.eclipse.jetty.util.component.LifeCycle;
 import org.glassfish.hk2.api.DynamicConfiguration;
 import org.glassfish.hk2.api.Factory;
@@ -75,8 +99,8 @@ public class HK2Bundle<T extends Configuration> implements ConfiguredBundle<T> {
     }
 
     /**
-     * Binds local services into a locator. These have to be bound both into our service locator and the Jersey service locator because
-     * they do not cross bridge or parent/child boundaries.
+     * Binds local services into a locator. These have to be bound both into our service locator and the Jersey service locator because they
+     * do not cross bridge or parent/child boundaries.
      *
      * @param locator
      *     {@code ServiceLocator} into which local services should be installed
@@ -85,13 +109,14 @@ public class HK2Bundle<T extends Configuration> implements ConfiguredBundle<T> {
      */
     private static ImmediateController bindLocalServices(ServiceLocator locator) {
         // These have to be local because they rely on the InstantiationService, which can only get the Injectee for local injections
-        addClasses(locator,
-                   true,
-                   CounterFactory.class,
-                   HistogramFactory.class,
-                   MeterFactory.class,
-                   TimerFactory.class,
-                   AnnotationInterceptionService.class
+        addClasses(
+            locator,
+            true,
+            CounterFactory.class,
+            HistogramFactory.class,
+            MeterFactory.class,
+            TimerFactory.class,
+            AnnotationInterceptionService.class
         );
         if (locator.getServiceHandle(InheritableThreadContext.class) == null) {
             ServiceLocatorUtilities.enableInheritableThreadScope(locator);
@@ -129,11 +154,15 @@ public class HK2Bundle<T extends Configuration> implements ConfiguredBundle<T> {
             return true;
         }
     }
+
     @Getter
-    private final ServiceLocator      locator             = ServiceLocatorFactory.getInstance().create(null);
+    private final ServiceLocator locator = ServiceLocatorFactory.getInstance().create(null);
+
     private final ImmediateController immediateController = bindLocalServices(getLocator());
-    private       BindingBuilder<?>   activeBuilder       = null;
-    private final MBeanContainer      mBeanContainer      = new MBeanContainer(ManagementFactory.getPlatformMBeanServer());
+
+    private BindingBuilder<?> activeBuilder = null;
+
+    private final MBeanContainer mBeanContainer = new MBeanContainer(ManagementFactory.getPlatformMBeanServer());
 
     public HK2Bundle() {
     }
@@ -164,7 +193,7 @@ public class HK2Bundle<T extends Configuration> implements ConfiguredBundle<T> {
     @SuppressWarnings("unchecked")
     @Beta
     public <U> ScopedBindingBuilder<U> bindAsContract(@NonNull U singleton) {
-        return bind(singleton).to((Class) singleton.getClass());
+        return bind(singleton).to((Class<U>) singleton.getClass());
     }
 
     @Beta
@@ -200,7 +229,7 @@ public class HK2Bundle<T extends Configuration> implements ConfiguredBundle<T> {
     }
 
     public void autoBind(@NonNull Class<?>... serviceClasses) {
-        addClasses(getLocator(),true, serviceClasses);
+        addClasses(getLocator(), true, serviceClasses);
     }
 
     @SuppressWarnings("unchecked")

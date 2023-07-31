@@ -6,7 +6,7 @@
     <parent>
         <groupId>zone.dragon</groupId>
         <artifactId>base-dropwizard-4x-pom</artifactId>
-        <version>5.0.2</version>
+        <version>5.0.10</version>
     </parent>
 
     <groupId>zone.dragon.dropwizard</groupId>
@@ -20,7 +20,7 @@
     <url>https://github.com/dragonzone/dropwizard-hk2</url>
 
     <scm>
-        <connection>scm:git:http://github.com/dragonzone/dropwizard-hk2.git</connection>
+        <connection>scm:git:https://github.com/dragonzone/dropwizard-hk2.git</connection>
         <developerConnection>scm:git:ssh://git@github.com:dragonzone/dropwizard-hk2.git</developerConnection>
         <url>https://github.com/dragonzone/dropwizard-hk2/tree/master</url>
         <tag>HEAD</tag>

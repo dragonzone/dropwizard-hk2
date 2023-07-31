@@ -1,13 +1,41 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2016-2023 Bryan Harclerode
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
+ */
+
 package zone.dragon.dropwizard.metrics;
+
+import org.glassfish.hk2.api.InstanceLifecycleListener;
+import org.glassfish.hk2.api.TypeLiteral;
+import org.glassfish.hk2.utilities.binding.AbstractBinder;
 
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.annotation.Counted;
 import com.codahale.metrics.annotation.ExceptionMetered;
 import com.codahale.metrics.annotation.Metered;
 import com.codahale.metrics.annotation.Timed;
-import org.glassfish.hk2.api.InstanceLifecycleListener;
-import org.glassfish.hk2.api.TypeLiteral;
-import org.glassfish.hk2.utilities.binding.AbstractBinder;
+
+import jakarta.inject.Singleton;
 import zone.dragon.dropwizard.AnnotatedConstructorInterceptorFactory;
 import zone.dragon.dropwizard.AnnotatedMethodInterceptorFactory;
 import zone.dragon.dropwizard.AnnotationInterceptionService;
@@ -15,14 +43,12 @@ import zone.dragon.dropwizard.metrics.interceptors.CountedInterceptorFactory;
 import zone.dragon.dropwizard.metrics.interceptors.ExceptionMeteredInterceptorFactory;
 import zone.dragon.dropwizard.metrics.interceptors.MeteredInterceptorFactory;
 import zone.dragon.dropwizard.metrics.interceptors.TimedInterceptorFactory;
-import zone.dragon.dropwizard.metrics.naming.filters.CodahaleMetricNameFilter;
 import zone.dragon.dropwizard.metrics.naming.DefaultMetricNameFormatter;
 import zone.dragon.dropwizard.metrics.naming.DefaultMetricNameService;
 import zone.dragon.dropwizard.metrics.naming.MetricNameFilter;
 import zone.dragon.dropwizard.metrics.naming.MetricNameFormatter;
 import zone.dragon.dropwizard.metrics.naming.MetricNameService;
-
-import jakarta.inject.Singleton;
+import zone.dragon.dropwizard.metrics.naming.filters.CodahaleMetricNameFilter;
 
 /**
  * Binder that registers all of the metric components with HK2; It is expected that the {@link MetricRegistry} and

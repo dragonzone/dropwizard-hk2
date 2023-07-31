@@ -1,3 +1,28 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2016-2023 Bryan Harclerode
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
+ */
+
 package zone.dragon.dropwizard;
 
 import java.lang.reflect.Field;
@@ -82,7 +107,7 @@ public class BootstrapExtensions {
 
     /**
      * Return a filtered list of all bundles that have been added to {@link Bootstrap bootstrap} which implement the given {@code type}.
-     * This is useful for one bundle to interact with other bundles in the {@link ConfiguredBundle#run(T,Environment) run} method.
+     * This is useful for one bundle to interact with other bundles in the {@link ConfiguredBundle#run(T, Environment) run} method.
      *
      * @param bootstrap
      *     {@code Bootstrap} from which to retrieve bundles.
@@ -91,8 +116,8 @@ public class BootstrapExtensions {
      * @param <T>
      *     Implemented type by which bundles should be filtered
      *
-     * @return A list of all {@link ConfiguredBundle configured bundles} which implement {@code type} and are
-     * registered with the {@code bootstrap}
+     * @return A list of all {@link ConfiguredBundle configured bundles} which implement {@code type} and are registered with the
+     * {@code bootstrap}
      */
     @SuppressWarnings("unchecked")
     <T> List<T> getImplementingBundles(@NonNull Bootstrap<?> bootstrap, @NonNull Class<T> type) {

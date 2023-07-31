@@ -1,13 +1,37 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2016-2023 Bryan Harclerode
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
+ */
+
 package zone.dragon.dropwizard.metrics.naming.filters;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Type;
 
+import jakarta.annotation.Priority;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
 import jakarta.inject.Singleton;
-
-import jakarta.annotation.Priority;
 import jakarta.ws.rs.core.Request;
 import lombok.NonNull;
 import zone.dragon.dropwizard.metrics.naming.MetricName;
@@ -22,8 +46,10 @@ import static com.google.common.base.Preconditions.checkState;
 @Priority(MetricNameFilter.DEFAULT_TAG_PRIORITY)
 public class HttpMethodMetricNameFilter extends RequestScopedMetricNameFilter {
     public static final String DEFAULT_TAG_NAME = "httpOp";
-    private final String               tagName;
-    private       Provider<Request>    requestProvider;
+
+    private final String tagName;
+
+    private Provider<Request> requestProvider;
 
     /**
      * Creates a filter that tags request-scoped metrics with a tag named {@link #DEFAULT_TAG_NAME "httpOp"} and the current HTTP method as

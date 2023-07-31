@@ -120,11 +120,13 @@ public class ExceptionMeteredInterceptorFactory
         Meter exceptionMeter = getExceptionMeter(executable);
         try {
             CompletionStage<?> promise = (CompletionStage<?>) invocation.proceed();
-            promise.whenComplete((result, error) -> {
-                if (annotation.cause().isAssignableFrom(error.getClass())) {
-                    exceptionMeter.mark();
-                }
-            });
+            if (promise != null) {
+                promise.whenComplete((result, error) -> {
+                    if (annotation.cause().isAssignableFrom(error.getClass())) {
+                        exceptionMeter.mark();
+                    }
+                });
+            }
             return promise;
         } catch (Throwable t) {
             if (annotation.cause().isAssignableFrom(t.getClass())) {

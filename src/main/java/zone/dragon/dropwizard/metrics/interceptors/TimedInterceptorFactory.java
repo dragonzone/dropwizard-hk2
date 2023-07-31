@@ -98,7 +98,9 @@ public class TimedInterceptorFactory implements AnnotatedMethodInterceptorFactor
         Context context = getTimer(executable).time();
         try {
             CompletionStage<?> promise = (CompletionStage<?>) invocation.proceed();
-            promise.whenComplete((result, error) -> context.stop());
+            if (promise != null) {
+                promise.whenComplete((result, error) -> context.stop());
+            }
             return promise;
         } catch (Throwable t) {
             context.stop();

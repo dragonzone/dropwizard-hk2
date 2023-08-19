@@ -27,6 +27,9 @@ package zone.dragon.dropwizard.metrics;
 
 import java.lang.reflect.Type;
 
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
+
 import org.jvnet.hk2.annotations.Optional;
 
 import com.codahale.metrics.Counter;
@@ -37,8 +40,6 @@ import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.MetricSet;
 import com.codahale.metrics.Timer;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Provider;
 import lombok.NonNull;
 import lombok.experimental.Delegate;
 import zone.dragon.dropwizard.metrics.naming.MetricNameService;

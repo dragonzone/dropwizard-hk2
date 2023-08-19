@@ -27,10 +27,10 @@ package zone.dragon.dropwizard.metrics.naming;
 
 import java.util.TreeMap;
 
+import jakarta.inject.Singleton;
+
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
-
-import jakarta.inject.Singleton;
 
 /**
  * Formats metric names as a name followed by a set of tags

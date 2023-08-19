@@ -30,6 +30,7 @@ import java.lang.reflect.Type;
 
 import jakarta.annotation.Priority;
 import jakarta.inject.Singleton;
+
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import zone.dragon.dropwizard.metrics.naming.MetricName;

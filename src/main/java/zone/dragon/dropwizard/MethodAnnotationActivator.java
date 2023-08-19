@@ -28,6 +28,8 @@ package zone.dragon.dropwizard;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
+import jakarta.inject.Singleton;
+
 import org.glassfish.hk2.api.ActiveDescriptor;
 import org.glassfish.hk2.api.Filter;
 import org.glassfish.hk2.api.InstanceLifecycleEvent;
@@ -36,7 +38,6 @@ import org.glassfish.hk2.api.InstanceLifecycleListener;
 import org.glassfish.hk2.utilities.reflection.ClassReflectionHelper;
 import org.glassfish.hk2.utilities.reflection.internal.ClassReflectionHelperImpl;
 
-import jakarta.inject.Singleton;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 

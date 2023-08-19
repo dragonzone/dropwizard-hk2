@@ -29,6 +29,9 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Method;
 
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+
 import org.aopalliance.intercept.ConstructorInterceptor;
 import org.aopalliance.intercept.Invocation;
 import org.aopalliance.intercept.MethodInterceptor;
@@ -37,8 +40,6 @@ import com.codahale.metrics.Counter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.annotation.Counted;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
 import lombok.NonNull;
 import zone.dragon.dropwizard.AnnotatedConstructorInterceptorFactory;
 import zone.dragon.dropwizard.AnnotatedMethodInterceptorFactory;

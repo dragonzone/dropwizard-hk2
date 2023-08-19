@@ -25,10 +25,11 @@
 
 package zone.dragon.dropwizard.lifecycle;
 
+import jakarta.inject.Singleton;
+
 import org.glassfish.jersey.spi.Contract;
 
 import io.dropwizard.lifecycle.ServerLifecycleListener;
-import jakarta.inject.Singleton;
 
 /**
  * Marker interface to tag a {@link ServerLifecycleListener} as a Jersey component; Implement this instead of the standard

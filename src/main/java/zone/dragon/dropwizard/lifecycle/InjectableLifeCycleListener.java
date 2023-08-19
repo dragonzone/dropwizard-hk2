@@ -25,10 +25,10 @@
 
 package zone.dragon.dropwizard.lifecycle;
 
+import jakarta.inject.Singleton;
+
 import org.eclipse.jetty.util.component.LifeCycle;
 import org.glassfish.jersey.spi.Contract;
-
-import jakarta.inject.Singleton;
 
 /**
  * Marker interface to tag a {@link LifeCycle.Listener} as a Jersey component; Implement this instead of the standard

@@ -25,11 +25,11 @@
 
 package zone.dragon.dropwizard.health;
 
+import jakarta.inject.Singleton;
+
 import org.glassfish.jersey.spi.Contract;
 
 import com.codahale.metrics.health.HealthCheck;
-
-import jakarta.inject.Singleton;
 
 /**
  * Marker class to tag a {@link HealthCheck} as a Jersey component; Extend this instead of the standard {@link HealthCheck} to allow

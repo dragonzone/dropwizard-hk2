@@ -25,10 +25,11 @@
 
 package zone.dragon.dropwizard.task;
 
+import jakarta.inject.Singleton;
+
 import org.glassfish.jersey.spi.Contract;
 
 import io.dropwizard.servlets.tasks.Task;
-import jakarta.inject.Singleton;
 
 /**
  * Marker class to tag a {@link io.dropwizard.servlets.tasks.Task} as a Jersey component; Extend this instead of the standard

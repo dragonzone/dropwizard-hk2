@@ -25,13 +25,14 @@
 
 package zone.dragon.dropwizard.jmx;
 
+import jakarta.inject.Inject;
+
 import org.eclipse.jetty.jmx.MBeanContainer;
 import org.eclipse.jetty.util.component.Container;
 import org.eclipse.jetty.util.component.Container.InheritedListener;
 
 import io.dropwizard.lifecycle.JettyManaged;
 import io.dropwizard.lifecycle.Managed;
-import jakarta.inject.Inject;
 import lombok.NonNull;
 
 /**

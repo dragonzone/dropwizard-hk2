@@ -33,6 +33,8 @@ import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
 import java.util.concurrent.ExecutionException;
 
+import jakarta.inject.Singleton;
+
 import org.glassfish.hk2.api.Rank;
 import org.glassfish.hk2.utilities.reflection.ReflectionHelper;
 
@@ -49,7 +51,6 @@ import com.codahale.metrics.annotation.Timed;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
-import jakarta.inject.Singleton;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import zone.dragon.dropwizard.metrics.naming.MetricName;

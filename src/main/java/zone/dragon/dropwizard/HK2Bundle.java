@@ -28,6 +28,10 @@ package zone.dragon.dropwizard;
 import java.lang.annotation.Annotation;
 import java.lang.management.ManagementFactory;
 
+import jakarta.inject.Inject;
+import jakarta.ws.rs.core.Feature;
+import jakarta.ws.rs.core.FeatureContext;
+
 import org.eclipse.jetty.jmx.MBeanContainer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.util.component.LifeCycle;
@@ -53,9 +57,6 @@ import io.dropwizard.core.Configuration;
 import io.dropwizard.core.ConfiguredBundle;
 import io.dropwizard.core.setup.Bootstrap;
 import io.dropwizard.core.setup.Environment;
-import jakarta.inject.Inject;
-import jakarta.ws.rs.core.Feature;
-import jakarta.ws.rs.core.FeatureContext;
 import lombok.Getter;
 import lombok.NonNull;
 import zone.dragon.dropwizard.health.HealthCheckActivator;

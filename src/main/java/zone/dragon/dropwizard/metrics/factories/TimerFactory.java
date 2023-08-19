@@ -25,13 +25,14 @@
 
 package zone.dragon.dropwizard.metrics.factories;
 
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+
 import org.glassfish.hk2.api.InstantiationService;
 
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
 import zone.dragon.dropwizard.metrics.naming.MetricNameService;
 
 /**

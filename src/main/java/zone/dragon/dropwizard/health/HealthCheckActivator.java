@@ -27,11 +27,12 @@ package zone.dragon.dropwizard.health;
 
 import java.util.UUID;
 
+import jakarta.inject.Inject;
+
 import org.glassfish.hk2.api.ServiceLocator;
 
 import com.codahale.metrics.health.HealthCheckRegistry;
 
-import jakarta.inject.Inject;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import zone.dragon.dropwizard.ComponentActivator;

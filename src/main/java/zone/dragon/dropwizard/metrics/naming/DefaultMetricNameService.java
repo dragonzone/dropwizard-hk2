@@ -28,11 +28,12 @@ package zone.dragon.dropwizard.metrics.naming;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Type;
 
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+
 import org.glassfish.hk2.api.IterableProvider;
 import org.jvnet.hk2.annotations.Optional;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
 import lombok.NonNull;
 
 /**

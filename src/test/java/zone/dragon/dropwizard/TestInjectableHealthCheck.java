@@ -27,6 +27,7 @@ package zone.dragon.dropwizard;
 
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+
 import zone.dragon.dropwizard.health.InjectableHealthCheck;
 
 /**

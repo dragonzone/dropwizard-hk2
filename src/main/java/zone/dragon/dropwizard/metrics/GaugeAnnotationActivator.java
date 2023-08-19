@@ -28,13 +28,14 @@ package zone.dragon.dropwizard.metrics;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+
 import org.glassfish.hk2.api.ActiveDescriptor;
 
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.annotation.Gauge;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import zone.dragon.dropwizard.MethodAnnotationActivator;

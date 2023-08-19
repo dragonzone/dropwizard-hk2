@@ -31,6 +31,10 @@ import java.lang.reflect.Executable;
 import java.lang.reflect.Method;
 import java.util.concurrent.CompletionStage;
 
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+import jakarta.ws.rs.HttpMethod;
+
 import org.aopalliance.intercept.ConstructorInterceptor;
 import org.aopalliance.intercept.Invocation;
 import org.aopalliance.intercept.MethodInterceptor;
@@ -40,9 +44,6 @@ import com.codahale.metrics.Timer;
 import com.codahale.metrics.Timer.Context;
 import com.codahale.metrics.annotation.Timed;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
-import jakarta.ws.rs.HttpMethod;
 import lombok.NonNull;
 import zone.dragon.dropwizard.AnnotatedConstructorInterceptorFactory;
 import zone.dragon.dropwizard.AnnotatedMethodInterceptorFactory;

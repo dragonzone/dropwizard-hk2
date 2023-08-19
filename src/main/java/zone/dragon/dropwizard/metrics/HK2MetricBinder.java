@@ -25,6 +25,8 @@
 
 package zone.dragon.dropwizard.metrics;
 
+import jakarta.inject.Singleton;
+
 import org.glassfish.hk2.api.InstanceLifecycleListener;
 import org.glassfish.hk2.api.TypeLiteral;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
@@ -35,7 +37,6 @@ import com.codahale.metrics.annotation.ExceptionMetered;
 import com.codahale.metrics.annotation.Metered;
 import com.codahale.metrics.annotation.Timed;
 
-import jakarta.inject.Singleton;
 import zone.dragon.dropwizard.AnnotatedConstructorInterceptorFactory;
 import zone.dragon.dropwizard.AnnotatedMethodInterceptorFactory;
 import zone.dragon.dropwizard.AnnotationInterceptionService;

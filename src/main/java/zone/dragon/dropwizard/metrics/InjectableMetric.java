@@ -25,11 +25,11 @@
 
 package zone.dragon.dropwizard.metrics;
 
+import jakarta.inject.Singleton;
+
 import org.glassfish.jersey.spi.Contract;
 
 import com.codahale.metrics.Metric;
-
-import jakarta.inject.Singleton;
 
 /**
  * Marker interface to tag a {@link Metric} as a Jersey component; Implement this instead of the standard {@link Metric} to allow

@@ -32,6 +32,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.List;
 
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+
 import org.aopalliance.intercept.ConstructorInterceptor;
 import org.aopalliance.intercept.Interceptor;
 import org.aopalliance.intercept.MethodInterceptor;
@@ -46,8 +49,6 @@ import org.glassfish.hk2.utilities.reflection.ReflectionHelper;
 
 import com.google.common.collect.Lists;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 

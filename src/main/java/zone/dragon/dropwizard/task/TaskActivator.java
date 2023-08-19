@@ -25,10 +25,11 @@
 
 package zone.dragon.dropwizard.task;
 
+import jakarta.inject.Inject;
+
 import org.glassfish.hk2.api.ServiceLocator;
 
 import io.dropwizard.core.setup.Environment;
-import jakarta.inject.Inject;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import zone.dragon.dropwizard.ComponentActivator;

@@ -25,7 +25,8 @@
 
 package zone.dragon.dropwizard;
 
-import org.glassfish.hk2.internal.ConstantActiveDescriptor;
+import jakarta.validation.Validator;
+
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 
 import com.codahale.metrics.MetricRegistry;
@@ -37,7 +38,6 @@ import io.dropwizard.core.Configuration;
 import io.dropwizard.core.setup.Bootstrap;
 import io.dropwizard.core.setup.Environment;
 import io.dropwizard.lifecycle.setup.LifecycleEnvironment;
-import jakarta.validation.Validator;
 import lombok.NonNull;
 
 /**

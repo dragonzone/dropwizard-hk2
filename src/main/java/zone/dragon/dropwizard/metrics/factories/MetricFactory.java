@@ -31,6 +31,9 @@ import java.lang.reflect.Method;
 import java.util.UUID;
 import java.util.function.Function;
 
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+
 import org.glassfish.hk2.api.DescriptorVisibility;
 import org.glassfish.hk2.api.Factory;
 import org.glassfish.hk2.api.Injectee;
@@ -40,8 +43,6 @@ import org.glassfish.hk2.api.Visibility;
 
 import com.codahale.metrics.Metric;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import zone.dragon.dropwizard.metrics.naming.MetricNameService;

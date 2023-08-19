@@ -25,6 +25,8 @@
 
 package zone.dragon.dropwizard.lifecycle;
 
+import jakarta.inject.Inject;
+
 import org.eclipse.jetty.server.Server;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,7 +37,6 @@ import io.dropwizard.core.setup.Environment;
 import io.dropwizard.testing.ResourceHelpers;
 import io.dropwizard.testing.junit5.DropwizardAppExtension;
 import io.dropwizard.testing.junit5.DropwizardExtensionsSupport;
-import jakarta.inject.Inject;
 import zone.dragon.dropwizard.HK2Bundle;
 import zone.dragon.dropwizard.TestConfig;
 

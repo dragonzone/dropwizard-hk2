@@ -31,8 +31,8 @@ import java.lang.reflect.Method;
 import java.util.UUID;
 import java.util.function.Function;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import org.glassfish.hk2.api.DescriptorVisibility;
 import org.glassfish.hk2.api.Factory;

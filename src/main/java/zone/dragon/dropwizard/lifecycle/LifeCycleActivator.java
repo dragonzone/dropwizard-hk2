@@ -25,7 +25,7 @@
 
 package zone.dragon.dropwizard.lifecycle;
 
-import jakarta.inject.Inject;
+import javax.inject.Inject;
 
 import org.eclipse.jetty.server.Server;
 import org.glassfish.hk2.api.ServiceLocator;

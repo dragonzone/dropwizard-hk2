@@ -27,7 +27,7 @@ package zone.dragon.dropwizard;
 
 import java.util.function.BiConsumer;
 
-import jakarta.inject.Named;
+import javax.inject.Named;
 
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.jersey.server.monitoring.ApplicationEvent;

@@ -27,7 +27,7 @@ package zone.dragon.dropwizard.metrics;
 
 import java.util.UUID;
 
-import jakarta.inject.Inject;
+import javax.inject.Inject;
 
 import org.glassfish.hk2.api.ServiceLocator;
 

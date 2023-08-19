@@ -25,7 +25,7 @@
 
 package zone.dragon.dropwizard;
 
-import jakarta.validation.Validator;
+import javax.validation.Validator;
 
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 

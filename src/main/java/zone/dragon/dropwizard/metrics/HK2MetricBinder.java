@@ -25,7 +25,7 @@
 
 package zone.dragon.dropwizard.metrics;
 
-import jakarta.inject.Singleton;
+import javax.inject.Singleton;
 
 import org.glassfish.hk2.api.InstanceLifecycleListener;
 import org.glassfish.hk2.api.TypeLiteral;

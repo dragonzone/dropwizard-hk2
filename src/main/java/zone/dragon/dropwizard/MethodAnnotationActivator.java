@@ -28,7 +28,7 @@ package zone.dragon.dropwizard;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
-import jakarta.inject.Singleton;
+import javax.inject.Singleton;
 
 import org.glassfish.hk2.api.ActiveDescriptor;
 import org.glassfish.hk2.api.Filter;

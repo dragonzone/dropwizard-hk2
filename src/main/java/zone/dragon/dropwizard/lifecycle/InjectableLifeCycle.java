@@ -25,7 +25,7 @@
 
 package zone.dragon.dropwizard.lifecycle;
 
-import jakarta.inject.Singleton;
+import javax.inject.Singleton;
 
 import org.eclipse.jetty.util.component.LifeCycle;
 import org.glassfish.jersey.spi.Contract;

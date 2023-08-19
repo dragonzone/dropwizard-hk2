@@ -27,8 +27,8 @@ package zone.dragon.dropwizard.metrics;
 
 import java.lang.reflect.Type;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Provider;
+import javax.inject.Inject;
+import javax.inject.Provider;
 
 import org.jvnet.hk2.annotations.Optional;
 

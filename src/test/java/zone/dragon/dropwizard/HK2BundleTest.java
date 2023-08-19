@@ -25,15 +25,15 @@
 
 package zone.dragon.dropwizard;
 
-import jakarta.inject.Inject;
-import jakarta.validation.Validator;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.client.Client;
-import jakarta.ws.rs.client.WebTarget;
-import jakarta.ws.rs.core.Context;
-import jakarta.ws.rs.core.Feature;
-import jakarta.ws.rs.core.FeatureContext;
+import javax.inject.Inject;
+import javax.validation.Validator;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Feature;
+import javax.ws.rs.core.FeatureContext;
 
 import org.eclipse.jetty.server.Server;
 import org.glassfish.hk2.api.ServiceLocator;

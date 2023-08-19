@@ -25,8 +25,8 @@
 
 package zone.dragon.dropwizard.jmx;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import org.eclipse.jetty.jmx.MBeanContainer;
 import org.eclipse.jetty.util.annotation.ManagedObject;

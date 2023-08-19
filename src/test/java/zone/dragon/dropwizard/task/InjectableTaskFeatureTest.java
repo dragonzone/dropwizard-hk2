@@ -25,8 +25,8 @@
 
 package zone.dragon.dropwizard.task;
 
-import jakarta.ws.rs.client.Client;
-import jakarta.ws.rs.client.Entity;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.Entity;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

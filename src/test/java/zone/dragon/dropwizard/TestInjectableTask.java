@@ -29,7 +29,7 @@ import java.io.PrintWriter;
 import java.util.List;
 import java.util.Map;
 
-import jakarta.inject.Inject;
+import javax.inject.Inject;
 
 import zone.dragon.dropwizard.task.InjectableTask;
 

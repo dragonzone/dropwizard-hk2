@@ -25,7 +25,7 @@
 
 package zone.dragon.dropwizard.lifecycle;
 
-import jakarta.inject.Inject;
+import javax.inject.Inject;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;

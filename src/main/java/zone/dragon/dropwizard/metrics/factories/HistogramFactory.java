@@ -25,8 +25,8 @@
 
 package zone.dragon.dropwizard.metrics.factories;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import org.glassfish.hk2.api.InstantiationService;
 

@@ -28,8 +28,8 @@ package zone.dragon.dropwizard.metrics;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import org.glassfish.hk2.api.ActiveDescriptor;
 

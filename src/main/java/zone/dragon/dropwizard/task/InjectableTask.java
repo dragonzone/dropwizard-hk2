@@ -25,7 +25,7 @@
 
 package zone.dragon.dropwizard.task;
 
-import jakarta.inject.Singleton;
+import javax.inject.Singleton;
 
 import org.glassfish.jersey.spi.Contract;
 

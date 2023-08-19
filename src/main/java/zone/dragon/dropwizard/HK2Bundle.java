@@ -28,9 +28,9 @@ package zone.dragon.dropwizard;
 import java.lang.annotation.Annotation;
 import java.lang.management.ManagementFactory;
 
-import jakarta.inject.Inject;
-import jakarta.ws.rs.core.Feature;
-import jakarta.ws.rs.core.FeatureContext;
+import javax.inject.Inject;
+import javax.ws.rs.core.Feature;
+import javax.ws.rs.core.FeatureContext;
 
 import org.eclipse.jetty.jmx.MBeanContainer;
 import org.eclipse.jetty.server.Server;

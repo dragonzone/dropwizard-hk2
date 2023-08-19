@@ -27,6 +27,8 @@ package zone.dragon.dropwizard.jmx;
 
 import java.lang.management.ManagementFactory;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.management.AttributeNotFoundException;
 import javax.management.InstanceNotFoundException;
 import javax.management.MBeanException;
@@ -34,10 +36,8 @@ import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 import javax.management.ReflectionException;
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
 
 import org.eclipse.jetty.util.annotation.ManagedAttribute;
 import org.eclipse.jetty.util.annotation.ManagedObject;

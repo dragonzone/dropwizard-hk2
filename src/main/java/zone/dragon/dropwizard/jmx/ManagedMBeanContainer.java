@@ -25,7 +25,7 @@
 
 package zone.dragon.dropwizard.jmx;
 
-import jakarta.inject.Inject;
+import javax.inject.Inject;
 
 import org.eclipse.jetty.jmx.MBeanContainer;
 import org.eclipse.jetty.util.component.Container;

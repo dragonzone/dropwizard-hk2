@@ -28,8 +28,8 @@ package zone.dragon.dropwizard.metrics.naming.filters;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Type;
 
-import jakarta.annotation.Priority;
-import jakarta.inject.Singleton;
+import javax.annotation.Priority;
+import javax.inject.Singleton;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;

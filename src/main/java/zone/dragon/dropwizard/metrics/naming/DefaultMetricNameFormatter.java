@@ -27,7 +27,7 @@ package zone.dragon.dropwizard.metrics.naming;
 
 import java.util.TreeMap;
 
-import jakarta.inject.Singleton;
+import javax.inject.Singleton;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;

@@ -64,6 +64,16 @@ public class TimedInterceptorFactory implements AnnotatedMethodInterceptorFactor
         this.metricNameService = metricNameService;
     }
 
+    /**
+     * Retrieves or creates the {@link Timer} associated with the given executable
+     *
+     * The default implementation uses the {@link MetricNameService} to generate the metric name and retrieves the timer
+     * from the {@link MetricRegistry}.
+     *
+     * @param executable the method or constructor for which to retrieve the timer
+     *
+     * @return the timer registered for the given executable
+     */
     protected Timer getTimer(Executable executable) {
         return metricRegistry.timer(metricNameService.getFormattedMetricName(executable, Timer.class));
     }
@@ -85,6 +95,14 @@ public class TimedInterceptorFactory implements AnnotatedMethodInterceptorFactor
         return invocation -> time(constructor, invocation);
     }
 
+    /**
+     * Determines whether the given method is a JAX-RS resource method by checking for annotations
+     * that are themselves annotated with {@link HttpMethod @HttpMethod}.
+     *
+     * @param method the method to check
+     *
+     * @return {@code true} if the method is a JAX-RS resource method, {@code false} otherwise
+     */
     protected boolean isResourceMethod(Method method) {
         // Check for the HttpMethod meta-annotation
         for (Annotation ann : method.getAnnotations()) {
@@ -95,6 +113,18 @@ public class TimedInterceptorFactory implements AnnotatedMethodInterceptorFactor
         return false;
     }
 
+    /**
+     * Times an asynchronous invocation by starting a {@link Timer.Context} and stopping it when the
+     * returned {@link CompletionStage} completes. If the invocation throws synchronously, the timer
+     * is stopped immediately.
+     *
+     * @param executable the method or constructor being timed
+     * @param invocation the intercepted invocation to proceed with
+     *
+     * @return the {@link CompletionStage} returned by the invocation
+     *
+     * @throws Throwable if the invocation throws synchronously
+     */
     protected Object timeAsync(Executable executable, Invocation invocation) throws Throwable {
         Context context = getTimer(executable).time();
         try {
@@ -109,6 +139,17 @@ public class TimedInterceptorFactory implements AnnotatedMethodInterceptorFactor
         }
     }
 
+    /**
+     * Times a synchronous invocation by wrapping it in a {@link Timer.Context} that is
+     * automatically stopped when the invocation completes or throws.
+     *
+     * @param executable the method or constructor being timed
+     * @param invocation the intercepted invocation to proceed with
+     *
+     * @return the result of the invocation
+     *
+     * @throws Throwable if the invocation throws
+     */
     protected Object time(Executable executable, Invocation invocation) throws Throwable {
         try (Context ignored = getTimer(executable).time()) {
             return invocation.proceed();

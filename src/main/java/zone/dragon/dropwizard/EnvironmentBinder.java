@@ -27,6 +27,7 @@ package zone.dragon.dropwizard;
 
 import jakarta.validation.Validator;
 
+import org.glassfish.hk2.internal.ConstantActiveDescriptor;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 
 import com.codahale.metrics.MetricRegistry;
@@ -64,7 +65,7 @@ public class EnvironmentBinder<T extends Configuration> extends AbstractBinder {
      * @param environment
      *     Dropwizard environment
      */
-    public EnvironmentBinder(@NonNull Bootstrap bootstrap, @NonNull T configuration, @NonNull Environment environment) {
+    public EnvironmentBinder(@NonNull Bootstrap<T> bootstrap, @NonNull T configuration, @NonNull Environment environment) {
         this.bootstrap = bootstrap;
         this.configuration = configuration;
         this.environment = environment;
@@ -73,6 +74,34 @@ public class EnvironmentBinder<T extends Configuration> extends AbstractBinder {
     @SuppressWarnings("unchecked")
     @Override
     protected void configure() {
+        addUnbindFilter(descriptor -> {
+            if (descriptor instanceof ConstantActiveDescriptor) {
+                ConstantActiveDescriptor<?> constant = (ConstantActiveDescriptor<?>) descriptor;
+                if (constant.getContractTypes().contains(Environment.class) && constant.getCache() == environment) {
+                    return true;
+                }
+                if (constant.getContractTypes().contains(HealthCheckRegistry.class) && constant.getCache() == environment.healthChecks()) {
+                    return true;
+                }
+                if (constant.getContractTypes().contains(LifecycleEnvironment.class) && constant.getCache() == environment.lifecycle()) {
+                    return true;
+                }
+                if (constant.getContractTypes().contains(MetricRegistry.class) && constant.getCache() == environment.metrics()) {
+                    return true;
+                }
+                if (constant.getContractTypes().contains(Validator.class) && constant.getCache() == environment.getValidator()) {
+                    return true;
+                }
+                if (constant.getContractTypes().contains(Configuration.class) && constant.getCache() == configuration) {
+                    return true;
+                }
+                if (constant.getContractTypes().contains(ObjectMapper.class) && constant.getCache() == environment.getObjectMapper()) {
+                    return true;
+                }
+                return constant.getContractTypes().contains(Application.class) && constant.getCache() == bootstrap.getApplication();
+            }
+            return false;
+        });
         bind(environment).to(Environment.class);
         bind(environment.healthChecks()).to(HealthCheckRegistry.class);
         bind(environment.lifecycle()).to(LifecycleEnvironment.class);
@@ -80,6 +109,6 @@ public class EnvironmentBinder<T extends Configuration> extends AbstractBinder {
         bind(environment.getValidator()).to(Validator.class);
         bind(configuration).to(bootstrap.getApplication().getConfigurationClass()).to(Configuration.class);
         bind(environment.getObjectMapper()).to(ObjectMapper.class);
-        bind(bootstrap.getApplication()).to((Class) bootstrap.getApplication().getClass()).to(Application.class);
+        bind(bootstrap.getApplication()).to((Class<Application<T>>) bootstrap.getApplication().getClass()).to(Application.class);
     }
 }

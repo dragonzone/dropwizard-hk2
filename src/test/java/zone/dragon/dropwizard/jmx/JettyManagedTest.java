@@ -103,12 +103,21 @@ public class JettyManagedTest {
 
     @Test
     public void testJmxAttribute()
-        throws MalformedObjectNameException, AttributeNotFoundException, MBeanException, ReflectionException, InstanceNotFoundException {
+            throws MalformedObjectNameException, AttributeNotFoundException, MBeanException, ReflectionException, InstanceNotFoundException {
         MBeanServer platformMBeanServer = ManagementFactory.getPlatformMBeanServer();
         int result = client.path("jmx").request().get(Integer.class);
-        assertThat(platformMBeanServer.getAttribute(
-            new ObjectName("zone.dragon.dropwizard.jmx:id=0,type=jettymanagedtest$testmanaged"),
-            "attribute"
-        )).isEqualTo(42);
+        assertThat(
+            platformMBeanServer.getAttribute(
+                platformMBeanServer
+                    .queryNames(
+                        new ObjectName("zone.dragon.dropwizard.jmx:id=0,type=jettymanagedtest$testmanaged,*"),
+                        null
+                    )
+                    .stream()
+                    .findFirst()
+                    .orElseThrow(),
+                "attribute"
+            )
+        ).isEqualTo(42);
     }
 }

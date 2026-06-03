@@ -11,7 +11,7 @@
 
     <groupId>zone.dragon.dropwizard</groupId>
     <artifactId>dropwizard-hk2</artifactId>
-    <version>4.0.${revision}</version>
+    <version>5.0.${revision}</version>
 
     <name>Dropwizard :: HK2 Integration</name>
     <description>

@@ -5,13 +5,13 @@
 
     <parent>
         <groupId>zone.dragon</groupId>
-        <artifactId>base-dropwizard-4x-pom</artifactId>
-        <version>5.0.10</version>
+        <artifactId>base-dropwizard-bundle-5x-pom</artifactId>
+        <version>5.0.19</version>
     </parent>
 
     <groupId>zone.dragon.dropwizard</groupId>
     <artifactId>dropwizard-hk2</artifactId>
-    <version>4.0.${revision}</version>
+    <version>5.0.${revision}</version>
 
     <name>Dropwizard :: HK2 Integration</name>
     <description>
